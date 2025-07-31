@@ -20,10 +20,16 @@
                             <div class="mb-3">
                                 <label for="text_username" class="form-label">Username</label>
                                 <input type="text" class="form-control bg-dark text-info" name="text_username">
+                                @error('text_username')
+                                <div class="text-danger mt-2">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="text_password" class="form-label">Password</label>
                                 <input type="password" class="form-control bg-dark text-info" name="text_password">
+                                @error('text_password')
+                                <div class="text-danger mt-2">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-secondary w-100">LOGIN</button>
@@ -33,17 +39,7 @@
                 </div>
 
 
-                @if ($errors)
-                <div class="alert alert-danger mt-2">
-                    <ul class="m-0">
-                        @foreach ($errors->all() as $e)
-                        <li>
-                            {{ $e }}
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+
 
                 <!-- copy -->
                 <div class="text-center text-secondary mt-3">
