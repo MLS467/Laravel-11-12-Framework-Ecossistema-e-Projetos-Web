@@ -314,3 +314,52 @@ php artisan migrate:rollback --step=1
 ```
 
 -   O parâmetro `--step=1` faz o rollback de apenas um passo (uma migration). Se quiser desfazer mais de uma, altere o número do step.
+
+## 49. Seeders: Popular o Banco de Dados
+
+Seeders são classes utilizadas para popular o banco de dados com dados iniciais ou de teste. No Laravel, ficam em `database/seeders`.
+
+**Como criar um seeder:**
+
+```bash
+php artisan make:seeder NotesSeeder
+```
+
+**Exemplo de código de um seeder:**
+
+```php
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class NotesSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('notes')->insert([
+            'user_id' => 1,
+            'title' => 'Primeira nota',
+            'text' => 'Conteúdo da nota de exemplo',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+}
+```
+
+**Como executar os seeders:**
+
+```bash
+php artisan db:seed --class=NotesSeeder
+```
+
+Para executar todos os seeders registrados em `DatabaseSeeder.php`:
+
+```bash
+php artisan db:seed
+```
+
+**Resumo:**
+
+-   Seeders facilitam a criação de dados de teste ou iniciais para o projeto.
+-   Podem ser executados individualmente ou em conjunto.
+-   Úteis para desenvolvimento, testes e demonstrações.
