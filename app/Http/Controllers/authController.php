@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class authController extends Controller
 {
@@ -29,15 +30,33 @@ class authController extends Controller
 
         $request->validate($validation, $message);
 
+        $user = User::where('username', $request->text_username)
+            ->where('deleted_at', NULL)
+            ->first();
 
-        // $users = User::all()->toArray();
+        if (!$user) {
+            return redirect() // redireciona
+                ->back() // volta para página anterior
+                ->withInput() // volta com os valores para serem mostrado no old no front
+                ->with('loginError', 'Credenciais inexistentes'); // manda msg de erro
+        }
 
-        $userModel = new User();
-        $users = $userModel->all()->toArray();
 
-        echo "<pre>";
-        print_r($users);
-        echo "</pre>";
+        if (!password_verify($request->text_password, $user->password)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('loginError', 'Credenciais inexistentes');
+        }
+
+        $user->last_login = [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->username
+            ]
+        ];
+
+        return "LOGIN REALIZADO COM SUCESSO!";
     }
 
 

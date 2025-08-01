@@ -395,3 +395,48 @@ echo "</pre>";
 -   O resultado é exibido formatado na tela usando `print_r` dentro de uma tag `<pre>` para facilitar a leitura.
 
 Esse recurso é útil para depuração e para visualizar rapidamente todos os usuários cadastrados no sistema.
+
+## 51. Autenticação de Usuário no AuthController
+
+No método `login_submit` do `authController`, foi implementado o fluxo de autenticação de usuário. O processo segue as etapas abaixo:
+
+1. **Validação dos dados:**
+    - O username deve ser um e-mail válido e o password deve ter entre 6 e 10 caracteres.
+2. **Busca do usuário:**
+    - O sistema procura um usuário na tabela `users` com o campo `username` igual ao informado e que não esteja deletado (`deleted_at` igual a NULL).
+3. **Verificação de existência:**
+    - Se o usuário não for encontrado, o sistema redireciona de volta para o formulário, mantém os dados preenchidos e exibe a mensagem "Credenciais inexistentes".
+4. **Verificação de senha:**
+    - Se o usuário existir, o sistema verifica se a senha informada confere com a senha salva no banco usando `password_verify`.
+    - Se a senha estiver incorreta, o sistema redireciona de volta para o formulário, mantém os dados preenchidos e exibe a mensagem "Credenciais inexistentes".
+5. **Login bem-sucedido:**
+    - Se tudo estiver correto, o sistema retorna a mensagem "LOGIN REALIZADO COM SUCESSO!".
+
+**Exemplo de código:**
+
+```php
+$user = User::where('username', $request->text_username)
+    ->where('deleted_at', NULL)
+    ->first();
+
+if (!$user) {
+    return redirect()
+        ->back()
+        ->withInput()
+        ->with('loginError', 'Credenciais inexistentes');
+}
+
+if (!password_verify($request->text_password, $user->password)) {
+    return redirect()
+        ->back()
+        ->withInput()
+        ->with('loginError', 'Credenciais inexistentes');
+}
+
+return "LOGIN REALIZADO COM SUCESSO!";
+```
+
+**Resumo:**
+
+-   O fluxo garante que apenas usuários válidos e com senha correta consigam acessar o sistema.
+-   Mensagens de erro são exibidas de forma amigável e os dados do formulário são mantidos em caso de erro.

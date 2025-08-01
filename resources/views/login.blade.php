@@ -41,6 +41,13 @@
                     </div>
                 </div>
 
+                @if(session('loginError'))
+                <div class="alert alert-danger text-center">
+                    <span class="text-light">
+                        {{ session('loginError') }}
+                    </span>
+                </div>
+                @endif
                 <!-- copy -->
                 <div class="text-center text-secondary mt-3">
                     <small>&copy; {{ date('Y')  }} Notes</small>
