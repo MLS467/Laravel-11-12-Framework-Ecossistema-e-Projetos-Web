@@ -363,3 +363,35 @@ php artisan db:seed
 -   Seeders facilitam a criação de dados de teste ou iniciais para o projeto.
 -   Podem ser executados individualmente ou em conjunto.
 -   Úteis para desenvolvimento, testes e demonstrações.
+
+## 50. Listando Usuários com Eloquent no AuthController
+
+No método `login_submit` do `authController`, foi utilizado o Eloquent ORM para buscar todos os usuários cadastrados na tabela `users` e exibir o resultado na tela.
+
+**Exemplo de código:**
+
+```php
+use App\Models\User;
+
+// ...
+
+User::all()->toArray()
+
+// ou
+
+$userModel = new User();
+$users = $userModel->all()->toArray();
+
+echo "<pre>";
+print_r($users);
+echo "</pre>";
+```
+
+**Explicação:**
+
+-   O Eloquent é utilizado para acessar o banco de dados de forma orientada a objetos.
+-   O método `all()` retorna todos os registros da tabela `users` como uma coleção.
+-   O método `toArray()` converte a coleção em um array PHP.
+-   O resultado é exibido formatado na tela usando `print_r` dentro de uma tag `<pre>` para facilitar a leitura.
+
+Esse recurso é útil para depuração e para visualizar rapidamente todos os usuários cadastrados no sistema.

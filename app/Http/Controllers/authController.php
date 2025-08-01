@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class authController extends Controller
@@ -29,7 +30,14 @@ class authController extends Controller
         $request->validate($validation, $message);
 
 
-        return "ok";
+        // $users = User::all()->toArray();
+
+        $userModel = new User();
+        $users = $userModel->all()->toArray();
+
+        echo "<pre>";
+        print_r($users);
+        echo "</pre>";
     }
 
 
