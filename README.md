@@ -1,61 +1,255 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Documentação do Projeto Laravel Notes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 31. Projeto Laravel Notes
 
-## About Laravel
+Este projeto é um sistema de anotações desenvolvido em Laravel, abordando conceitos fundamentais do framework, como rotas, controllers, views, autenticação e validação de dados.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 32. Criar o Projeto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Para criar um novo projeto Laravel:
 
-## Learning Laravel
+```bash
+composer create-project --prefer-dist laravel/laravel nome-do-projeto
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Após a instalação, configure o arquivo `.env` com as informações do banco de dados e execute:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+php artisan serve
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 33. Introdução às Routes
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+As rotas em Laravel são definidas no arquivo `routes/web.php`. Elas determinam como as URLs são tratadas pela aplicação.
 
-### Premium Partners
+Exemplo:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```php
+Route::get('/', function () {
+    return view('welcome');
+});
+```
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 34. Criar um Controller e Uma Route para o Controller
 
-## Code of Conduct
+Para criar um controller:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan make:controller NomeController
+```
 
-## Security Vulnerabilities
+Exemplo de rota apontando para um método do controller:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```php
+use App\Http\Controllers\AuthController;
+Route::get('/login', [AuthController::class, 'showLoginForm']);
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 35. Apresentar Uma View a Partir de um Controller
+
+No controller, retorne uma view:
+
+```php
+public function showLoginForm() {
+    return view('login');
+}
+```
+
+---
+
+## 36. Receber Parâmetros nas Routes
+
+Rotas podem receber parâmetros dinâmicos:
+
+```php
+Route::get('/note/{id}', [NoteController::class, 'show']);
+```
+
+No controller:
+
+```php
+public function show($id) {
+    // lógica para buscar a nota pelo $id
+}
+```
+
+---
+
+## 37. Views e Blade
+
+Laravel utiliza o Blade como engine de templates. As views ficam em `resources/views` e usam a extensão `.blade.php`.
+
+Exemplo de view:
+
+```blade
+<h1>Bem-vindo, {{ $user->name }}</h1>
+```
+
+---
+
+## 38. Criando Layout para Múltiplas Views
+
+Crie um layout base, por exemplo `layouts/main.blade.php`:
+
+```blade
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@yield('title', 'Laravel Notes')</title>
+</head>
+<body>
+    @yield('content')
+</body>
+</html>
+```
+
+Nas views filhas:
+
+```blade
+@extends('layouts.main')
+
+@section('content')
+    <h2>Conteúdo da página</h2>
+@endsection
+```
+
+---
+
+## 39. Vamos Limpar o Nosso Projeto
+
+Remova arquivos e códigos desnecessários, como a view `welcome.blade.php` e rotas/páginas padrão não utilizadas.
+
+---
+
+## 40. Controller para Autenticação
+
+Crie um controller para autenticação:
+
+```bash
+php artisan make:controller AuthController
+```
+
+Exemplo de método:
+
+```php
+public function login(Request $request) {
+    // lógica de autenticação
+}
+```
+
+---
+
+## 41. Criando o Layout Base da Aplicação e o Formulário de Login
+
+O layout base foi mostrado acima. O formulário de login pode ser criado em `resources/views/login.blade.php`:
+
+```blade
+<form action="/login_submit" method="post" novalidate>
+    @csrf
+    <div class="mb-3">
+        <label for="text_username">Username</label>
+        <input type="text" name="text_username" value="{{ old('text_username') }}">
+        @error('text_username')
+        <div class="text-danger">{{ $message }}</div>
+        @enderror
+    </div>
+    <div class="mb-3">
+        <label for="text_password">Password</label>
+        <input type="password" name="text_password" value="{{ old('text_password') }}">
+        @error('text_password')
+        <div class="text-danger">{{ $message }}</div>
+        @enderror
+    </div>
+    <button type="submit">LOGIN</button>
+</form>
+```
+
+---
+
+## 42. CSRF e Submissão de Formulários
+
+Laravel protege formulários contra CSRF (Cross-Site Request Forgery) usando o token `@csrf`:
+
+```blade
+<form method="POST">
+    @csrf
+    <!-- campos -->
+</form>
+```
+
+---
+
+## 43. Como Capturar os Dados do Formulário
+
+No controller, use o objeto `Request` para capturar os dados:
+
+```php
+use Illuminate\Http\Request;
+
+public function login(Request $request) {
+    $username = $request->input('text_username');
+    $password = $request->input('text_password');
+}
+```
+
+---
+
+## 44. Introdução à Validação de Dados
+
+Valide os dados recebidos usando o método `validate`:
+
+```php
+$validated = $request->validate([
+    'text_username' => 'required',
+    'text_password' => 'required|min:6',
+]);
+```
+
+Se houver erros, eles são automaticamente enviados para a view e podem ser exibidos com `@error`.
+
+---
+
+## 46. Validação Customizada no AuthController
+
+No método `login_submit` do `AuthController`, foi implementada uma validação customizada para o formulário de login, utilizando regras e mensagens personalizadas:
+
+```php
+public function login_submit(Request $request)
+{
+    // Regras de validação
+    $validation = [
+        'text_username' => 'required | email',
+        'text_password' => 'required | min:6 | max:10'
+    ];
+
+    // Mensagens personalizadas
+    $message = [
+        'text_username.required' => "O username não pode ser vázio!",
+        'text_username.email' => "O username deve ser um email válido!",
+        'text_password.required' => "O password não pode ser vázio!",
+        'text_password.min' => "O password deve ter pelo menos :min caracteres!",
+        'text_password.max' => "O password deve ter no máximo :max caracteres!",
+    ];
+
+    // Validação
+    $request->validate($validation, $message);
+
+    // Se passou, retorna "ok"
+    return "ok";
+}
+```
+
+**Resumo:**
+
+-   `text_username` deve ser obrigatório e um e-mail válido.
+-   `text_password` deve ser obrigatório, mínimo 6 e máximo 10 caracteres.
+-   Mensagens de erro são personalizadas para cada regra.
+-   Se houver erro, o usuário é redirecionado de volta ao formulário com os erros exibidos automaticamente.
