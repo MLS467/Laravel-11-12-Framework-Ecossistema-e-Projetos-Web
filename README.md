@@ -253,3 +253,17 @@ public function login_submit(Request $request)
 -   `text_password` deve ser obrigatório, mínimo 6 e máximo 10 caracteres.
 -   Mensagens de erro são personalizadas para cada regra.
 -   Se houver erro, o usuário é redirecionado de volta ao formulário com os erros exibidos automaticamente.
+
+**Exemplo de código do teste de conexão:**
+
+```php
+public function test_db(): void
+{
+    try {
+        DB::connection()->getPdo();
+        echo "connection successfuly";
+    } catch (\PDOException $e) {
+        echo "connection failed $e";
+    }
+}
+```
