@@ -267,3 +267,50 @@ public function test_db(): void
     }
 }
 ```
+
+## 48. Migration para a Tabela de Notas
+
+Foi criada uma migration para a tabela `notes`, responsável por armazenar as anotações dos usuários. A migration define os seguintes campos:
+
+-   `id`: identificador único da nota (auto incremento)
+-   `user_id`: referência ao usuário (pode ser nulo)
+-   `title`: título da nota (até 200 caracteres, pode ser nulo)
+-   `text`: texto da nota (até 3000 caracteres, pode ser nulo)
+-   `timestamps`: campos automáticos de criação e atualização
+-   `softDeletes`: campo para exclusão lógica (soft delete)
+
+**Exemplo de código da migration:**
+
+```php
+Schema::create('notes', function (Blueprint $table) {
+    $table->id()->autoIncrement();
+    $table->integer('user_id')->nullable();
+    $table->string('title', 200)->nullable();
+    $table->string('text', 3000)->nullable();
+    $table->timestamps();
+    $table->softDeletes();
+});
+```
+
+Para criar a migration, utilize o comando:
+
+```bash
+php artisan make:migration create_notes_table
+```
+
+Para aplicar a migration e criar a tabela no banco de dados:
+
+```bash
+php artisan migrate
+```
+
+**Informações importantes sobre migrations:**
+
+-   Todas as migrations executadas ficam registradas na tabela `migrations` do banco de dados, permitindo o controle de quais já foram aplicadas.
+-   É possível desfazer (rollback) uma ou mais migrations, voltando o banco ao estado anterior. Para desfazer a última migration executada, use:
+
+```bash
+php artisan migrate:rollback --step=1
+```
+
+-   O parâmetro `--step=1` faz o rollback de apenas um passo (uma migration). Se quiser desfazer mais de uma, altere o número do step.
