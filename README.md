@@ -440,3 +440,44 @@ return "LOGIN REALIZADO COM SUCESSO!";
 
 -   O fluxo garante que apenas usuários válidos e com senha correta consigam acessar o sistema.
 -   Mensagens de erro são exibidas de forma amigável e os dados do formulário são mantidos em caso de erro.
+
+## 52. Sessão, Registro de Login e Logout
+
+No fluxo de autenticação do `authController`, foram implementadas as seguintes funcionalidades:
+
+### Registro do último login
+
+Após autenticar o usuário, o campo `last_login` do usuário é atualizado com a data e hora do login:
+
+```php
+$user->last_login = date("Y-m-d H:i:s");
+$user->save();
+```
+
+### Armazenamento dos dados do usuário na sessão
+
+Os dados essenciais do usuário autenticado são salvos na sessão para controle de acesso:
+
+```php
+session([
+    'user' => [
+        'id' => $user->id,
+        'name' => $user->username
+    ]
+]);
+```
+
+### Logout
+
+Ao fazer logout, a sessão do usuário é removida e o usuário é redirecionado para a tela de login:
+
+```php
+session()->forget('user');
+return redirect()->to('/login');
+```
+
+**Resumo:**
+
+-   O sistema registra a data/hora do último login do usuário.
+-   O login mantém o usuário autenticado via sessão.
+-   O logout limpa a sessão e redireciona para o login.

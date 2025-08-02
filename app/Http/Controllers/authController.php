@@ -49,12 +49,15 @@ class authController extends Controller
                 ->with('loginError', 'Credenciais inexistentes');
         }
 
-        $user->last_login = [
+        $user->last_login = date("Y-m-d H:i:s");
+        $user->save();
+
+        session([
             'user' => [
                 'id' => $user->id,
                 'name' => $user->username
             ]
-        ];
+        ]);
 
         return "LOGIN REALIZADO COM SUCESSO!";
     }
@@ -62,6 +65,9 @@ class authController extends Controller
 
     public function logout()
     {
-        return "logout";
+        session()->forget('user');
+
+        return redirect()
+            ->to('/login');
     }
 }
