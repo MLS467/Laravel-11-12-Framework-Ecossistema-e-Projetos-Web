@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller
 {
+
+    public function newNote()
+    {
+        return "newNote";
+    }
+
     public function test_db(): void
     {
         try {

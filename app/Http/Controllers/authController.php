@@ -59,7 +59,7 @@ class authController extends Controller
             ]
         ]);
 
-        return "LOGIN REALIZADO COM SUCESSO!";
+        return redirect()->to('/newNote');
     }
 
 

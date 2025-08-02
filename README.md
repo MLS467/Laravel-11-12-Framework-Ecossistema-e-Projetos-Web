@@ -481,3 +481,29 @@ return redirect()->to('/login');
 -   O sistema registra a data/hora do último login do usuário.
 -   O login mantém o usuário autenticado via sessão.
 -   O logout limpa a sessão e redireciona para o login.
+
+## 53. Middleware de Redirecionamento: checkIsNotLogged
+
+Foi criado o middleware `checkIsNotLogged` para proteger rotas de usuários já autenticados. Sua função é impedir que usuários logados acessem páginas como login ou registro, redirecionando-os para a tela principal de notas.
+
+**Exemplo de código:**
+
+```php
+public function handle(Request $request, Closure $next): Response
+{
+    if (session()->has('user')) {
+        return redirect('/newNote');
+    }
+    return $next($request);
+}
+```
+
+**Como funciona:**
+
+-   Se existir um usuário na sessão (`session()->has('user')`), o middleware redireciona para `/newNote`.
+-   Se não houver usuário logado, a requisição segue normalmente para a rota desejada.
+
+**Resumo:**
+
+-   Garante que páginas como login não sejam acessadas por quem já está autenticado.
+-   Melhora a experiência e segurança do fluxo de autenticação.

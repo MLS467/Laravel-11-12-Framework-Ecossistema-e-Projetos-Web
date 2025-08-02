@@ -2,17 +2,23 @@
 
 use App\Http\Controllers\authController;
 use App\Http\Controllers\MainController;
+use App\Http\Middleware\checkIsLogged;
+use App\Http\Middleware\checkIsNotLogged;
 use Illuminate\Support\Facades\Route;
 
-// view do login
-Route::get("/login", [authController::class, "login"]);
 
-// rota para submit do login
-Route::post("/login_submit", [authController::class, "login_submit"]);
+Route::middleware([checkIsNotLogged::class])->group(function () {
+    // view do login
+    Route::get("/login", [authController::class, "login"]);
 
-// rota para logout
-Route::get("/logout", [authController::class, "logout"]);
+    // rota para submit do login
+    Route::post("/login_submit", [authController::class, "login_submit"]);
+});
 
 
-
-Route::get("/teste", [MainController::class, "test_db"]);
+Route::middleware([checkIsLogged::class])->group(function () {
+    // rota para logout
+    Route::get("/logout", [authController::class, "logout"]);
+    Route::get("/newNote", [MainController::class, "newNote"]);
+    Route::get("/teste", [MainController::class, "test_db"]);
+});
