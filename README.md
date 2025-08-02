@@ -576,3 +576,48 @@ Basta incluir o seguinte comando Blade onde desejar exibir a barra superior:
 ```
 
 Dessa forma, o componente será renderizado em qualquer view, facilitando a padronização
+
+## 56. Relações Eloquent entre Usuário e Notas
+
+Para facilitar o acesso às notas de cada usuário, foi criada uma relação **um-para-muitos** entre os modelos `User` e `Note` utilizando o Eloquent.
+
+### Implementação
+
+No modelo `User`:
+
+```php
+// app/Models/User.php
+
+public function notes()
+{
+    return $this->hasMany(Note::class, 'user_id');
+}
+```
+
+Isso permite acessar todas as notas de um usuário de forma simples.
+
+### Exemplo de uso
+
+-   **Recuperar todas as notas de um usuário:**
+
+```php
+$user = User::find($id);
+$notes = $user->notes; // retorna uma coleção de notas do usuário
+```
+
+-   **Na controller:**
+
+```php
+// Carregar usuário e suas notas
+$id = session('user.id');
+$user = User::find($id);
+$notes = $user
+```
+
+### Vantagens
+
+-   Facilita consultas relacionadas entre tabelas.
+-   Permite acessar dados relacionados de forma intuitiva e orientada a objetos.
+-   Reduz a necessidade de queries SQL manuais.
+
+Essa abordagem segue as melhores práticas do Laravel para modelagem de dados e relacionamento entre entidades.

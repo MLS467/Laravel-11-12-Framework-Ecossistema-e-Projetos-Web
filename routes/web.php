@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware([checkIsNotLogged::class])->group(function () {
     // view do login
-    Route::get("/login", [authController::class, "login"]);
+    Route::get("/", [authController::class, "login"]);
 
     // rota para submit do login
     Route::post("/login_submit", [authController::class, "login_submit"]);
