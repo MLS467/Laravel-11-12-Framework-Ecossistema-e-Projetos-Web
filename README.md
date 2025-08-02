@@ -534,3 +534,45 @@ Route::get("/home", [MainController::class, "index"])->name('home');
 -   Ajuda a evitar erros de digitação em URLs.
 
 A nomeação de rotas é uma boa prática recomendada em
+
+## 55. Componente de Barra Superior (`top_bar.blade.php`)
+
+Foi criado um componente Blade chamado `top_bar.blade.php` para exibir a barra superior em todas as páginas do sistema. Esse componente inclui:
+
+-   O logo do sistema com link para a página inicial (`home`)
+-   O nome do projeto centralizado
+-   À direita, o ícone do usuário, o nome do usuário (placeholder `[username]`) e o botão de logout com ícone
+
+**Exemplo de código do componente:**
+
+```blade
+<div class="row mb-3 align-items-center">
+    <div class="col">
+        <a href="{{ route('home') }}">
+            <img src="assets/images/logo.png" alt="Notes logo">
+        </a>
+    </div>
+    <div class="col text-center">
+        A simple <span class="text-warning">Laravel</span> project!
+    </div>
+    <div class="col">
+        <div class="d-flex justify-content-end align-items-center">
+            <span class="me-3"><i class="fa-solid fa-user-circle fa-lg text-secondary me-3"></i>[username]</span>
+            <a href={{ route('logout') }} class="btn btn-outline-secondary px-3">
+                Logout<i class="fa-solid fa-arrow-right-from-bracket ms-2"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<hr>
+```
+
+**Como utilizar o componente em outras views:**
+
+Basta incluir o seguinte comando Blade onde desejar exibir a barra superior:
+
+```blade
+@include('top_bar')
+```
+
+Dessa forma, o componente será renderizado em qualquer view, facilitando a padronização
