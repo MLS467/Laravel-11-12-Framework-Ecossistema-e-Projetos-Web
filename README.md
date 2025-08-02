@@ -507,3 +507,30 @@ public function handle(Request $request, Closure $next): Response
 
 -   Garante que páginas como login não sejam acessadas por quem já está autenticado.
 -   Melhora a experiência e segurança do fluxo de autenticação.
+
+## 53. Nomeação de Rotas
+
+Para facilitar o gerenciamento e a manutenção das rotas, foi utilizada a funcionalidade de **nomeação de rotas** do Laravel. Com isso, é possível referenciar rotas pelo nome em vez de usar URLs diretamente nas views e controllers, tornando o código mais limpo e flexível.
+
+**Exemplo de nomeação de rotas:**
+
+```php
+Route::get("/logout", [authController::class, "logout"])->name('logout');
+Route::get("/newNote", [MainController::class, "newNote"])->name('new');
+Route::get("/home", [MainController::class, "index"])->name('home');
+```
+
+**Como utilizar nas views:**
+
+```blade
+<a href="{{ route('logout') }}">Logout</a>
+<a href="{{ route('home') }}">Home</a>
+```
+
+**Vantagens:**
+
+-   Permite alterar a URL da rota sem precisar modificar todos os lugares onde ela é utilizada.
+-   Facilita a manutenção e a leitura do código.
+-   Ajuda a evitar erros de digitação em URLs.
+
+A nomeação de rotas é uma boa prática recomendada em

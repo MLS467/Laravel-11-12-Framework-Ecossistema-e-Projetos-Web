@@ -59,7 +59,7 @@ class authController extends Controller
             ]
         ]);
 
-        return redirect()->to('/newNote');
+        return redirect()->to('/home');
     }
 
 

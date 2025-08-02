@@ -17,7 +17,7 @@ class checkIsNotLogged
     {
 
         if (session()->has('user')) {
-            return redirect('/newNote');
+            return redirect('/home');
         }
 
         return $next($request);
