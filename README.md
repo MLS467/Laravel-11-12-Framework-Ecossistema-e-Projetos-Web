@@ -698,3 +698,38 @@ public function deleteNote($id)
 
 **Resumo:**  
 IDs sensíveis nunca são expostos diretamente nas URLs e sempre passam
+
+## 61. Service de Utilidades: `Operation`
+
+Para centralizar funções utilitárias e permitir sua reutilização em diferentes partes do projeto, foi criado o service `Operation` em `app/Http/Services/Operation.php`.
+
+### Funções implementadas
+
+-   **descrypt_id($value)**
+
+    -   Desencripta um valor (ID) usando o helper do Laravel `Crypt::decrypt`.
+    -   Em caso de falha na desencriptação (por exemplo, se o valor foi manipulado), redireciona o usuário para a rota `home`.
+    -   Exemplo de uso:
+        ```php
+        $id_final = Operation::descrypt_id($id_encrypted);
+        ```
+
+-   **testing_database()**
+    -   Testa a conexão com o banco de dados.
+    -   Retorna `true` se a conexão for bem-sucedida, ou `false` e exibe uma mensagem de erro caso contrário.
+    -   Exemplo de uso:
+        ```php
+        if (Operation::testing_database()) {
+            // conexão ok
+        } else {
+            // erro de conexão
+        }
+        ```
+
+### Vantagens
+
+-   **Reutilização:** Permite que funções comuns sejam usadas em qualquer controller ou classe do projeto.
+-   **Organização:** Centraliza lógicas utilitárias, facilitando manutenção e testes.
+-   **Segurança:** O método de desencriptação já trata exceções e redireciona em caso de tentativa de acesso inválido.
+
+Esse padrão segue boas práticas de desenvolvimento Laravel, tornando o código
