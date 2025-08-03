@@ -663,3 +663,38 @@ Para aumentar a segurança e evitar a exposição direta dos IDs das notas nas U
 -   Evita exposição de informações internas do banco de dados.
 
 Na controller responsável por
+
+## 59. Desencriptação dos IDs nas Controllers
+
+Para garantir a segurança ao manipular notas (edição e exclusão), os IDs das notas são **encriptados** nas URLs e **desencriptados** nas controllers antes de qualquer operação. Isso impede que usuários manipulem diretamente os IDs na URL para acessar ou modificar recursos que não lhes pertencem.
+
+**Exemplo de código na controller (`MainController.php`):**
+
+```php
+public function editNote($id)
+{
+    try {
+        $capture_id = Crypt::decrypt($id);
+        // lógica para editar a nota com o $capture_id
+    } catch (DecryptException $e) {
+        return redirect()->route('home');
+    }
+}
+
+public function deleteNote($id)
+{
+    try {
+        $capture_id = Crypt::decrypt($id);
+        // lógica para deletar a nota com o $capture_id
+    } catch (DecryptException $e) {
+        return redirect()->route('home');
+    }
+}
+```
+
+-   O método `Crypt::decrypt($id)` recupera o ID original da nota.
+-   Se a desencriptação falhar (por exemplo, se alguém tentar manipular a URL), o usuário é redirecionado para a página inicial.
+-   Esse padrão aumenta a segurança das operações sensíveis do sistema.
+
+**Resumo:**  
+IDs sensíveis nunca são expostos diretamente nas URLs e sempre passam
