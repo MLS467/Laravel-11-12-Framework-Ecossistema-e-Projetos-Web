@@ -638,3 +638,28 @@ Na view principal (`main.blade.php`), as notas do usuário são exibidas utiliza
 -   Se houver notas, cada uma é renderizada usando o componente `note`, facilitando a manutenção e a reutilização do layout das anotações.
 
 Essa abordagem torna o código mais organizado e modular, seguindo as boas
+
+## 58. Encriptação dos IDs nas Rotas
+
+Para aumentar a segurança e evitar a exposição direta dos IDs das notas nas URLs, foi utilizada a encriptação dos IDs ao gerar os links de edição e exclusão.
+
+**Exemplo de código no componente de nota (`note.blade.php`):**
+
+```blade
+<a href="/edit/{{ Crypt::encrypt($note->id) }}" class="btn btn-outline-secondary btn-sm mx-1">
+    <i class="fa-regular fa-pen-to-square"></i>
+</a>
+<a href="/delete/{{ Crypt::encrypt($note->id) }}" class="btn btn-outline-danger btn-sm mx-1">
+    <i class="fa-regular fa-trash-can"></i>
+</a>
+```
+
+-   O método `Crypt::encrypt($note->id)` gera uma string criptografada do ID da nota.
+-   Isso impede que usuários mal-intencionados tentem acessar ou manipular notas de outros usuários apenas alterando o número do ID na URL.
+
+**Vantagens:**
+
+-   Melhora a segurança das rotas sensíveis.
+-   Evita exposição de informações internas do banco de dados.
+
+Na controller responsável por
