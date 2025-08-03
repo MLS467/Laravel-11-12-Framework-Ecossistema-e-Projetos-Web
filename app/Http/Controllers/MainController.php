@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\Operation;
 use App\Models\User;
-use Illuminate\Contracts\Encryption\DecryptException;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller
 {
@@ -31,29 +29,13 @@ class MainController extends Controller
 
     public function editNote($id)
     {
-        try {
-            $capture_id = Crypt::decrypt($id);
-        } catch (DecryptException $e) {
-            return redirect()->route('home');
-        }
+        $id_final = Operation::descrypt_id($id);
+        dd($id_final);
     }
 
     public function deleteNote($id)
     {
-        try {
-            $capture_id = Crypt::decrypt($id);
-        } catch (DecryptException $e) {
-            return redirect()->route('home');
-        }
-    }
-
-    public function test_db(): void
-    {
-        try {
-            DB::connection()->getPdo();
-            echo "connection successfuly";
-        } catch (\PDOException $e) {
-            echo "connection failed $e";
-        }
+        $id_final = Operation::descrypt_id($id);
+        dd($id_final);
     }
 }
