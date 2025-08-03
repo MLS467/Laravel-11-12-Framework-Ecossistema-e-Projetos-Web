@@ -621,3 +621,20 @@ $notes = $user
 -   Reduz a necessidade de queries SQL manuais.
 
 Essa abordagem segue as melhores práticas do Laravel para modelagem de dados e relacionamento entre entidades.
+
+## 57. Exibição das Notas com Blade e Componentes
+
+Na view principal (`main.blade.php`), as notas do usuário são exibidas utilizando o loop `@foreach` do Blade. Para cada nota, é incluído um componente parcial chamado `note`, responsável por renderizar os detalhes de cada anotação.
+
+**Exemplo de código:**
+
+```blade
+@foreach ($notes as $note)
+    @include('note')
+@endforeach
+```
+
+-   Se não houver notas, é exibida uma mensagem e um botão para criar a primeira nota.
+-   Se houver notas, cada uma é renderizada usando o componente `note`, facilitando a manutenção e a reutilização do layout das anotações.
+
+Essa abordagem torna o código mais organizado e modular, seguindo as boas

@@ -68,6 +68,6 @@ class authController extends Controller
         session()->forget('user');
 
         return redirect()
-            ->to('/login');
+            ->to('/');
     }
 }

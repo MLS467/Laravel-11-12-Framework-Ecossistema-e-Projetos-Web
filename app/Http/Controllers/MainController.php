@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Note;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -13,14 +12,14 @@ class MainController extends Controller
     {
         // carregar usuario
         $id = session('user.id');
-        $user = User::find($id)->toArray();
 
         // carregar as notas
-        $notes = User::find($id)->notes()->get()->toArray();
+        $notes = User::find($id)->notes()->get();
 
-        dd($user, $notes);
-
-        return view('main');
+        // dd($user, $notes)
+        return view('main', [
+            'notes' => $notes,
+        ]);
     }
 
     public function newNote()
