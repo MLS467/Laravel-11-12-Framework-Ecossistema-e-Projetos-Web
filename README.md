@@ -733,3 +733,59 @@ Para centralizar funções utilitárias e permitir sua reutilização em diferen
 -   **Segurança:** O método de desencriptação já trata exceções e redireciona em caso de tentativa de acesso inválido.
 
 Esse padrão segue boas práticas de desenvolvimento Laravel, tornando o código
+
+## 62. Tela de Criação de Nova Nota
+
+A tela de criação de nova nota (`new_note.blade.php`) permite ao usuário adicionar uma nova anotação ao sistema de forma simples e intuitiva.
+
+### Funcionalidades implementadas
+
+-   **Barra superior:**  
+    Inclui o componente `top_bar` para navegação e identidade visual.
+
+-   **Título e botão de cancelar:**  
+    O topo da página exibe o título "NEW NOTE" e um botão de cancelar (ícone de X), que retorna para a tela inicial.
+
+-   **Formulário de criação:**
+
+    -   Campo para o título da nota (`text_title`)
+    -   Campo para o texto da nota (`text_note`)
+    -   Ambos os campos utilizam validação do lado do servidor, exibindo mensagens de erro caso estejam inválidos.
+    -   O valor antigo dos campos é mantido em caso de erro de validação, usando `old('text_title')` e `old('text_note')`.
+
+-   **Ações:**
+    -   Botão "Cancel" para voltar à tela inicial sem salvar.
+    -   Botão "Save" para submeter o formulário e criar a nota.
+
+### Exemplo de código do formulário
+
+```blade
+<form action="{{ route('notesubmit') }}" method="post">
+    @csrf
+    <div class="mb-3">
+        <label class="form-label">Note Title</label>
+        <input type="text" class="form-control bg-primary text-white"
+            value="{{ old('text_title') }}" name="text_title">
+        @error('text_title')
+        <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Note Text</label>
+        <textarea class="form-control bg-primary text-white" name="text_note" rows="5">{{ old('text_note') }}</textarea>
+        @error('text_note')
+        <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
+    <div class="text-end">
+        <a href="{{ route('home') }}" class="btn btn-primary px-5">
+            <i class="fa-solid fa-ban me-2"></i>Cancel
+        </a>
+        <button type="submit" class="btn btn-secondary px-5">
+            <i class="fa-regular fa-circle-check me-2"></i>Save
+        </button>
+    </div>
+</form>
+```
+
+Essa tela segue as boas práticas de UX, validação e reutilização de componentes

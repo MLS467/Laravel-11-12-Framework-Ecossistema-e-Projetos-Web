@@ -7,6 +7,7 @@ use App\Http\Middleware\checkIsNotLogged;
 use Illuminate\Support\Facades\Route;
 
 
+// middleware para testar se não está usuário está logado!
 Route::middleware([checkIsNotLogged::class])->group(function () {
     // view do login
     Route::get("/", [authController::class, "login"]);
@@ -16,13 +17,19 @@ Route::middleware([checkIsNotLogged::class])->group(function () {
 });
 
 
+
+
+// middleware para testar se o usuário está logado!
 Route::middleware([checkIsLogged::class])->group(function () {
     // rota para logout
     Route::get("/logout", [authController::class, "logout"])->name('logout');
-    Route::get("/newNote", [MainController::class, "newNote"])->name('new');
+
+    // rota para home
     Route::get("/home", [MainController::class, "index"])->name('home');
 
-    //edit
+    // rotas para nota
+    Route::get("/newNote", [MainController::class, "newNote"])->name('new');
+    Route::post("/notesubmit", [MainController::class, "note_submit"])->name('notesubmit');
     Route::get('/editNote/{id}', [MainController::class, 'editNote'])->name('editNote');
     Route::get('/deleteNote/{id}', [MainController::class, 'deleteNote'])->name('deleteNote');
 });
