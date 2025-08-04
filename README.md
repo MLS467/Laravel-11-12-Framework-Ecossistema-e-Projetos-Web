@@ -907,3 +907,56 @@ O sistema implementa a exclusão de notas utilizando o conceito de **soft delete
 -   Segue boas práticas de segurança e integridade de dados.
 
 Essa abordagem garante maior segurança e flexibilidade na gestão das notas do
+
+## 65. Exclusão de Notas: Soft Delete e Hard Delete
+
+O sistema permite excluir notas de duas formas: **soft delete** (exclusão lógica) e **hard delete** (exclusão física).
+
+### Soft Delete (Exclusão Lógica)
+
+-   O soft delete marca a nota como excluída preenchendo o campo `deleted_at`, mas mantém o registro no banco de dados.
+-   Para realizar o soft delete corretamente no Laravel, basta usar:
+    ```php
+    Note::find($id_decrypt)->delete();
+    ```
+-   Notas com `deleted_at` preenchido não aparecem na listagem principal.
+
+### Hard Delete (Exclusão Física)
+
+-   O hard delete remove o registro do banco de dados de forma permanente.
+-   Para realizar o hard delete no Laravel, utilize:
+    ```php
+    Note::find($id_decrypt)->forceDelete();
+    ```
+
+### Implementação no Controller
+
+No método `deleteNoteConfirm`, você pode alternar entre soft delete e hard delete comentando/descomentando as linhas correspondentes:
+
+```php
+public function deleteNoteConfirm($id)
+{
+    $id_decrypt = Operation::descrypt_id($id);
+
+    if (!$id_decrypt)
+        return redirect()->route('home');
+
+    // Soft delete (recomendado)
+    // Note::find($id_decrypt)->delete();
+
+    // Hard delete (remove definitivamente)
+    Note::find($id_decrypt)->forceDelete();
+
+    return redirect()
+        ->route('home')
+        ->with('sucesso', 'Excluido com sucesso!');
+}
+```
+
+### Observações
+
+-   O soft delete é recomendado para evitar perda permanente de dados e permitir possível restauração futura.
+-   O hard delete deve ser usado apenas quando a remoção definitiva for realmente necessária.
+-   O método de exclusão utilizado pode ser facilmente alterado conforme a necessidade do projeto.
+
+Essas práticas garantem flexibilidade e segurança na gestão

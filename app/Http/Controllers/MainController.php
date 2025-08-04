@@ -125,9 +125,16 @@ class MainController extends Controller
         // Note::find($id_decrypt)->delete();
 
         // soft delete 
-        $nota = Note::find($id_decrypt);
-        $nota->deleted_at = date("Y/m/d H:i:s");
-        $nota->save();
+        // $nota = Note::find($id_decrypt);
+        // $nota->deleted_at = date("Y/m/d H:i:s");
+        // $nota->save();
+
+        //soft delete usando a model
+        // Note::find($id_decrypt)->delete();
+
+        // com soft delete apagando fisicamente o registro
+        Note::find($id_decrypt)->forceDelete();
+
 
         return redirect()
             ->route('home')
