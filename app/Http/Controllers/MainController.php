@@ -16,7 +16,10 @@ class MainController extends Controller
         $id = session('user.id');
 
         // carregar as notas
-        $notes = User::find($id)->notes()->get();
+        $notes = User::find($id)
+            ->notes()
+            ->whereNull('deleted_at')
+            ->get();
 
         // dd($user, $notes)
         return view('main', [
@@ -105,6 +108,29 @@ class MainController extends Controller
     public function deleteNote($id)
     {
         $id_final = Operation::descrypt_id($id);
-        echo "deletar nota $id_final";
+
+        $nota = Note::find($id_final);
+
+        return view('delete_note', ['nota' => $nota]);
+    }
+
+    public function deleteNoteConfirm($id)
+    {
+        $id_decrypt = Operation::descrypt_id($id);
+
+        if (!$id_decrypt)
+            return redirect()->route('home');
+
+        // hard delete
+        // Note::find($id_decrypt)->delete();
+
+        // soft delete 
+        $nota = Note::find($id_decrypt);
+        $nota->deleted_at = date("Y/m/d H:i:s");
+        $nota->save();
+
+        return redirect()
+            ->route('home')
+            ->with('sucesso', 'Excluido com sucesso!');
     }
 }

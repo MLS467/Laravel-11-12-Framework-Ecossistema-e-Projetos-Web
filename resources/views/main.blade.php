@@ -33,6 +33,12 @@
                 </a>
             </div>
 
+            @if (session('sucesso'))
+            <div class="alert alert-success my-3">
+                {{ session('sucesso') }}
+            </div>
+            @endif
+
             @foreach ($notes as $note)
 
             @include('note')

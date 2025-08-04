@@ -855,3 +855,55 @@ O sistema permite que o usuário edite e atualize suas notas de forma segura e v
 -   Todos os campos são validados antes de qualquer alteração no banco de dados.
 
 Essas práticas garantem a integridade e a segurança dos dados do usuário durante o processo de edição de
+
+## 64. Exclusão de Notas (Soft Delete)
+
+O sistema implementa a exclusão de notas utilizando o conceito de **soft delete** do Laravel, garantindo que as notas excluídas não sejam removidas definitivamente do banco de dados, mas apenas marcadas como excluídas.
+
+### Como funciona
+
+-   **Tela de confirmação:**  
+    Ao solicitar a exclusão de uma nota, o usuário é direcionado para uma tela de confirmação (`delete_note`), onde pode confirmar ou cancelar a operação.
+
+-   **Soft delete:**  
+    No método `deleteNoteConfirm`, o ID da nota é desencriptado e a nota é localizada no banco de dados.  
+    Em vez de remover o registro, o campo `deleted_at` é preenchido com a data e hora da exclusão.
+
+    ```php
+    public function deleteNoteConfirm($id)
+    {
+        $id_decrypt = Operation::descrypt_id($id);
+
+        if (!$id_decrypt)
+            return redirect()->route('home');
+
+        // Soft delete
+        $nota = Note::find($id_decrypt);
+        $nota->deleted_at = date("Y/m/d H:i:s");
+        $nota->save();
+
+        return redirect()
+            ->route('home')
+            ->with('sucesso', 'Excluido com sucesso!');
+    }
+    ```
+
+-   **Observação:**  
+    O Laravel possui suporte nativo ao soft delete. Para utilizar o método padrão e garantir compatibilidade com recursos do framework, basta usar:
+
+    ```php
+    Note::find($id_decrypt)->delete();
+    ```
+
+    Isso preenche automaticamente o campo `deleted_at`.
+
+-   **Listagem:**  
+    As notas marcadas como excluídas (`deleted_at` diferente de `NULL`) não aparecem na listagem principal.
+
+### Vantagens
+
+-   Permite restaurar notas excluídas, se necessário.
+-   Evita perda permanente de dados por exclusão acidental.
+-   Segue boas práticas de segurança e integridade de dados.
+
+Essa abordagem garante maior segurança e flexibilidade na gestão das notas do

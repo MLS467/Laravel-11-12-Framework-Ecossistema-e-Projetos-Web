@@ -20,7 +20,7 @@
             </div>
 
             <!-- form -->
-            <form action="{{ route('notesubmit') }}" method="post">
+            <form action="{{ route('note_submit') }}" method="post">
                 @csrf
                 <div class="row mt-3">
                     <div class="col">
