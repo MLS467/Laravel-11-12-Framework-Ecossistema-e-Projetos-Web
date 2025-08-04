@@ -29,7 +29,7 @@ Route::middleware([checkIsLogged::class])->group(function () {
 
     // rotas para nota
     Route::get("/newNote", [MainController::class, "newNote"])->name('new');
-    Route::post("/notesubmit", [MainController::class, "note_submit"])->name('notesubmit');
     Route::get('/editNote/{id}', [MainController::class, 'editNote'])->name('editNote');
+    Route::put("/notesubmit", [MainController::class, "editNoteSubmit"])->name('editNoteSubmit');
     Route::get('/deleteNote/{id}', [MainController::class, 'deleteNote'])->name('deleteNote');
 });

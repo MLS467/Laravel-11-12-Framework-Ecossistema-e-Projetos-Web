@@ -789,3 +789,69 @@ A tela de criação de nova nota (`new_note.blade.php`) permite ao usuário adic
 ```
 
 Essa tela segue as boas práticas de UX, validação e reutilização de componentes
+
+## 63. Edição e Atualização de Notas
+
+O sistema permite que o usuário edite e atualize suas notas de forma segura e validada.
+
+### Funcionalidades implementadas
+
+-   **editNote($id)**
+
+    -   Recebe o ID encriptado da nota pela URL.
+    -   Utiliza o service `Operation::descrypt_id($id)` para desencriptar o ID.
+    -   Busca a nota correspondente no banco de dados.
+    -   Retorna a view `edit_note` com os dados da nota para edição.
+
+    ```php
+    public function editNote($id)
+    {
+        $id_final = Operation::descrypt_id($id);
+        $nota = Note::find($id_final);
+        return view('edit_note', ['nota' => $nota]);
+    }
+    ```
+
+-   **editNoteSubmit(Request $request)**
+
+    -   Valida os campos do formulário de edição (título e texto da nota).
+    -   Garante que o campo `note_id` está presente.
+    -   Desencripta o ID da nota recebida do formulário.
+    -   Atualiza os campos da nota no banco de dados.
+    -   Redireciona para a tela inicial após a atualização.
+
+    ```php
+    public function editNoteSubmit(Request $request)
+    {
+        $request->validate([
+            'text_title' => 'required | min:3 | max:200',
+            'text_note' => 'required | min:3 | max:3000'
+        ], [
+            'text_title.required' => "O título é obrigatório!",
+            'text_tile.min' => "O título deve ter no mínimo :min caracteres!",
+            'text_tile.max' => "O título deve ter no máximo :max caracteres!",
+            'text_note.required' => "A nota é obrigatória!",
+            'text_note.min' => "A nota deve ter no mínimo :min caracteres!",
+            'text_note.max' => "A nota deve ter no máximo :max caracteres!",
+        ]);
+
+        if (!$request->note_id)
+            return redirect()->route('home');
+
+        $id = Operation::descrypt_id($request->note_id);
+
+        $nota = Note::find($id);
+        $nota->title = $request->text_title;
+        $nota->text = $request->text_note;
+        $nota->update();
+
+        return redirect()->route('home');
+    }
+    ```
+
+### Segurança
+
+-   Os IDs das notas são sempre encriptados nas URLs e desencriptados nas controllers, evitando manipulação direta por usuários mal-intencionados.
+-   Todos os campos são validados antes de qualquer alteração no banco de dados.
+
+Essas práticas garantem a integridade e a segurança dos dados do usuário durante o processo de edição de
