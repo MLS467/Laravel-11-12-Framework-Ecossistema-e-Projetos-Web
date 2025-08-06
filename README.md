@@ -81,3 +81,119 @@ O arquivo `routes/web.php` foi utilizado para definir diversas rotas, explorando
 -   Redirecionamentos são úteis para manter URLs amigáveis e evitar links quebrados após mudanças de estrutura.
 
 Essas práticas demonstram o poder e a flexibilidade do sistema de rotas do Laravel, permitindo manipulação avançada de requisições e
+
+## 67. Rotas com Parâmetros e Exemplos Práticos
+
+No arquivo `routes/web.php`, foram criadas rotas que demonstram como trabalhar com parâmetros obrigatórios, opcionais e múltiplos, além de como receber o objeto `Request` no controller.
+
+### Exemplos implementados
+
+-   **Recebendo um valor obrigatório**
+
+    ```php
+    Route::get('/valor/{value}', [MainController::class, 'recebe_valor']);
+    ```
+
+    -   Controller:
+        ```php
+        public function recebe_valor($value)
+        {
+            echo "Valor recebido ---> $value";
+        }
+        ```
+    -   Exemplo de uso:  
+        `/valor/123`  
+        Saída:  
+        `Valor recebido ---> 123`
+
+-   **Recebendo múltiplos valores obrigatórios**
+
+    ```php
+    Route::get('/valor2/{value1}/{value2}', [MainController::class, 'recebe_valor2']);
+    ```
+
+    -   Controller:
+        ```php
+        public function recebe_valor2($value1, $value2)
+        {
+            echo "Valor recebido ---> $value1, $value2";
+        }
+        ```
+    -   Exemplo de uso:  
+        `/valor2/abc/456`  
+        Saída:  
+        `Valor recebido ---> abc, 456`
+
+-   **Recebendo múltiplos valores e o objeto Request**
+
+    ```php
+    Route::get('/valor-req/{value1}/{value2}', [MainController::class, 'recebe_valor_req']);
+    ```
+
+    -   Controller:
+        ```php
+        public function recebe_valor_req(Request $request, $value1, $value2)
+        {
+            echo "Valor recebido ---> $value1, $value2";
+            echo "<br>";
+            echo $request;
+        }
+        ```
+    -   Exemplo de uso:  
+        `/valor-req/1/2`  
+        Saída:
+        ```
+        Valor recebido ---> 1, 2
+        [objeto Request impresso]
+        ```
+
+-   **Recebendo valor opcional**
+
+    ```php
+    Route::get('/valor-opc/{value_opc?}', [MainController::class, 'recebe_valor_opc']);
+    ```
+
+    -   Controller:
+        ```php
+        public function recebe_valor_opc($value = null)
+        {
+            echo "Valor recebido ---> $value";
+        }
+        ```
+    -   Exemplo de uso:  
+        `/valor-opc`  
+        Saída:  
+        `Valor recebido --->`  
+        `/valor-opc/xyz`  
+        Saída:  
+        `Valor recebido ---> xyz`
+
+-   **Recebendo múltiplos parâmetros com parte fixa na rota**
+    ```php
+    Route::get('/user/{user_id}/post/{post_id?}', [MainController::class, 'recebe_post']);
+    ```
+    -   Controller:
+        ```php
+        public function recebe_post(Request $request, $user_id, $post_id = null)
+        {
+            echo "Valor recebido ---> $user_id, $post_id";
+            echo "<br>";
+            echo $request;
+        }
+        ```
+    -   Exemplo de uso:  
+        `/user/10/post`  
+        Saída:  
+        `Valor recebido ---> 10,`  
+        `/user/10/post/99`  
+        Saída:  
+        `Valor recebido ---> 10, 99`
+
+### Observações
+
+-   Parâmetros obrigatórios são definidos entre `{}`.
+-   Parâmetros opcionais são definidos entre `{}` e seguidos de `?`, e devem ter valor padrão no método do controller.
+-   O Laravel injeta automaticamente os parâmetros da URL nos métodos do controller conforme a ordem definida na rota.
+-   O objeto `Request` pode ser injetado em qualquer método para acessar dados da requisição.
+
+Esses exemplos mostram como criar rotas dinâmicas e flexíveis, facilitando o recebimento de dados diretamente pela URL e o uso do

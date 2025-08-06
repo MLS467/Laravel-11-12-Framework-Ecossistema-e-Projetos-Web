@@ -1,36 +1,24 @@
 <?php
 
-use Illuminate\Http\Request;
+
+//----------------------
+// ROUTE PARAMETERS
+//----------------------
+
+use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 
-// rota comum usando função callback
-Route::get('/', function () {
-    return "<h1>Hello World!</h1>";
-});
+// recebendo um valor
+Route::get('/valor/{value}', [MainController::class, 'recebe_valor']);
 
-// rota comum usando função callback e capiturando o request
-Route::get('/injection', function (Request $request) {;
-    var_dump($request);
-});
+// recebendo multiplos valores
+Route::get('/valor2/{value1}/{value2}', [MainController::class, 'recebe_valor2']);
 
-// match para usar verbo http get e post 
-Route::match(['get', 'post'], '/teste', function () {
-    echo "teste";
-});
+// recebendo multiplos valores com request
+Route::get('/valor-req/{value1}/{value2}', [MainController::class, 'recebe_valor_req']);
 
-// rota para usar todos os verbos http
-Route::any('/all', function () {
-    echo "teste";
-});
+// recebendo valor opcional
+Route::get('/valor-opc/{value_opc?}', [MainController::class, 'recebe_valor_opc']);
 
-// rota que retorna uma view diretamente
-// Route::view('/', 'home');
-
-// rota que retorna uma view diretamente com passagem de dados
-Route::view('/', 'home', ['my_name' => "Maisson Leal"]);
-
-// redirecionamento código 302
-Route::redirect('/test', '/home');
-
-// redirecionamento permanente código 301
-Route::permanentRedirect('/redirect2', '/injection');
+// recebendo valores com rota fixa junto
+Route::get('/user/{user_id}/post/{post_id?}', [MainController::class, 'recebe_post']);
