@@ -1,24 +1,24 @@
 <?php
 
-
-//----------------------
-// ROUTE PARAMETERS
-//----------------------
+//-----------------------------------
+// ROUTE PARAMETERS WITH CONSTRAINTS
+//-----------------------------------
 
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 
-// recebendo um valor
-Route::get('/valor/{value}', [MainController::class, 'recebe_valor']);
+// Route::get('/user/{user_id}/post/{post_id?}', [MainController::class, 'post']);
+// Route::get('/user/{user_id}/post/{post_id?}', function ($user_id, $post_id = null) {
+//     echo "USER ID = $user_id e POST ID = $post_id";
+// })->where('user_id', '[0-9]+');
 
-// recebendo multiplos valores
-Route::get('/valor2/{value1}/{value2}', [MainController::class, 'recebe_valor2']);
+// Route::get('/user/{user_id}/post/{post_id?}', function ($user_id, $post_id = null) {
+//     echo "USER ID = $user_id e POST ID = $post_id";
+// })->where('post_id', '[a-zA-Z0-9]+');
 
-// recebendo multiplos valores com request
-Route::get('/valor-req/{value1}/{value2}', [MainController::class, 'recebe_valor_req']);
-
-// recebendo valor opcional
-Route::get('/valor-opc/{value_opc?}', [MainController::class, 'recebe_valor_opc']);
-
-// recebendo valores com rota fixa junto
-Route::get('/user/{user_id}/post/{post_id?}', [MainController::class, 'recebe_post']);
+Route::get('/user/{user_id}/post/{post_id?}', function ($user_id, $post_id = null) {
+    echo "USER ID = $user_id e POST ID = $post_id";
+})->where([
+    'user_id' => '[0-9]+',
+    'post_id' => '[a-zA-Z0-9]+'
+]);

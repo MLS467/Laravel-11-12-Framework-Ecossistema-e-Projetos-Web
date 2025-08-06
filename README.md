@@ -197,3 +197,50 @@ No arquivo `routes/web.php`, foram criadas rotas que demonstram como trabalhar c
 -   O objeto `Request` pode ser injetado em qualquer método para acessar dados da requisição.
 
 Esses exemplos mostram como criar rotas dinâmicas e flexíveis, facilitando o recebimento de dados diretamente pela URL e o uso do
+
+## 68. Parâmetros de Rota com Restrições (Constraints)
+
+No arquivo `routes/web.php`, foram criadas rotas que recebem parâmetros dinâmicos na URL e aplicam **restrições (constraints)** usando expressões regulares para garantir que apenas valores válidos sejam aceitos.
+
+### Exemplos implementados
+
+-   **Rota com parâmetros obrigatórios e opcionais, e restrições:**
+
+    ```php
+    Route::get('/user/{user_id}/post/{post_id?}', function ($user_id, $post_id = null) {
+        echo "USER ID = $user_id e POST ID = $post_id";
+    })->where([
+        'user_id' => '[0-9]+',
+        'post_id' => '[a-zA-Z0-9]+'
+    ]);
+    ```
+
+    -   `{user_id}` é obrigatório e deve conter apenas números (`[0-9]+`).
+    -   `{post_id}` é opcional e, se informado, deve conter apenas letras e/ou números (`[a-zA-Z0-9]+`).
+    -   Exemplo de uso:
+        -   `/user/123/post` → `USER ID = 123 e POST ID =`
+        -   `/user/123/post/abc123` → `USER ID = 123 e POST ID = abc123`
+        -   `/user/abc/post` → **Não será aceita** (user_id deve ser numérico)
+        -   `/user/123/post/!@#` → **Não será aceita** (post_id deve ser alfanumérico)
+
+-   **Outras formas testadas (comentadas no código):**
+    -   Restringindo apenas o `user_id`:
+        ```php
+        // Route::get('/user/{user_id}/post/{post_id?}', function ($user_id, $post_id = null) {
+        //     echo "USER ID = $user_id e POST ID = $post_id";
+        // })->where('user_id', '[0-9]+');
+        ```
+    -   Restringindo apenas o `post_id`:
+        ```php
+        // Route::get('/user/{user_id}/post/{post_id?}', function ($user_id, $post_id = null) {
+        //     echo "USER ID = $user_id e POST ID = $post_id";
+        // })->where('post_id', '[a-zA-Z0-9]+');
+        ```
+
+### Observações
+
+-   As restrições garantem que apenas URLs válidas sejam aceitas pela aplicação, aumentando a segurança e a previsibilidade das rotas.
+-   Parâmetros opcionais devem ser definidos com `?` tanto na rota quanto no método/função.
+-   É possível combinar múltiplas restrições em uma única rota usando um array no método `where`.
+
+Essas práticas são essenciais para criar rotas robustas e seguras em
