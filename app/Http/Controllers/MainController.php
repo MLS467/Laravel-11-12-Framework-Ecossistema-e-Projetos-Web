@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 
 class MainController
 {
-
-    public function index()
+    public function index(): void
     {
-        $this->showTitle("INDEX USANDO CONTROLLER");
+        $this->showTitle("Home Content");
+    }
+
+    public function teste(): View
+    {
+        return view('home');
     }
 
 
