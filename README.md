@@ -321,3 +321,52 @@ Route::fallback(function () {
 -   O agrupamento por controller deixa o arquivo de rotas mais limpo e fácil de manter.
 
 Essas práticas são recomendadas para projetos de
+
+## 70. Rotas Resource e Single Action
+
+No arquivo `routes/web.php`, foram implementadas rotas utilizando diferentes recursos do Laravel para facilitar o desenvolvimento e a organização do projeto.
+
+### Rota Single Action Controller
+
+```php
+Route::get('/', SingleActionController::class);
+```
+
+-   Define a rota raiz (`/`) para ser tratada por um **Single Action Controller**.
+-   Um Single Action Controller é uma classe controller com apenas um método `__invoke`, ideal para ações simples e isoladas.
+
+### Rota Resource
+
+```php
+Route::resource('user', UserController::class);
+```
+
+-   Cria automaticamente todas as rotas RESTful para o recurso `user`, mapeando para os métodos padrão do `UserController` (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy`).
+-   Exemplo de rotas geradas:
+    -   `GET /user` → `index`
+    -   `GET /user/create` → `create`
+    -   `POST /user` → `store`
+    -   `GET /user/{user}` → `show`
+    -   `GET /user/{user}/edit` → `edit`
+    -   `PUT/PATCH /user/{user}` → `update`
+    -   `DELETE /user/{user}` → `destroy`
+
+### Rotas Resource Múltiplos
+
+```php
+Route::resources([
+    'products' => ProductsController::class,
+    'clientes' => ClientsController::class
+]);
+```
+
+-   Cria rotas RESTful para múltiplos recursos de uma só vez.
+-   Para cada recurso (`products` e `clientes`), são geradas todas as rotas RESTful padrão, mapeando para seus respectivos controllers (`ProductsController` e `ClientsController`).
+
+### Vantagens
+
+-   **Produtividade:** Reduz a quantidade de código necessário para criar rotas CRUD.
+-   **Organização:** Mantém o arquivo de rotas limpo e fácil de manter.
+-   **Padrão RESTful:** Segue as melhores práticas de desenvolvimento de APIs e aplicações web.
+
+Essas abordagens são recomendadas para projetos que precisam de operações CRUD padronizadas e para ações simples que podem ser resolvidas com

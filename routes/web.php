@@ -1,12 +1,19 @@
 <?php
 
-use App\Http\Controllers\MainController;
-use App\Http\Middleware\onlyAdmin;
+use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SingleActionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('sistema')->group(function () {
-    Route::controller(MainController::class)->group(function () {
-        Route::get('/', 'index')->middleware([onlyAdmin::class]);
-        Route::get('/home', 'teste');
-    });
-});
+// Rota Single Action
+Route::get('/', SingleActionController::class);
+
+// Rota do tipo resource
+Route::resource('user', UserController::class);
+
+// rota para Resources (multiplos)
+Route::resources([
+    'products' => ProductsController::class,
+    'clientes' => ClientsController::class
+]);

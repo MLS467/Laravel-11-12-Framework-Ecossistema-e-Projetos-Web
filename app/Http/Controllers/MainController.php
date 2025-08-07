@@ -19,6 +19,6 @@ class MainController
 
     public function showTitle($args)
     {
-        echo "<h1>$args</h1>";
+        echo "<h3>$args</h3><br>";
     }
 }
