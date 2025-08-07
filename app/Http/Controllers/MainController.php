@@ -6,8 +6,14 @@ namespace App\Http\Controllers;
 class MainController
 {
 
-    public function post($user_id, $post_id = null)
+    public function index()
     {
-        echo "User id ->> $user_id e Post ID ->> $post_id";
+        $this->showTitle("INDEX USANDO CONTROLLER");
+    }
+
+
+    public function showTitle($args)
+    {
+        echo "<h1>$args</h1>";
     }
 }

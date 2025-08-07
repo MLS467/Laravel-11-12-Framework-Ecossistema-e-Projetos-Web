@@ -244,3 +244,80 @@ No arquivo `routes/web.php`, foram criadas rotas que recebem parâmetros dinâmi
 -   É possível combinar múltiplas restrições em uma única rota usando um array no método `where`.
 
 Essas práticas são essenciais para criar rotas robustas e seguras em
+
+## 69. Rotas Avançadas: Prefixos, Middleware, Controllers e Fallback
+
+No arquivo `routes/web.php`, foram implementados exemplos de rotas avançadas utilizando prefixos, middleware, controllers e fallback para rotas não encontradas.
+
+### Rotas com Prefixo
+
+Utilizando o método `prefix`, é possível agrupar rotas sob um mesmo caminho base, facilitando a organização de rotas administrativas:
+
+```php
+Route::prefix('admin')->group(function () {
+    // http://localhost:8000/admin/
+    Route::get('/', function () {
+        echo "primeira rota admin";
+    });
+
+    // http://localhost:8000/admin/home
+    Route::get('/home', function () {
+        echo "home rota admin";
+    });
+});
+```
+
+### Rotas com Middleware
+
+O middleware `onlyAdmin` foi aplicado a um grupo de rotas para restringir o acesso apenas a usuários autorizados:
+
+```php
+Route::middleware([onlyAdmin::class])->group(function () {
+    Route::get('/admin', function () {
+        echo "<br>";
+        echo "home rota admin";
+    });
+
+    Route::get('/admin1', function () {
+        echo "<br>";
+        echo "home rota admin 1";
+    });
+
+    Route::get('/admin2', function () {
+        echo "<br>";
+        echo "home rota admin 2";
+    });
+});
+```
+
+-   Apenas usuários que passam pelo middleware `onlyAdmin` conseguem acessar essas rotas.
+
+### Rotas com Controller
+
+Utilizando o método `controller`, é possível agrupar rotas que utilizam o mesmo controller, deixando o código mais limpo:
+
+```php
+Route::controller(MainController::class)->group(function () {
+    Route::get('/teste-controller', 'index');
+});
+```
+
+-   A rota `/teste-controller` chama o método `index` do `MainController`.
+
+### Rota Fallback
+
+A rota fallback é utilizada para capturar qualquer requisição que não corresponda a nenhuma rota definida, exibindo uma mensagem personalizada de página não encontrada:
+
+```php
+Route::fallback(function () {
+    echo "<h1>Página não encontrada</h1>";
+});
+```
+
+### Observações
+
+-   O uso de prefixos e middleware facilita a organização e a segurança das rotas.
+-   O fallback garante uma resposta amigável para URLs inválidas.
+-   O agrupamento por controller deixa o arquivo de rotas mais limpo e fácil de manter.
+
+Essas práticas são recomendadas para projetos de
