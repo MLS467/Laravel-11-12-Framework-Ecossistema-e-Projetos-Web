@@ -424,3 +424,78 @@ abstract class Controller
 ```
 
 Assim, qualquer controller que estenda o controller base poderá usar esse método, facilitando a padronização e manutenção do
+
+## 71. Middlewares de Início e Fim de Requisição
+
+No diretório [`app/Http/Middleware`](app/Http/Middleware), foram criados dois middlewares personalizados para demonstrar como executar ações no início e no fim do ciclo de uma requisição HTTP no Laravel.
+
+### StartMiddleware
+
+O [`StartMiddleware`](app/Http/Middleware/StartMiddleware.php) executa uma ação **antes** do request ser processado pelo controller. No exemplo, ele imprime uma mensagem no topo da resposta:
+
+```php
+public function handle(Request $request, Closure $next): Response
+{
+    $upperValue = strtoupper("start middleware");
+    echo ">>>>>>>>>>>>>>> $upperValue <<<<<<<<<<<<<<< <br>";
+
+    return $next($request);
+}
+```
+
+### EndMiddleware
+
+O [`EndMiddleware`](app/Http/Middleware/EndMiddleware.php) executa uma ação **após** o controller processar a requisição, modificando o conteúdo da resposta antes de enviá-la ao cliente:
+
+```php
+public function handle(Request $request, Closure $next): Response
+{
+    $response = $next($request);
+
+    $response->setContent(
+        $response->getContent() . ">>>>>>>>>>>End middleware<<<<<<<<"
+    );
+
+    return $response;
+}
+```
+
+### Como Usar os Middlewares nas Rotas
+
+No arquivo [`routes/web.php`](routes/web.php), os middlewares foram aplicados de diferentes formas:
+
+-   **Aplicando ambos os middlewares em um grupo de rotas:**
+
+    ```php
+    Route::controller(MainController::class)->group(function () {
+        Route::middleware([StartMiddleware::class, EndMiddleware::class])->group(function () {
+            // Rotas aqui...
+        });
+    });
+    ```
+
+-   **Removendo um middleware de uma rota específica com `withoutMiddleware`:**
+
+    ```php
+    Route::get('/index', 'index')
+        ->name("index")
+        ->withoutMiddleware(EndMiddleware::class);
+    ```
+
+-   **Rotas que recebem ambos os middlewares:**
+    ```php
+    Route::get('/about', 'about')->name("about");
+    Route::get('/contact', 'contact')->name("contact");
+    ```
+
+#### Resumo do fluxo
+
+-   Ao acessar `/about` ou `/contact`, o `StartMiddleware` executa **antes** do controller e o `EndMiddleware` executa **depois**.
+-   Ao acessar `/index`, apenas o `StartMiddleware` é executado, pois o `EndMiddleware` foi removido com `withoutMiddleware`.
+
+### Vantagens
+
+-   Permite executar lógicas globais antes ou depois do processamento das rotas (ex: logs, banners, pós-processamento de resposta).
+-   Fácil de aplicar em grupos ou rotas individuais, com flexibilidade para incluir ou excluir middlewares conforme necessário.
+
+Esses exemplos mostram como criar middlewares personalizados e aplicá-los de forma granular nas rotas do Laravel.
