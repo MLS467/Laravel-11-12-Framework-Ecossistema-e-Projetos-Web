@@ -499,3 +499,74 @@ No arquivo [`routes/web.php`](routes/web.php), os middlewares foram aplicados de
 -   Fácil de aplicar em grupos ou rotas individuais, com flexibilidade para incluir ou excluir middlewares conforme necessário.
 
 Esses exemplos mostram como criar middlewares personalizados e aplicá-los de forma granular nas rotas do Laravel.
+
+## Middlewares Personalizados: Execução Antes e Depois das Rotas
+
+Neste projeto, foram criados e configurados middlewares para executar ações **antes** e **depois** do processamento das rotas, utilizando grupos nomeados para facilitar a aplicação seletiva.
+
+### 1. Criação dos Middlewares
+
+-   **StartMiddleware:** Executa uma ação antes do controller (exemplo: imprime mensagem no início da resposta).
+-   **EndMiddleware:** Executa uma ação depois do controller (exemplo: adiciona mensagem ao final da resposta).
+
+Os arquivos estão em:  
+`app/Http/Middleware/StartMiddleware.php`  
+`app/Http/Middleware/EndMiddleware.php`
+
+### 2. Registro dos Middlewares em Grupos
+
+No arquivo [`bootstrap/app.php`](bootstrap/app.php), os middlewares foram agrupados usando nomes personalizados:
+
+```php
+$middleware->prependToGroup('ocorre_antes', [
+    StartMiddleware::class
+]);
+
+$middleware->appendToGroup('ocorre_depois', [
+    EndMiddleware::class
+]);
+```
+
+-   O grupo **`ocorre_antes`** executa o `StartMiddleware` antes das rotas.
+-   O grupo **`ocorre_depois`** executa o `EndMiddleware` depois das rotas.
+
+### 3. Aplicação dos Middlewares nas Rotas
+
+No arquivo [`routes/web.php`](routes/web.php), os grupos de middlewares são aplicados diretamente nas rotas:
+
+```php
+Route::controller(MainController::class)->group(function () {
+
+    Route::get('/index', 'index')
+        ->name("index")
+        ->middleware('ocorre_depois');
+
+    Route::get('/about', 'about')
+        ->name("about");
+
+    Route::get('/contact', 'contact')
+        ->name("contact");
+});
+```
+
+-   A rota `/index` utiliza o grupo de middleware `'ocorre_depois'`, então o `EndMiddleware` será executado **após** o controller.
+-   As rotas `/about` e `/contact` não utilizam nenhum grupo de middleware personalizado, seguindo o fluxo padrão.
+
+### 4. Como funciona na prática
+
+-   **Ao acessar `/index`:**  
+    O controller processa a requisição normalmente e, antes de enviar a resposta ao usuário, o `EndMiddleware` modifica o conteúdo da resposta (por exemplo, adicionando uma mensagem ao final).
+
+-   **Ao acessar `/about` ou `/contact`:**  
+    Nenhum middleware personalizado é executado, apenas o fluxo padrão do Laravel.
+
+### 5. Vantagens dessa abordagem
+
+-   **Organização:** Permite criar middlewares reutilizáveis e aplicá-los de forma seletiva.
+-   **Flexibilidade:** Fácil adicionar/remover middlewares em rotas específicas usando grupos nomeados.
+-   **Manutenção:** Centraliza a configuração dos middlewares em `bootstrap/app.php`, facilitando ajustes futuros.
+
+---
+
+**Resumo:**  
+Você criou middlewares para executar ações antes e depois das rotas, agrupou-os com nomes personalizados e aplicou esses grupos nas rotas conforme a necessidade, tornando o fluxo da aplicação mais flexível
