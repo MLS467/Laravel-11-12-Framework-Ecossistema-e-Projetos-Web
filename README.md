@@ -112,3 +112,73 @@ Este comando criou o arquivo `resources/views/admin/page.blade.php` automaticame
 -   ✅ Pasta criada: `resources/views/admin/`
 -   ✅ Arquivo criado: `resources/views/admin/page.blade.php`
 -   ✅ View acessível via: `view('admin.page')`
+
+## Como Passar Dados para as Views
+
+Existem três maneiras principais de passar dados do Controller para as Views no Laravel:
+
+### Método 1: Array de Dados
+
+Crie um array com os dados e passe como segundo parâmetro:
+
+```php
+public function index(Request $request): View
+{
+    $data = ['nome' => 'Maisson'];
+
+    return view(
+        'home',
+        $data
+    );
+}
+```
+
+### Método 2: Array Inline
+
+Passe os dados diretamente como array no segundo parâmetro:
+
+```php
+public function index(Request $request): View
+{
+    return view(
+        'home',
+        ['nome' => 'Maisson']
+    );
+}
+```
+
+### Método 3: Usando compact()
+
+Use a função `compact()` para criar automaticamente um array com variáveis:
+
+```php
+public function index(Request $request): View
+{
+    $nome = 'Shaolin Matador de porco';
+    return view(
+        'home',
+        compact('nome')
+    );
+}
+```
+
+### Exemplos Práticos Implementados
+
+**Controller `HomeController.php`:**
+
+-   Método `index()` - Usa compact() para passar `$nome` para `home.blade.php`
+-   Método `admin()` - Usa array inline para passar dados para `admin.page.blade.php`
+
+**Na View (`home.blade.php`):**
+
+```php
+<p class="display-6 text-secondary text-center py-5">
+    CONTENT AQUI: {{ strtoupper($nome) }}
+</p>
+```
+
+### Qual Método Usar?
+
+-   **Método 1 (Array):** Ideal quando você tem muitos dados para organizar
+-   **Método 2 (Inline):** Perfeito para poucos dados simples
+-   **Método 3 (Compact):** Útil quando as variáveis já existem no escopo
