@@ -10,3 +10,10 @@ Route::get(
 )
     ->name('home')
     ->middleware(getIp::class);
+
+Route::get(
+    '/admin',
+    [HomeController::class, 'admin']
+)
+    ->name('admin')
+    ->middleware(getIp::class);

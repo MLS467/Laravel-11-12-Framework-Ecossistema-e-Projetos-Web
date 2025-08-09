@@ -15,4 +15,11 @@ class HomeController extends Controller
             ['nome' => 'Maisson']
         );
     }
+    public function admin(Request $request): View
+    {
+        return view(
+            'admin.page',
+            ['nome' => 'Maisson']
+        );
+    }
 }
