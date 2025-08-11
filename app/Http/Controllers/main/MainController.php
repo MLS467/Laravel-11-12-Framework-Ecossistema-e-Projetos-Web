@@ -4,17 +4,19 @@ namespace App\Http\Controllers\main;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class MainController extends Controller
 {
-    public function home()
+    public function home(): View
     {
-        return "Página inicial";
+        return view('home');
     }
 
     public function generate_exercises(Request $request)
     {
-        return "gerar exercicios";
+        return Response()->json([$request->input()], 200);
     }
 
     public function print_exercises()
