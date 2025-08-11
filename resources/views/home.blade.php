@@ -90,9 +90,19 @@
 
 </form>
 
+@if($errors->any())
+@foreach ($errors->all() as $erro)
+<div class="container">
+    <div class="alert alert-danger">
+        <p class="text-light text-center">{{ $erro }}</p>
+    </div>
+</div>
+@endforeach
+@endif
+
 <!-- footer -->
 <footer class="text-center mt-5">
-    <p class="text-secondary">MathX &copy; <span class="text-info">[ANO]</span></p>
+    <p class="text-secondary">MathX &copy; <span class="text-info">{{ date('Y') }}</span></p>
 </footer>
 
 @endsection

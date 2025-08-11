@@ -1,61 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# MathX - Gerador de Exercícios de Matemática
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Sobre o Projeto
 
-## About Laravel
+MathX é uma aplicação web desenvolvida em Laravel 11 para gerar exercícios de matemática personalizados. O projeto permite criar exercícios das quatro operações básicas (soma, subtração, multiplicação e divisão) com parâmetros configuráveis.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Funcionalidades Implementadas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Interface Principal (home.blade.php)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   Formulário para seleção de operações matemáticas
+-   Checkboxes para as 4 operações básicas: soma, subtração, multiplicação e divisão
+-   Campos para definir valores mínimo e máximo das parcelas (0 a 999)
+-   Campo para definir quantidade de exercícios (5 a 50)
+-   Layout responsivo com Bootstrap
+-   Exibição de mensagens de erro de validação
 
-## Learning Laravel
+### 2. Controller Principal (MainController.php)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   **Método home()**: Renderiza a página inicial
+-   **Método generate_exercises()**: Processa o formulário e gera exercícios
+-   **Método print_exercises()**: Para impressão de exercícios (placeholder)
+-   **Método export_exercises()**: Para exportação de exercícios (placeholder)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 3. Sistema de Validação
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Validações implementadas no método `generate_exercises()`:
 
-## Laravel Sponsors
+#### Validação de Operações:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+-   `required_without_all`: Pelo menos uma operação deve ser selecionada
+-   Aplicado aos campos: check_sum, check_subtraction, check_multiplication, check_division
 
-### Premium Partners
+#### Validação de Parcelas:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   `number_one`: obrigatório, mínimo 0, máximo 999
+-   `number_two`: obrigatório, mínimo 0, máximo 999
 
-## Contributing
+#### Validação de Quantidade:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+-   `number_exercises`: obrigatório, mínimo 5, máximo 50
 
-## Code of Conduct
+### 4. Mensagens de Erro Personalizadas
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Mensagens em português para melhor experiência do usuário:
 
-## Security Vulnerabilities
+-   "Selecione pelo menos uma operação."
+-   "O campo número X é obrigatório."
+-   "O número X deve ser no mínimo/máximo Y."
+-   "A quantidade mínima/máxima de exercícios é X."
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 5. Rotas Configuradas
 
-## License
+```php
+Route::get('/', [MainController::class, 'home'])->name('home');
+Route::post('/generate-exercises', [MainController::class, 'generate_exercises'])->name('gen_exe');
+Route::get('/print-exercises', [MainController::class, 'print_exercises'])->name('print_exe');
+Route::get('/export-exercises', [MainController::class, 'export_exercises'])->name('export_exe');
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 6. Layout e Estrutura
+
+-   Layout principal em `resources/views/layout/main.blade.php`
+-   View home em `resources/views/home.blade.php`
+-   Integração com Bootstrap para estilização
+-   Logo e footer personalizados
+-   Estrutura responsiva
+
+## Tecnologias Utilizadas
+
+-   **Framework**: Laravel 11
+-   **Frontend**: Blade Templates, Bootstrap
+-   **Backend**: PHP 8.x
+-   **Validação**: Laravel Validation
+-   **Estrutura**: MVC Pattern
+
+## Estrutura de Arquivos Principais
+
+```
+app/Http/Controllers/main/
+├── MainController.php          # Controller principal com validações
+
+resources/views/
+├── layout/
+│   └── main.blade.php         # Layout base
+├── home.blade.php             # Página inicial com formulário
+
+routes/
+└── web.php                    # Definição das rotas
+
+public/assets/
+├── css/                       # Estilos customizados
+├── images/                    # Imagens e logo
+└── bootstrap/                 # Framework Bootstrap
+```
+
+## Próximos Passos (Funcionalidades Planejadas)
+
+1. **Geração de Exercícios**: Implementar lógica para criar exercícios matemáticos
+2. **Impressão**: Sistema para imprimir exercícios
+3. **Exportação**: Funcionalidade para exportar para PDF ou outros formatos
+4. **Banco de Dados**: Persistir exercícios e resultados
+5. **Sistema de Usuários**: Autenticação e perfis de usuário
