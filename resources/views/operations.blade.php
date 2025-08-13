@@ -17,7 +17,7 @@
         @foreach ($data as $operation)
 
         <div class="col-3 display-6 mb-3">
-            <span class="badge bg-dark">{{ $loop->index + 1  }}</span>
+            <span class="badge bg-dark">{{ str_pad($loop->index + 1, 2,'0', STR_PAD_LEFT)  }}</span>
             <span>{{ $operation['exercises'] }}</span>
             <!-- <span>+</span> -->
             <!-- <span>000</span> -->
@@ -37,8 +37,8 @@
             <a href="{{ route('home') }}" class="btn btn-primary px-5">VOLTAR</a>
         </div>
         <div class="col text-end">
-            <a href="#" class="btn btn-secondary px-5">DESCARREGAR EXERCÍCIOS</a>
-            <a href="#" class="btn btn-secondary px-5">IMPRIMIR EXERCÍCIOS</a>
+            <a href="{{ route('export') }}" class="btn btn-secondary px-5">DESCARREGAR EXERCÍCIOS</a>
+            <a href="{{ route('print') }}" class="btn btn-secondary px-5">IMPRIMIR EXERCÍCIOS</a>
         </div>
     </div>
 </div>

@@ -62,36 +62,68 @@ class MainController extends Controller
         // get number of exercises
         $number_of_exercises = $request->number_exercises;
 
+
         $data = [];
         for ($index = 1; $index <= $number_of_exercises; $index++) {
-            $data[] = $this->get_operation(
-                $operation[array_rand($operation)],
-                $operation,
-                rand($min_value, $max_value),
-                rand($min_value, $max_value)
-            );
+            // random min and max
+            $min = rand($min_value, $max_value);
+            $max = rand($min_value, $max_value);
+            $data[] = $this->get_exercises($operation, $min, $max);
         }
 
+        $request->session()->put('exercises', $data);
 
         return view('operations', compact('data'));
     }
 
-    public function print_exercises(): View
+    public function print_exercises(): View | \Illuminate\Routing\Redirector | \Illuminate\Http\RedirectResponse
     {
-        return view('operation');
+        if (!session()->has('exercises'))
+            return redirect()->route('home');
+
+        $exercises = session()->get('exercises');
+
+        return view('print_exercises', ['exercises' => $exercises]);
     }
 
     public function export_exercises()
     {
-        return "exporta exercicios  para um arquivo";
+        if (!session()->has('exercises'))
+            return redirect()->route('home');
+
+        $sep = str_repeat('-', 10);
+        $app_name = env('APP_NAME');
+        $date = date("YmdHis");
+        $exercises = session()->get('exercises');
+
+        $filename = "Exercícios_{$app_name}_{$date}.txt\n";
+
+        $content = "$sep Exercícios $app_name $sep\n\n";
+
+        foreach ($exercises as $index => $exercise) {
+            $count = $index + 1;
+            $content .= "{$count} => {$exercise['exercises']} \n";
+        }
+
+        $sep = str_repeat('-', 10);
+        $content .= "\n\n$sep Soluções $sep \n\n";
+
+        foreach ($exercises as $index => $exercise) {
+            $count = $index + 1;
+            $content .= "{$count} => {$exercise['sollution']} \n";
+        }
+
+        return response($content)
+            ->header('Content-Type', 'text/plain')
+            ->header('Content-Disposition', "attachment; filename=$filename");
     }
 
-    private function get_operation(
-        string $operation,
+    private function get_exercises(
         array $data,
         string $min_value,
         string $max_value
     ): array {
+        $operation = $data[array_rand($data)];
         $exercises = '';
         $sollution = '';
 
