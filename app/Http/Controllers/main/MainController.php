@@ -4,7 +4,6 @@ namespace App\Http\Controllers\main;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class MainController extends Controller
@@ -16,7 +15,6 @@ class MainController extends Controller
 
     public function generate_exercises(Request $request)
     {
-        // dd($request->number_exercises);
 
         $request->validate(
             [
@@ -25,7 +23,7 @@ class MainController extends Controller
                 'check_subtraction' => 'required_without_all:check_sum,check_multiplication,check_division',
                 'check_multiplication' => 'required_without_all:check_subtraction,check_sum,check_division',
                 'check_division' => 'required_without_all:check_subtraction,check_multiplication,check_sum',
-                'number_one' => 'integer|required|min:0|max:999',
+                'number_one' => 'integer|required|min:0|max:999|lt:number_two',
                 'number_two' => 'integer|required|min:0|max:999',
                 'number_exercises' => 'integer|required|min:5|max:50'
             ],
@@ -49,16 +47,80 @@ class MainController extends Controller
             ]
         );
 
-        return Response()->json([$request->input()], 200);
+        // get operation
+        $operation = [];
+
+        if ($request->has('check_sum')) $operation[] = 'sum';
+        if ($request->has('check_subtraction')) $operation[] = 'subtraction';
+        if ($request->has('check_multiplication')) $operation[] = 'multiplication';
+        if ($request->has('check_division')) $operation[] = 'division';
+
+        // get number min and max
+        $min_value = $request->number_one;
+        $max_value = $request->number_two;
+
+        // get number of exercises
+        $number_of_exercises = $request->number_exercises;
+
+        $data = [];
+        for ($index = 1; $index <= $number_of_exercises; $index++) {
+            $data[] = $this->get_operation(
+                $operation[array_rand($operation)],
+                $operation,
+                rand($min_value, $max_value),
+                rand($min_value, $max_value)
+            );
+        }
+
+
+        return view('operations', compact('data'));
     }
 
-    public function print_exercises()
+    public function print_exercises(): View
     {
-        return "Imprime exercicios no navegador";
+        return view('operation');
     }
 
     public function export_exercises()
     {
         return "exporta exercicios  para um arquivo";
+    }
+
+    private function get_operation(
+        string $operation,
+        array $data,
+        string $min_value,
+        string $max_value
+    ): array {
+        $exercises = '';
+        $sollution = '';
+
+        switch ($operation) {
+            case 'sum':
+                $exercises = "$min_value + $max_value =";
+                $sollution = $min_value + $max_value;
+                break;
+
+            case 'subtraction':
+                $exercises = "$min_value - $max_value =";
+                $sollution = $min_value - $max_value;
+                break;
+
+            case 'multiplication':
+                $exercises = "$min_value x $max_value =";
+                $sollution = $min_value * $max_value;
+                break;
+
+            case 'division':
+                $exercises = "$min_value : $max_value = ";
+                $sollution = $min_value / ($max_value != '0' || 0 ? $max_value : 1);
+                break;
+        }
+
+        return [
+            'operation' => $operation,
+            'exercises' => $exercises,
+            'sollution' => "$exercises " . round($sollution, 3)
+        ];
     }
 }
