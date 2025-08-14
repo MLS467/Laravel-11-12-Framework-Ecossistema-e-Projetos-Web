@@ -371,4 +371,252 @@ http://localhost:8000/other
 
 ---
 
+## Novas Implementações (Atualização)
+
+### 4. **Inclusão de Views com @include**
+
+#### **Navbar Componentizada: `layouts/navbar.blade.php`**
+
+```php
+<div class="container-fluid bg-black mt-0 p-3">
+    <div class="row">
+        <h1 class="text-left">NAVBAR</h1>
+    </div>
+</div>
+```
+
+**Conceitos aplicados:**
+
+-   ✅ **View parcial reutilizável** para navbar
+-   ✅ **Classes Bootstrap** para estilização
+-   ✅ **Estrutura modular** separada do layout principal
+
+#### **Layout Principal Atualizado com @include**
+
+```php
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title')</title>
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap/bootstrap.min.css') }}">
+    <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: calc(100vh - 100px);
+    }
+    </style>
+</head>
+<body class="bg-secondary">
+
+    @include('layouts.navbar')
+
+    @yield('content')
+
+    <script src="{{ asset('assets/bootstrap/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
+```
+
+**Novos conceitos aplicados:**
+
+-   ✅ **@include('layouts.navbar')** - Inclusão de view parcial
+-   ✅ **{{ asset() }}** - Helper para assets (CSS/JS)
+-   ✅ **Bootstrap integrado** para estilização
+-   ✅ **CSS customizado** dentro do layout
+-   ✅ **Estrutura responsiva** com classes Bootstrap
+
+### 5. **Integração com Bootstrap Framework**
+
+#### **Assets Adicionados:**
+
+-   ✅ **bootstrap.min.css** - Framework CSS
+-   ✅ **bootstrap.bundle.min.js** - JavaScript components
+
+#### **Estilização Customizada:**
+
+```css
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: calc(100vh - 100px);
+}
+```
+
+**Benefícios da integração:**
+
+-   ✅ **Design responsivo** automático
+-   ✅ **Classes utilitárias** prontas para uso
+-   ✅ **Componentes pré-estilizados**
+-   ✅ **Consistência visual** em toda aplicação
+
+### 6. **Comando Artisan Utilizado**
+
+#### **Criação de View com Artisan:**
+
+```bash
+php artisan make:view layouts/navbar
+```
+
+**Vantagens do comando:**
+
+-   ✅ **Criação automática** de arquivo .blade.php
+-   ✅ **Estrutura de pastas** criada automaticamente
+-   ✅ **Padronização** na nomenclatura
+-   ✅ **Agilidade** no desenvolvimento
+
+---
+
+## Atualização da Estrutura de Arquivos
+
+```
+resources/views/
+├── layouts/
+│   ├── main_layout.blade.php      # Layout principal com Bootstrap
+│   ├── other_layout.blade.php     # Layout com seções padrão
+│   └── navbar.blade.php           # Navbar componentizada (NOVO)
+├── home.blade.php                 # Página inicial
+└── other.blade.php                # Página secundária
+
+public/assets/
+├── bootstrap/
+│   ├── bootstrap.min.css          # Framework CSS
+│   └── bootstrap.bundle.min.js    # JavaScript components
+
+routes/
+└── web.php                        # Rotas simples com Route::view
+```
+
+---
+
+## Novas Diretivas e Conceitos
+
+### **@include vs @extends**
+
+#### **@include**
+
+```php
+// Inclui uma view parcial
+@include('layouts.navbar')
+
+// Inclui com dados
+@include('layouts.navbar', ['title' => 'Meu Site'])
+```
+
+**Características:**
+
+-   ✅ **Reutilização de código** em qualquer lugar
+-   ✅ **Views pequenas e modulares**
+-   ✅ **Não herda layout** - apenas inclui conteúdo
+-   ✅ **Pode receber dados** via segundo parâmetro
+
+#### **@extends**
+
+```php
+// Herda um layout completo
+@extends('layouts.main_layout')
+```
+
+**Características:**
+
+-   ✅ **Herança completa** de estrutura
+-   ✅ **Define pontos de inserção** com @section
+-   ✅ **Uma view por página**
+-   ✅ **Estrutura hierárquica**
+
+### **Helper asset() para Recursos**
+
+#### **Sintaxe:**
+
+```php
+<link rel="stylesheet" href="{{ asset('assets/bootstrap/bootstrap.min.css') }}">
+<script src="{{ asset('assets/bootstrap/bootstrap.bundle.min.js') }}"></script>
+```
+
+**Vantagens:**
+
+-   ✅ **URLs corretas** independente da estrutura
+-   ✅ **Versionamento automático** (cache busting)
+-   ✅ **Compatibilidade** com diferentes ambientes
+-   ✅ **Organização** de assets públicos
+
+---
+
+## Fluxo Atualizado de Renderização
+
+### **1. Acesso à Página Home (Atualizado)**
+
+```
+GET / → Route::view('/', 'home') → home.blade.php → @extends('layouts.main_layout')
+```
+
+### **2. Renderização com @include**
+
+```
+main_layout.blade.php
+├── <head> com Bootstrap CSS
+├── @include('layouts.navbar') ← navbar.blade.php renderizada
+├── @yield('content') ← Conteúdo da página home
+└── Bootstrap JS carregado
+```
+
+### **3. Resultado Final**
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <title>Home-Page</title>
+        <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css" />
+        <style>
+            /* CSS customizado */
+        </style>
+    </head>
+    <body class="bg-secondary">
+        <!-- Navbar incluída -->
+        <div class="container-fluid bg-black mt-0 p-3">
+            <div class="row">
+                <h1 class="text-left">NAVBAR</h1>
+            </div>
+        </div>
+
+        <!-- Conteúdo da página -->
+        <h3>Conteúdo da página! 2025</h3>
+
+        <script src="assets/bootstrap/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+```
+
+---
+
+## Resumo dos Aprendizados (Atualizado)
+
+✅ **Templates Master** com @yield para estrutura reutilizável  
+✅ **Herança de Templates** com @extends para organização  
+✅ **Seções Flexíveis** com @section...@show para conteúdo padrão  
+✅ **Código PHP** integrado com @php...@endphp  
+✅ **Rotas Simples** com Route::view para páginas estáticas  
+✅ **Organização de Views** em subpastas (layouts/)  
+✅ **Inclusão de Views** com @include para componentização  
+✅ **Helper asset()** para gerenciamento de recursos  
+✅ **Bootstrap Integration** para estilização moderna  
+✅ **Artisan Commands** para criação rápida de views
+
+**Próximo passo:** Implementar **Blade Components** e **Slots** para componentização avançada.
+
+---
+
 **Desenvolvido para estudos do Laravel Blade Template Engine**
