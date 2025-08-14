@@ -613,10 +613,92 @@ main_layout.blade.php
 ✅ **Inclusão de Views** com @include para componentização  
 ✅ **Helper asset()** para gerenciamento de recursos  
 ✅ **Bootstrap Integration** para estilização moderna  
-✅ **Artisan Commands** para criação rápida de views
+✅ **Artisan Commands** para criação rápida de views  
+✅ **Blade Components** criados e utilizados
 
-**Próximo passo:** Implementar **Blade Components** e **Slots** para componentização avançada.
+## Blade Components Implementados
 
----
+### **Comando usado:**
 
-**Desenvolvido para estudos do Laravel Blade Template Engine**
+```bash
+php artisan make:component MyComponent
+php artisan make:component admin/AdminCard
+```
+
+### **Componente Simples: MyComponent**
+
+**Classe:** `app/View/Components/MyComponent.php`
+
+```php
+<?php
+namespace App\View\Components;
+use Illuminate\View\Component;
+
+class MyComponent extends Component
+{
+    public function render()
+    {
+        return view('components.my-component');
+    }
+}
+```
+
+**View:** `resources/views/components/my-component.blade.php`
+
+```php
+<h1 class="text-info">
+    Conteúdo do component
+</h1>
+```
+
+### **Componente em Subpasta: AdminCard**
+
+**Classe:** `app/View/Components/admin/AdminCard.php`
+
+```php
+<?php
+namespace App\View\Components\admin;
+use Illuminate\View\Component;
+
+class AdminCard extends Component
+{
+    public function render()
+    {
+        return view('components.admin.admin-card');
+    }
+}
+```
+
+**View:** `resources/views/components/admin/admin-card.blade.php`
+
+```php
+<h1 class="text-danger">
+    Conteúdo admin view
+</h1>
+```
+
+### **Uso dos Componentes na View:**
+
+```php
+@section('content')
+<!-- RENDERIZANDO UM COMPONENTE -->
+<x-my-component />
+
+<!-- RENDERIZANDO UM COMPONENTE DENTRO DE UMA SUBPASTA -->
+<x-admin.admin-card />
+@endsection
+```
+
+### **Estrutura Final:**
+
+```
+app/View/Components/
+├── MyComponent.php
+└── admin/
+    └── AdminCard.php
+
+resources/views/components/
+├── my-component.blade.php
+└── admin/
+    └── admin-card.blade.php
+```

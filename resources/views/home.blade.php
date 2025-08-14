@@ -10,5 +10,11 @@ $year = date('Y');
 
 
 @section('content')
-<h3>Conteúdo da página! {{ $year }}</h3>
+
+<!-- RENDERIZANDO UM COMPONENTE -->
+<x-my-component />
+
+
+<!-- RENDERIZANDO UM COMPONENTE DENTRO DE UMA SUBPASTA -->
+<x-admin.admin-card />
 @endsection
