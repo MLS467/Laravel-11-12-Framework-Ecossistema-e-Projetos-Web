@@ -1,6 +1,7 @@
 <?php
 
+use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'home', ['teste2' => 123456789]);
+Route::get('/', [MainController::class, 'show']);
 Route::view('/other', 'other');

@@ -861,28 +861,126 @@ routes/web.php                   # Route com dados ['teste2' => 123456789]
 -   **Attributes bag** para atributos HTML
 -   **Componentes anônimos** sem classe PHP
 
-**Próximo passo:** Implementar **Slots** para componentização avançada.
+## Componente com Arrays e Loops
+
+### **Comando usado:**
+
+```bash
+php artisan make:component languages
+```
+
+### **Controller para Dados:**
 
 ```php
-@section('content')
-<!-- RENDERIZANDO UM COMPONENTE -->
-<x-my-component />
+<?php
+namespace App\Http\Controllers;
+use Illuminate\View\View;
 
-<!-- RENDERIZANDO UM COMPONENTE DENTRO DE UMA SUBPASTA -->
-<x-admin.admin-card />
-@endsection
+class MainController extends Controller
+{
+    public function show(): View
+    {
+        $languege_peoples = [
+            'john' => [
+                'portuguese',
+                'english',
+            ],
+            'maria' => [
+                'portuguese',
+            ],
+            'james' => [
+                'portuguese',
+                'english',
+                'france'
+            ],
+        ];
+
+        return view('home', compact('languege_peoples'));
+    }
+}
 ```
 
-### **Estrutura Final:**
+### **Componente Languages:**
 
+```php
+<?php
+namespace App\View\Components;
+use Illuminate\View\Component;
+
+class languages extends Component
+{
+    public function __construct(
+        public string $keyName,    // Nome da pessoa
+        public array $lansName     // Array de idiomas
+    ) {}
+
+    public function render()
+    {
+        return view('components.languages');
+    }
+}
 ```
-app/View/Components/
-├── MyComponent.php
-└── admin/
-    └── AdminCard.php
 
-resources/views/components/
-├── my-component.blade.php
-└── admin/
-    └── admin-card.blade.php
+### **View do Componente:**
+
+```php
+<h1 class="bg-dark w-25 text-start">{{ $keyName }}</h1>
+<h3 class="text-warning">Linguas:</h3>
+@foreach ($lansName as $lan)
+<ul class="d-flex justify-center">
+    <li>{{ $lan }}</li>
+</ul>
+@endforeach
+```
+
+### **Uso na View Home:**
+
+```php
+@if(count($languege_peoples) != 0)
+@foreach ($languege_peoples as $key => $languages)
+<x-languages :key-name="$key" :lans-name="$languages" />
+@endforeach
+@else
+<div class="alert alert-danger">
+    <span class="text-light">
+        Não há dados!
+    </span>
+</div>
+@endif
+```
+
+### **Route Atualizada:**
+
+```php
+Route::get('/', [MainController::class, 'show']);
+```
+
+### **Conceitos Aplicados:**
+
+✅ **Array como propriedade** do componente  
+✅ **@foreach dentro do componente** para iterar dados  
+✅ **Kebab-case** na passagem de propriedades (:key-name, :lans-name)  
+✅ **Controller** para fornecer dados estruturados  
+✅ **Condicionais @if/@else** na view principal  
+✅ **Passagem de chave e valor** do array associativo
+
+### **Resultado Renderizado:**
+
+```html
+<!-- Para cada pessoa no array -->
+<h1 class="bg-dark w-25 text-start">john</h1>
+<h3 class="text-warning">Linguas:</h3>
+<ul class="d-flex justify-center">
+    <li>portuguese</li>
+</ul>
+<ul class="d-flex justify-center">
+    <li>english</li>
+</ul>
+
+<h1 class="bg-dark w-25 text-start">maria</h1>
+<h3 class="text-warning">Linguas:</h3>
+<ul class="d-flex justify-center">
+    <li>portuguese</li>
+</ul>
+<!-- ... mais pessoas -->
 ```
