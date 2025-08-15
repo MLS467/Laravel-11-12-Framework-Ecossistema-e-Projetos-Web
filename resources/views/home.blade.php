@@ -12,9 +12,9 @@ $year = date('Y');
 @section('content')
 
 <!-- RENDERIZANDO UM COMPONENTE -->
-<x-my-component />
+<x-my-component teste="Maisson Leal da Silva" />
 
 
 <!-- RENDERIZANDO UM COMPONENTE DENTRO DE UMA SUBPASTA -->
-<x-admin.admin-card />
+<x-admin.admin-card novo="component" :value="$teste2" />
 @endsection

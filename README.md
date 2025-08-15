@@ -689,6 +689,190 @@ class AdminCard extends Component
 @endsection
 ```
 
+## Passagem de Dados Para Blade Components
+
+### **1. Dados via Propriedades de String**
+
+**Componente MyComponent atualizado:**
+
+```php
+<?php
+namespace App\View\Components;
+use Illuminate\View\Component;
+
+class MyComponent extends Component
+{
+    public function __construct(
+        public string $teste  // Propriedade pública para receber dados
+    ) {}
+
+    public function render()
+    {
+        return view('components.my-component');
+    }
+}
+```
+
+**View do componente:**
+
+```php
+<h1 class="text-info">
+    Conteúdo do component: <span class="text-danger">{{ $teste }}</span>
+</h1>
+```
+
+**Uso na view:**
+
+```php
+<x-my-component teste="Maisson Leal da Silva" />
+```
+
+### **2. Múltiplas Propriedades**
+
+**Componente AdminCard atualizado:**
+
+```php
+<?php
+namespace App\View\Components\admin;
+use Illuminate\View\Component;
+
+class AdminCard extends Component
+{
+    public function __construct(
+        public string $novo,   // Primeira propriedade
+        public string $value   // Segunda propriedade
+    ) {}
+
+    public function render()
+    {
+        return view('components.admin.admin-card');
+    }
+}
+```
+
+**View do componente:**
+
+```php
+<h1 class="text-danger">
+    {{ $novo }}
+</h1>
+<h3>
+    {{ $value }}
+</h3>
+```
+
+### **3. Passagem de Dados via Route**
+
+**Route com dados:**
+
+```php
+Route::view('/', 'home', ['teste2' => 123456789]);
+```
+
+**Uso com variável dinâmica:**
+
+```php
+<x-admin.admin-card novo="component" :value="$teste2" />
+```
+
+### **Sintaxes de Passagem de Dados:**
+
+| Tipo               | Sintaxe                 | Exemplo                    | Descrição                  |
+| ------------------ | ----------------------- | -------------------------- | -------------------------- |
+| **String literal** | `atributo="valor"`      | `teste="Texto"`            | Passa string diretamente   |
+| **Variável PHP**   | `:atributo="$variavel"` | `:value="$teste2"`         | Passa conteúdo de variável |
+| **Expressão**      | `:atributo="expressao"` | `:count="$items->count()"` | Avalia expressão PHP       |
+
+### **Exemplo Completo de Uso:**
+
+**No arquivo home.blade.php:**
+
+```php
+@php
+$nome_page = 'Home-Page';
+$year = date('Y');
+@endphp
+
+@extends('layouts.main_layout')
+
+@section('title', $nome_page)
+
+@section('content')
+<!-- Componente com string literal -->
+<x-my-component teste="Maisson Leal da Silva" />
+
+<!-- Componente com múltiplas propriedades -->
+<x-admin.admin-card novo="component" :value="$teste2" />
+@endsection
+```
+
+**No arquivo routes/web.php:**
+
+```php
+<?php
+use Illuminate\Support\Facades\Route;
+
+Route::view('/', 'home', ['teste2' => 123456789]);
+Route::view('/other', 'other');
+```
+
+### **Resultado Renderizado:**
+
+```html
+<!-- MyComponent -->
+<h1 class="text-info">
+    Conteúdo do component:
+    <span class="text-danger">Maisson Leal da Silva</span>
+</h1>
+
+<!-- AdminCard -->
+<h1 class="text-danger">component</h1>
+<h3>123456789</h3>
+```
+
+### **Conceitos Importantes:**
+
+✅ **Propriedades públicas** no construtor ficam disponíveis na view  
+✅ **String literal** usa `atributo="valor"`  
+✅ **Variáveis PHP** usam `:atributo="$variavel"`  
+✅ **Dados da route** podem ser passados via terceiro parâmetro  
+✅ **Tipagem** nas propriedades para validação
+
+### **Estrutura Final Atualizada:**
+
+```
+app/View/Components/
+├── MyComponent.php               # Com propriedade $teste
+└── admin/
+    └── AdminCard.php            # Com propriedades $novo e $value
+
+resources/views/components/
+├── my-component.blade.php       # Exibe {{ $teste }}
+└── admin/
+    └── admin-card.blade.php     # Exibe {{ $novo }} e {{ $value }}
+
+routes/web.php                   # Route com dados ['teste2' => 123456789]
+```
+
+### **Próximos Conceitos para Estudar:**
+
+-   **Slots** para conteúdo dinâmico
+-   **Slots nomeados** para múltiplas áreas
+-   **Attributes bag** para atributos HTML
+-   **Componentes anônimos** sem classe PHP
+
+**Próximo passo:** Implementar **Slots** para componentização avançada.
+
+```php
+@section('content')
+<!-- RENDERIZANDO UM COMPONENTE -->
+<x-my-component />
+
+<!-- RENDERIZANDO UM COMPONENTE DENTRO DE UMA SUBPASTA -->
+<x-admin.admin-card />
+@endsection
+```
+
 ### **Estrutura Final:**
 
 ```
