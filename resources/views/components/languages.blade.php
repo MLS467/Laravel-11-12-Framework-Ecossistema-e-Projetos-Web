@@ -1,7 +1,7 @@
-<h1 class="bg-dark w-25 text-start">{{ $keyName }}</h1>
+<h1 class="bg-dark w-25 text-start">{{ $key }}</h1>
 <h3 class="text-warning">Linguas:</h3>
-@foreach ($lansName as $lan)
+@foreach ($languages as $language)
 <ul class="d-flex justify-center">
-    <li>{{ $lan }}</li>
+    <li>{{ $language }}</li>
 </ul>
 @endforeach

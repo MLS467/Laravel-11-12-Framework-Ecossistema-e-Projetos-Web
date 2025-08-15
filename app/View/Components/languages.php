@@ -12,8 +12,8 @@ class languages extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public string $keyName,
-        public array $lansName
+        public string $key,
+        public array $languages
     ) {
         //
     }

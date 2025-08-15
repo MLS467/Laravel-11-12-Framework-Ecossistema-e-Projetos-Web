@@ -955,6 +955,33 @@ class languages extends Component
 Route::get('/', [MainController::class, 'show']);
 ```
 
+## Short Attribute Syntax
+
+### **Sintaxe Abreviada:**
+
+```php
+<!-- Antes (sintaxe longa) -->
+<x-languages :key-name="$key" :lans-name="$languages" />
+
+<!-- Depois (sintaxe curta) -->
+<x-languages :$key :$languages />
+```
+
+### **Componente atualizado:**
+
+```php
+public function __construct(
+    public string $key,      // Mudou de $keyName para $key
+    public array $languages  // Mudou de $lansName para $languages
+) {}
+```
+
+### **Regra:**
+
+-   Nome da variável deve coincidir com o nome da propriedade
+-   Use `:$variavel` quando o nome da variável = nome da propriedade
+-   Mais limpo e direto
+
 ### **Conceitos Aplicados:**
 
 ✅ **Array como propriedade** do componente  

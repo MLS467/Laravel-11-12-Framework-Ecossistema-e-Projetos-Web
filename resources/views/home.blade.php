@@ -13,7 +13,7 @@ $year = date('Y');
 
 @if(count($languege_peoples) != 0)
 @foreach ($languege_peoples as $key => $languages)
-<x-languages :key-name="$key" :lans-name="$languages" />
+<x-languages :$key :$languages />
 @endforeach
 @else
 <div class="alert alert-danger">
