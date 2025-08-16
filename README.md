@@ -1011,3 +1011,106 @@ public function __construct(
 </ul>
 <!-- ... mais pessoas -->
 ```
+
+## Métodos de Componentes
+
+### **Componente Languages com Métodos Personalizados:**
+
+```php
+<?php
+namespace App\View\Components;
+use Illuminate\View\Component;
+
+class languages extends Component
+{
+    public function __construct(
+        public string $key,
+        public array $languages
+    ) {}
+
+    public function render()
+    {
+        return view('components.languages');
+    }
+
+    // Controla se o componente deve ser renderizado
+    public function shouldRender(): bool
+    {
+        // Só renderiza se a pessoa falar mais de 1 idioma
+        return count($this->languages) > 1;
+    }
+
+    // Método para lógica de estilização
+    public function changeColorName(): bool
+    {
+        // Retorna true se o nome for 'john'
+        return $this->key === 'john';
+    }
+}
+```
+
+### **View do Componente usando Métodos:**
+
+```php
+<h1 class="bg-dark w-25 text-start">{{ $key }}</h1>
+<h3 class="text-warning">Linguas:</h3>
+@foreach ($languages as $language)
+<ul class="d-flex justify-center">
+    <li class="{{ $changeColorName() ? 'text-primary':'text-danger' }}">
+        {{ $language }}
+    </li>
+</ul>
+@endforeach
+```
+
+### **Conceitos de Métodos de Componentes:**
+
+#### **1. shouldRender()**
+
+-   **Função**: Controla se o componente deve ser renderizado
+-   **Retorno**: `bool` (true = renderiza, false = não renderiza)
+-   **Uso**: Filtragem condicional de componentes
+-   **Exemplo**: Só mostra pessoas que falam mais de 1 idioma
+
+#### **2. Métodos Personalizados**
+
+-   **Função**: Lógica de negócio dentro do componente
+-   **Acesso**: Chamados diretamente na view `{{ $metodo() }}`
+-   **Vantagem**: Encapsula lógica complexa
+-   **Exemplo**: `changeColorName()` para estilização condicional
+
+### **Resultado Prático:**
+
+```html
+<!-- Só renderiza se shouldRender() retornar true -->
+<h1 class="bg-dark w-25 text-start">john</h1>
+<h3 class="text-warning">Linguas:</h3>
+<ul class="d-flex justify-center">
+    <li class="text-primary">portuguese</li>
+    <!-- azul para john -->
+</ul>
+<ul class="d-flex justify-center">
+    <li class="text-primary">english</li>
+    <!-- azul para john -->
+</ul>
+
+<!-- maria não aparece (só fala 1 idioma) -->
+
+<h1 class="bg-dark w-25 text-start">james</h1>
+<h3 class="text-warning">Linguas:</h3>
+<ul class="d-flex justify-center">
+    <li class="text-danger">portuguese</li>
+    <!-- vermelho para james -->
+</ul>
+<!-- ... -->
+```
+
+### **Vantagens dos Métodos:**
+
+✅ **Lógica encapsulada** no próprio componente  
+✅ **Reutilização** de código entre diferentes views  
+✅ **Controle de renderização** automático  
+✅ **Separação de responsabilidades** (lógica vs apresentação)  
+✅ **Código mais limpo** nas views
+
+**Próximo passo:** Implementar **Slots** para componentização avançada.

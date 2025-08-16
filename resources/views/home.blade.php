@@ -10,7 +10,6 @@ $year = date('Y');
 
 
 @section('content')
-
 @if(count($languege_peoples) != 0)
 @foreach ($languege_peoples as $key => $languages)
 <x-languages :$key :$languages />
@@ -22,5 +21,4 @@ $year = date('Y');
     </span>
 </div>
 @endif
-
 @endsection
