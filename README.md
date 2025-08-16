@@ -1114,3 +1114,95 @@ class languages extends Component
 ✅ **Código mais limpo** nas views
 
 **Próximo passo:** Implementar **Slots** para componentização avançada.
+
+---
+
+## Introdução a Slots
+
+Slots permitem injetar conteúdo flexível dentro de componentes, criando estruturas reutilizáveis que envolvem conteúdo dinâmico.
+
+### **Criação do Componente Other**
+
+```bash
+php artisan make:component other
+```
+
+### **Classe do Componente Other**
+
+```php
+<?php
+
+namespace App\View\Components;
+
+use Closure;
+use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
+
+class other extends Component
+{
+    public function __construct()
+    {
+        //
+    }
+
+    public function render(): View|Closure|string
+    {
+        return view('components.other');
+    }
+}
+```
+
+### **View do Componente com Slot**
+
+```blade
+{{-- resources/views/components/other.blade.php --}}
+<div class="row">
+    <div class="col-12">
+        <h3>INICIO</h3>
+        {{ $slot }}
+        <h3>FIM</h3>
+    </div>
+</div>
+```
+
+### **Uso do Componente com Slot**
+
+```blade
+{{-- Uso básico --}}
+<x-other>
+    <p>Este conteúdo será inserido no slot</p>
+    <div class="alert alert-info">
+        Qualquer HTML pode ser colocado aqui
+    </div>
+</x-other>
+```
+
+### **Resultado Renderizado:**
+
+```html
+<div class="row">
+    <div class="col-12">
+        <h3>INICIO</h3>
+        <p>Este conteúdo será inserido no slot</p>
+        <div class="alert alert-info">Qualquer HTML pode ser colocado aqui</div>
+        <h3>FIM</h3>
+    </div>
+</div>
+```
+
+### **Características dos Slots:**
+
+✅ **`{{ $slot }}`**: Variável especial que recebe o conteúdo  
+✅ **Flexibilidade**: Todo conteúdo entre as tags do componente vai para o slot  
+✅ **Wrapper Components**: Ideal para componentes que envolvem conteúdo  
+✅ **HTML Dinâmico**: Aceita qualquer estrutura HTML dentro do slot  
+✅ **Reutilização**: Mesmo componente, conteúdo diferente
+
+### **Casos de Uso Comuns:**
+
+-   **Cards** com conteúdo variável
+-   **Modais** com diferentes corpos
+-   **Containers** com estrutura fixa e conteúdo dinâmico
+-   **Layouts** de seção com header/footer fixos
+
+**Vantagem principal:** Separação entre estrutura (componente) e conteúdo (slot).

@@ -1,4 +1,4 @@
-$languages@php
+@php
 $nome_page = 'Home-Page';
 $year = date('Y');
 @endphp
@@ -10,7 +10,7 @@ $year = date('Y');
 
 
 @section('content')
-@if(count($languege_peoples) != 0)
+<!-- @if(count($languege_peoples) != 0)
 @foreach ($languege_peoples as $key => $languages)
 <x-languages :$key :$languages />
 @endforeach
@@ -20,5 +20,10 @@ $year = date('Y');
         Não há dados!
     </span>
 </div>
-@endif
+@endif -->
+
+<x-other>
+    <h1 class="text-info">INSERIDO COM SLOT</h1>
+</x-other>
+
 @endsection

@@ -2,7 +2,7 @@
 <h3 class="text-warning">Linguas:</h3>
 @foreach ($languages as $language)
 <ul class="d-flex justify-center">
-    <li class="{{ $changeColorName() ? 'text-primary':'text-danger' }}">
+    <li class="{{ $changeColorName() ? 'text-info':'' }}">
         {{ $language }}
     </li>
 </ul>
