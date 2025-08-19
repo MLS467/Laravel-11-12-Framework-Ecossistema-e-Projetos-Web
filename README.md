@@ -1,10 +1,10 @@
-# Laravel Blade Template Engine - Estudos e Implementações
+# Laravel html Template Engine - Estudos e Implementações
 
 ## Sobre Este Projeto
 
-Este projeto é um estudo prático sobre **Blade Template Engine** do Laravel, focando em **layouts**, **seções**, **herança de templates** e conceitos fundamentais do sistema de views do Laravel.
+Este projeto é um estudo prático sobre **html Template Engine** do Laravel, focando em **layouts**, **seções**, **herança de templates** e conceitos fundamentais do sistema de views do Laravel.
 
-**Branch:** `secao-9-blade-template-engine--blade-components-e-slot`
+**Branch:** `secao-9-html-template-engine--html-components-e-slot`
 
 ---
 
@@ -12,7 +12,7 @@ Este projeto é um estudo prático sobre **Blade Template Engine** do Laravel, f
 
 ### 1. **Layouts Base (Master Templates)**
 
-#### **Layout Principal: `main_layout.blade.php`**
+#### **Layout Principal: `main_layout.html.php`**
 
 ```php
 <!DOCTYPE html>
@@ -34,7 +34,7 @@ Este projeto é um estudo prático sobre **Blade Template Engine** do Laravel, f
 -   ✅ **Estrutura HTML básica** reutilizável
 -   ✅ **Template limpo e minimalista**
 
-#### **Layout Avançado: `other_layout.blade.php`**
+#### **Layout Avançado: `other_layout.html.php`**
 
 ```php
 <!DOCTYPE html>
@@ -66,7 +66,7 @@ Este projeto é um estudo prático sobre **Blade Template Engine** do Laravel, f
 
 ### 2. **Herança de Templates (@extends)**
 
-#### **View Home: `home.blade.php`**
+#### **View Home: `home.html.php`**
 
 ```php
 @php
@@ -85,13 +85,13 @@ $year = date('Y');
 
 **Conceitos aplicados:**
 
--   ✅ **@php...@endphp** - Código PHP dentro do Blade
+-   ✅ **@php...@endphp** - Código PHP dentro do html
 -   ✅ **@extends('layouts.main_layout')** - Herança de template
 -   ✅ **@section('title', $valor)** - Seção inline (uma linha)
 -   ✅ **@section...@endsection** - Seção de bloco
 -   ✅ **{{ $variavel }}** - Interpolação de variáveis
 
-#### **View Other: `other.blade.php`**
+#### **View Other: `other.html.php`**
 
 ```php
 @php
@@ -185,7 +185,7 @@ Route::view('/other', 'other');
 
 ---
 
-## Diretivas Blade Estudadas
+## Diretivas html Estudadas
 
 ### **1. Estrutura e Herança**
 
@@ -226,10 +226,10 @@ Route::view('/other', 'other');
 ```
 resources/views/
 ├── layouts/
-│   ├── main_layout.blade.php      # Layout simples
-│   └── other_layout.blade.php     # Layout com seções padrão
-├── home.blade.php                 # Página inicial
-└── other.blade.php                # Página secundária
+│   ├── main_layout.html.php      # Layout simples
+│   └── other_layout.html.php     # Layout com seções padrão
+├── home.html.php                 # Página inicial
+└── other.html.php                # Página secundária
 
 routes/
 └── web.php                        # Rotas simples com Route::view
@@ -242,13 +242,13 @@ routes/
 ### **1. Acesso à Página Home**
 
 ```
-GET / → Route::view('/', 'home') → home.blade.php → @extends('layouts.main_layout')
+GET / → Route::view('/', 'home') → home.html.php → @extends('layouts.main_layout')
 ```
 
 ### **2. Renderização da Home**
 
 ```
-main_layout.blade.php
+main_layout.html.php
 ├── @yield('title') ← Home-Page
 └── @yield('content') ← <h3>Conteúdo da página! 2025</h3>
 ```
@@ -256,13 +256,13 @@ main_layout.blade.php
 ### **3. Acesso à Página Other**
 
 ```
-GET /other → Route::view('/other', 'other') → other.blade.php → @extends('layouts.other_layout')
+GET /other → Route::view('/other', 'other') → other.html.php → @extends('layouts.other_layout')
 ```
 
 ### **4. Renderização da Other**
 
 ```
-other_layout.blade.php
+other_layout.html.php
 ├── @yield('title') ← Other-Page
 ├── @section('top_bar')...@show ← CONTEÚDO DO TOP BAR (sobrescrito)
 ├── @yield('content') ← CONTEÚDO DO CONTENT
@@ -271,7 +271,7 @@ other_layout.blade.php
 
 ---
 
-## Vantagens do Sistema Blade
+## Vantagens do Sistema html
 
 ### **1. Reutilização de Código**
 
@@ -295,7 +295,7 @@ other_layout.blade.php
 
 ## Conceitos para Estudos Futuros
 
-### **1. Blade Components (Próximo Passo)**
+### **1. html Components (Próximo Passo)**
 
 ```php
 // Criar componentes reutilizáveis
@@ -323,7 +323,7 @@ other_layout.blade.php
 @csrf, @method para formulários
 ```
 
-### **4. Blade Directives Customizadas**
+### **4. html Directives Customizadas**
 
 ```php
 // Criar suas próprias diretivas
@@ -367,7 +367,7 @@ http://localhost:8000/other
 ✅ **Rotas Simples** com Route::view para páginas estáticas  
 ✅ **Organização de Views** em subpastas (layouts/)
 
-**Próximo passo:** Implementar **Blade Components** e **Slots** para componentização avançada.
+**Próximo passo:** Implementar **html Components** e **Slots** para componentização avançada.
 
 ---
 
@@ -375,7 +375,7 @@ http://localhost:8000/other
 
 ### 4. **Inclusão de Views com @include**
 
-#### **Navbar Componentizada: `layouts/navbar.blade.php`**
+#### **Navbar Componentizada: `layouts/navbar.html.php`**
 
 ```php
 <div class="container-fluid bg-black mt-0 p-3">
@@ -472,7 +472,7 @@ php artisan make:view layouts/navbar
 
 **Vantagens do comando:**
 
--   ✅ **Criação automática** de arquivo .blade.php
+-   ✅ **Criação automática** de arquivo .html.php
 -   ✅ **Estrutura de pastas** criada automaticamente
 -   ✅ **Padronização** na nomenclatura
 -   ✅ **Agilidade** no desenvolvimento
@@ -484,11 +484,11 @@ php artisan make:view layouts/navbar
 ```
 resources/views/
 ├── layouts/
-│   ├── main_layout.blade.php      # Layout principal com Bootstrap
-│   ├── other_layout.blade.php     # Layout com seções padrão
-│   └── navbar.blade.php           # Navbar componentizada (NOVO)
-├── home.blade.php                 # Página inicial
-└── other.blade.php                # Página secundária
+│   ├── main_layout.html.php      # Layout principal com Bootstrap
+│   ├── other_layout.html.php     # Layout com seções padrão
+│   └── navbar.html.php           # Navbar componentizada (NOVO)
+├── home.html.php                 # Página inicial
+└── other.html.php                # Página secundária
 
 public/assets/
 ├── bootstrap/
@@ -559,15 +559,15 @@ routes/
 ### **1. Acesso à Página Home (Atualizado)**
 
 ```
-GET / → Route::view('/', 'home') → home.blade.php → @extends('layouts.main_layout')
+GET / → Route::view('/', 'home') → home.html.php → @extends('layouts.main_layout')
 ```
 
 ### **2. Renderização com @include**
 
 ```
-main_layout.blade.php
+main_layout.html.php
 ├── <head> com Bootstrap CSS
-├── @include('layouts.navbar') ← navbar.blade.php renderizada
+├── @include('layouts.navbar') ← navbar.html.php renderizada
 ├── @yield('content') ← Conteúdo da página home
 └── Bootstrap JS carregado
 ```
@@ -614,9 +614,9 @@ main_layout.blade.php
 ✅ **Helper asset()** para gerenciamento de recursos  
 ✅ **Bootstrap Integration** para estilização moderna  
 ✅ **Artisan Commands** para criação rápida de views  
-✅ **Blade Components** criados e utilizados
+✅ **html Components** criados e utilizados
 
-## Blade Components Implementados
+## html Components Implementados
 
 ### **Comando usado:**
 
@@ -643,7 +643,7 @@ class MyComponent extends Component
 }
 ```
 
-**View:** `resources/views/components/my-component.blade.php`
+**View:** `resources/views/components/my-component.html.php`
 
 ```php
 <h1 class="text-info">
@@ -669,7 +669,7 @@ class AdminCard extends Component
 }
 ```
 
-**View:** `resources/views/components/admin/admin-card.blade.php`
+**View:** `resources/views/components/admin/admin-card.html.php`
 
 ```php
 <h1 class="text-danger">
@@ -689,7 +689,7 @@ class AdminCard extends Component
 @endsection
 ```
 
-## Passagem de Dados Para Blade Components
+## Passagem de Dados Para html Components
 
 ### **1. Dados via Propriedades de String**
 
@@ -785,7 +785,7 @@ Route::view('/', 'home', ['teste2' => 123456789]);
 
 ### **Exemplo Completo de Uso:**
 
-**No arquivo home.blade.php:**
+**No arquivo home.html.php:**
 
 ```php
 @php
@@ -847,9 +847,9 @@ app/View/Components/
     └── AdminCard.php            # Com propriedades $novo e $value
 
 resources/views/components/
-├── my-component.blade.php       # Exibe {{ $teste }}
+├── my-component.html.php       # Exibe {{ $teste }}
 └── admin/
-    └── admin-card.blade.php     # Exibe {{ $novo }} e {{ $value }}
+    └── admin-card.html.php     # Exibe {{ $novo }} e {{ $value }}
 
 routes/web.php                   # Route com dados ['teste2' => 123456789]
 ```
@@ -1154,8 +1154,8 @@ class other extends Component
 
 ### **View do Componente com Slot**
 
-```blade
-{{-- resources/views/components/other.blade.php --}}
+```html
+{{-- resources/views/components/other.html.php --}}
 <div class="row">
     <div class="col-12">
         <h3>INICIO</h3>
@@ -1167,13 +1167,11 @@ class other extends Component
 
 ### **Uso do Componente com Slot**
 
-```blade
+```html
 {{-- Uso básico --}}
 <x-other>
     <p>Este conteúdo será inserido no slot</p>
-    <div class="alert alert-info">
-        Qualquer HTML pode ser colocado aqui
-    </div>
+    <div class="alert alert-info">Qualquer HTML pode ser colocado aqui</div>
 </x-other>
 ```
 
@@ -1206,3 +1204,41 @@ class other extends Component
 -   **Layouts** de seção com header/footer fixos
 
 **Vantagem principal:** Separação entre estrutura (componente) e conteúdo (slot).
+
+## Multi-Slots (Slots Nomeados)
+
+Os multi-slots permitem definir múltiplas áreas de conteúdo dentro de um mesmo componente, cada uma com um nome específico.
+
+### componente com multi slot
+
+```html
+<div>
+    <h1>{{ $title }}</h1>
+
+    <p>{{ $content }}</p>
+
+    <p>{{ $footer }}</p>
+</div>
+```
+
+### Usando os multi slot:
+
+```html
+<x-multi_slot>
+    <x-slot:title> Hello slot </x-slot:title>
+
+    <x-slot:content> it´s multi slot content </x-slot:content>
+
+    <x-slot:footer> it´s multi slot footer </x-slot:footer>
+</x-multi_slot>
+```
+
+### **Vantagens dos Slots:**
+
+-   **Flexibilidade**: Permite reutilizar componentes com conteúdo dinâmico
+-   **Organização**: Multi-slots ajudam a estruturar melhor componentes complexos
+-   **Manutenibilidade**: Facilita a manutenção e atualização de templates
+-   **Reusabilidade**: Um mesmo componente pode ser usado em diferentes contextos
+    Diferenças:
+-   **Slot simples**: Aceita apenas um conteúdo que será inserido na posição do {{ $slot }}
+-   **Multi-slot**: Permite múltiplas seções nomeadas, acessíveis através de {{ $title }}, {{ $content }}, {{ $footer }}, etc.

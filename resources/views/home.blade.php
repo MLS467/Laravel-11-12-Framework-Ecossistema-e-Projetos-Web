@@ -22,8 +22,26 @@ $year = date('Y');
 </div>
 @endif -->
 
-<x-other>
+<!-- <x-other>
     <h1 class="text-info">INSERIDO COM SLOT</h1>
-</x-other>
+</x-other> -->
+
+<!-- <x-other>
+    <div class="alert alert-danger">Testando o slot</div>
+</x-other> -->
+
+<x-multi_slot>
+    <x-slot:title>
+        Hello slot
+    </x-slot:title>
+
+    <x-slot:content>
+        it´s multi slot content
+    </x-slot:content>
+
+    <x-slot:footer>
+        it´s multi slot footer
+    </x-slot:footer>
+</x-multi_slot>
 
 @endsection
