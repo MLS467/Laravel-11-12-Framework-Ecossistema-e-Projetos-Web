@@ -1242,3 +1242,34 @@ Os multi-slots permitem definir múltiplas áreas de conteúdo dentro de um mesm
     Diferenças:
 -   **Slot simples**: Aceita apenas um conteúdo que será inserido na posição do {{ $slot }}
 -   **Multi-slot**: Permite múltiplas seções nomeadas, acessíveis através de {{ $title }}, {{ $content }}, {{ $footer }}, etc.
+
+## Componentes Anônimos no Laravel Blade
+
+### O que são?
+
+Componentes anônimos são componentes Blade criados apenas com um arquivo de view (sem classe PHP), ideais para trechos de interface reutilizáveis e sem lógica complexa.
+
+### Exemplo do seu código
+
+**No arquivo `home.blade.php`:**
+
+```php
+@for ($index = 0; $index < 5; $index++)
+    <x-alert>
+        Olá, Esse é um component anônimo!
+    </x-alert>
+@endfor
+```
+
+```php
+<div class="alert alert-warning">
+    {{ $slot }}
+</div>
+
+```
+
+### Como funciona?
+
+-   O Blade procura por resources/views/components/alert.blade.php ao usar <x-alert>.
+-   O conteúdo entre <x-alert> ... </x-alert> é passado para o slot padrão do - - componente.
+-   Não precisa de classe PHP, apenas do arquivo Blade.

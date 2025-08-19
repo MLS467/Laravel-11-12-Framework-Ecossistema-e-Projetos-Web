@@ -30,7 +30,7 @@ $year = date('Y');
     <div class="alert alert-danger">Testando o slot</div>
 </x-other> -->
 
-<x-multi_slot>
+<!-- <x-multi_slot>
     <x-slot:title>
         Hello slot
     </x-slot:title>
@@ -42,6 +42,11 @@ $year = date('Y');
     <x-slot:footer>
         it´s multi slot footer
     </x-slot:footer>
-</x-multi_slot>
+</x-multi_slot> -->
 
-@endsection
+@for ($index = 0; $index < 5; $index++) <x-alert>
+    Olá, Esse é um component anônimo!
+    </x-alert>
+    @endfor
+
+    @endsection
