@@ -1261,6 +1261,8 @@ Componentes anônimos são componentes Blade criados apenas com um arquivo de vi
 @endfor
 ```
 
+**No componente `alert.blade.php`:**
+
 ```php
 <div class="alert alert-warning">
     {{ $slot }}
@@ -1273,3 +1275,63 @@ Componentes anônimos são componentes Blade criados apenas com um arquivo de vi
 -   O Blade procura por resources/views/components/alert.blade.php ao usar <x-alert>.
 -   O conteúdo entre <x-alert> ... </x-alert> é passado para o slot padrão do - - componente.
 -   Não precisa de classe PHP, apenas do arquivo Blade.
+
+## Layout Components no Laravel Blade
+
+### O que são?
+
+Layout components são componentes Blade usados para estruturar o layout base das páginas, permitindo reutilizar cabeçalhos, rodapés, menus e áreas de conteúdo dinâmico. Eles facilitam a padronização visual e a organização do projeto.
+
+---
+
+### Exemplo do seu código
+
+**No arquivo `home.blade.php`:**
+
+```html
+<x-layout_component>
+    <x-slot:title> Deu Bom </x-slot:title>
+
+    <x-slot:content>
+        <h1>Deu Bom</h1>
+    </x-slot:content>
+</x-layout_component>
+```
+
+### No arquivo `resources/views/components/`layout_component.blade.php (exemplo de estrutura):
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ $title }}</title>
+    </head>
+    <body>
+        <header>
+            <!-- Cabeçalho do site -->
+        </header>
+
+        <main>{{ $content }}</main>
+
+        <footer>
+            <!-- Rodapé do site -->
+        </footer>
+    </body>
+</html>
+```
+
+## Como funciona?
+
+-   O componente de layout define a estrutura HTML principal.
+    Slots nomeados (title, content, etc.) permitem passar conteúdos diferentes para cada página.
+    Cada view pode usar <x-layout_component> e preencher os slots conforme necessário.
+
+## Vantagens
+
+-   **Padronização:** Todas as páginas seguem o mesmo layout.
+-   **Reutilização:** Evita repetição de código.
+-   **Organização:** Facilita a manutenção e atualização do visual do site.
+
+## Resumindo
+
+Layout components são ideais para criar a estrutura base do seu site. Use slots nomeados para inserir conteúdos dinâmicos em diferentes áreas do layout, mantendo o código limpo e reutilizável.
