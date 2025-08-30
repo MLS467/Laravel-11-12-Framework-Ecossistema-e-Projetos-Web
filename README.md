@@ -105,3 +105,60 @@ Basta alterar a variável `DB_CONNECTION` no `.env` para `mysql` ou `sqlite` e a
 ---
 
 Essas práticas permitem testar e alternar facilmente entre diferentes bancos de dados durante o desenvolvimento.
+
+## Conectando em Duas Bases de Dados Distintas
+
+Além de alternar entre bancos, também é possível conectar em mais de uma base de dados no mesmo projeto. Veja um exemplo prático feito em `web.php`:
+
+```php
+use Illuminate\Support\Facades\DB;
+
+Route::get('/test-multiple', function () {
+	try {
+		// Conexão padrão
+		DB::connection()->getPdo();
+		echo "Conectado na base padrão com sucesso!<br>";
+
+		// Conexão secundária (exemplo: mysql2)
+		DB::connection('mysql2')->getPdo();
+		echo "Conectado na base mysql2 com sucesso!";
+	} catch (Exception $e) {
+		echo "Erro ao conectar: " . $e->getMessage();
+	}
+});
+```
+
+No arquivo `config/database.php`, basta adicionar uma nova conexão, por exemplo:
+
+```php
+'connections' => [
+	// ...
+	'mysql' => [
+		'driver' => 'mysql',
+		'host' => env('DB_HOST', '127.0.0.1'),
+		'database' => env('DB_DATABASE', 'laravel'),
+		'username' => env('DB_USERNAME', 'root'),
+		'password' => env('DB_PASSWORD', ''),
+		// ...
+	],
+	'mysql2' => [
+		'driver' => 'mysql',
+		'host' => env('DB_HOST2', '127.0.0.1'),
+		'database' => env('DB_DATABASE2', 'outra_base'),
+		'username' => env('DB_USERNAME2', 'root'),
+		'password' => env('DB_PASSWORD2', ''),
+		// ...
+	],
+]
+```
+
+No `.env`, adicione as variáveis para a segunda base:
+
+```env
+DB_HOST2=127.0.0.1
+DB_DATABASE2=outra_base
+DB_USERNAME2=root
+DB_PASSWORD2=
+```
+
+Assim, é possível acessar e manipular dados de duas bases distintas no mesmo projeto Laravel.
