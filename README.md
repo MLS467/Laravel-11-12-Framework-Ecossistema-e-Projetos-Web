@@ -53,3 +53,55 @@ Para usar SQLite, basta comentar as linhas do MySQL e descomentar as do SQLite n
 ---
 
 Esses exemplos mostram como alternar e testar rapidamente diferentes bancos de dados em um projeto Laravel.
+
+## Resumo das Configurações e Testes de Banco de Dados
+
+Neste projeto, foi implementado um teste de conexão com o banco de dados na rota principal (`/`), utilizando o arquivo `web.php`. O objetivo foi garantir que a aplicação está conectando corretamente ao banco definido no `.env`.
+
+No arquivo `config/database.php`, estão definidas as conexões para diferentes bancos suportados pelo Laravel, incluindo SQLite e MySQL. O valor padrão pode ser alterado pela variável `DB_CONNECTION` no `.env`.
+
+### Exemplo de Teste de Conexão (web.php)
+
+```php
+Route::get('/', function () {
+	try {
+		DB::connection()->getPdo();
+		echo "conectado com sucesso!";
+	} catch (Exception $e) {
+		echo "Erro ao conectar: " . $e->getMessage();
+	}
+});
+```
+
+### Configuração de Conexões (config/database.php)
+
+O arquivo já vem preparado para múltiplos bancos. Exemplo dos blocos principais:
+
+```php
+'default' => env('DB_CONNECTION', 'sqlite'),
+
+'connections' => [
+	'sqlite' => [
+		'driver' => 'sqlite',
+		'database' => env('DB_DATABASE', database_path('database.sqlite')),
+		// ...
+	],
+	'mysql' => [
+		'driver' => 'mysql',
+		'host' => env('DB_HOST', '127.0.0.1'),
+		'database' => env('DB_DATABASE', 'laravel'),
+		'username' => env('DB_USERNAME', 'root'),
+		'password' => env('DB_PASSWORD', ''),
+		// ...
+	],
+	// ... outros bancos
+]
+```
+
+### Alternando entre bancos
+
+Basta alterar a variável `DB_CONNECTION` no `.env` para `mysql` ou `sqlite` e ajustar os demais parâmetros conforme o banco escolhido. O Laravel usará a configuração correspondente definida em `config/database.php`.
+
+---
+
+Essas práticas permitem testar e alternar facilmente entre diferentes bancos de dados durante o desenvolvimento.
