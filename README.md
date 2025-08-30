@@ -162,3 +162,53 @@ DB_PASSWORD2=
 ```
 
 Assim, é possível acessar e manipular dados de duas bases distintas no mesmo projeto Laravel.
+
+## O que foi feito em routes/web.php
+
+No arquivo `routes/web.php` foram implementados exemplos práticos de conexão com múltiplos bancos de dados e configuração dinâmica de conexões.
+
+### Conexão com múltiplos bancos
+
+```php
+Route::get('/', function () {
+	try {
+		DB::connection()->getPdo(); // conexão padrão
+		DB::connection('batata')->getPdo(); // conexão adicional
+
+		echo "conectado com sucesso!" .  DB::connection()->getDatabaseName();
+		echo "</br>conectado com sucesso!" .  DB::connection('batata')->getDatabaseName();
+	} catch (Exception $e) {
+		echo "Erro ao conectar: " . $e->getMessage();
+	}
+});
+```
+
+### Conexão dinâmica
+
+Também foi feito um exemplo de criação dinâmica de conexão, sem precisar editar o arquivo `config/database.php` manualmente:
+
+```php
+use Illuminate\Support\Facades\Config;
+
+Route::get('/dinamica', function () {
+	try {
+		Config::set(
+			'database.connections.batata',
+			[
+				'driver' => 'mysql',
+				'host' => 'localhost',
+				'port' => 3306,
+				'database' => 'curso_laravel_2',
+				'username' => env('DB_USERNAME', 'root'),
+				'password' => env('DB_PASSWORD', ''),
+				// ... demais configs ...
+			]
+		);
+		echo "conectado: " . DB::connection('batata')->getDatabaseName();
+	} catch (Exception $e) {
+		echo "Erro ao conectar: " . $e->getMessage();
+	}
+});
+```
+
+Esses exemplos mostram como trabalhar com múltiplas conexões e como criar conexões de banco de dados em tempo de execução no Laravel.
