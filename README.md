@@ -453,7 +453,7 @@ php artisan migrate:reset
 Exemplo que você usou (correção do nome do flag `--seeder`):
 
 ```shell
-php artisan migrate:refresh --seed --seeder=Database\\Seeders\\usersCollectionTableSeeders3
+php artisan migrate:refresh --seed --seeder=usersCollectionTableSeeders3
 ```
 
 Esse comando desfaz e reaplica todas as migrations e, em seguida, executa apenas a seeder `usersCollectionTableSeeders3`.
