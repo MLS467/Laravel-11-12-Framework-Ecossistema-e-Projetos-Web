@@ -315,3 +315,75 @@ php artisan migrate:rollback
 
 Esses exemplos mostram como criar, modificar e simular migrations no Laravel, usando comandos e arquivos reais do projeto.
 definida nas migrations.
+
+## Seeders (database/seeders)
+
+No diretório `database/seeders` foram criados seeders para popular a tabela `users`. O seeder `usersTableSeeders.php` contém três formas práticas de inserir dados diretamente na tabela (comentadas e com um exemplo ativo):
+
+1. Inserir um usuário diretamente (single insert)
+
+```php
+DB::table('users')->insert([
+	'username' => 'batata',
+	'password' => bcrypt('password'),
+	'active' => true,
+	'created_at' => Carbon::now()
+]);
+```
+
+2. Inserir vários usuários com um array (batch insert)
+
+```php
+$users = [
+	[
+		'username' => 'batata 2',
+		'password' => bcrypt('password'),
+		'active' => true,
+		'created_at' => Carbon::now(),
+	],
+	// ... outros usuários
+];
+
+DB::table('users')->insert($users);
+```
+
+3. Gerar e inserir usuários randômicos em loop (exemplo usado no projeto)
+
+```php
+$qtd = 10;
+$users = [];
+for ($i = 0; $i < $qtd; $i++) {
+	$users[] = [
+		'username' => Str::random(10),
+		'password' => bcrypt('password'),
+		'active' => (bool) rand(0, 1),
+		'created_at' => Carbon::now(),
+	];
+}
+
+DB::table('users')->insert($users);
+```
+
+### Como executar seeders (três maneiras diretas)
+
+-   Executar um seeder específico pela classe:
+
+```shell
+php artisan db:seed --class=Database\\Seeders\\usersTableSeeders
+```
+
+-   Executar todos os seeders configurados (chama `DatabaseSeeder`):
+
+```shell
+php artisan db:seed
+```
+
+-   Executar migrations e seeders juntos (útil em criação de ambiente):
+
+```shell
+php artisan migrate --seed
+```
+
+Opcionalmente, você pode chamar seeders a partir do `DatabaseSeeder` usando `$this->call(usersTableSeeders::class);` e então executar `php artisan db:seed`.
+
+Esses exemplos refletem o conteúdo real do arquivo `database/seeders/usersTableSeeders.php` e mostram as formas práticas de popular a base durante o desenvolvimento e testes.
