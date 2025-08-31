@@ -1,5 +1,3 @@
-definida nas migrations.
-
 # Documentação de Conexão com Banco de Dados
 
 Este projeto demonstra como conectar o Laravel a diferentes bancos de dados utilizando as configurações do arquivo `.env` e um teste de conexão simples em `routes/web.php`.
@@ -246,3 +244,74 @@ php artisan migrate
 ```
 
 Assim, o banco de dados é criado ou atualizado conforme a estrutura
+
+## Migrations: O que foi feito e exemplos práticos
+
+O projeto utiliza migrations para criar e modificar tabelas do banco de dados de forma controlada e versionada.
+
+### Como criar migrations
+
+Para criar uma migration, utilize o comando:
+
+```shell
+php artisan make:migration nome_da_migration
+```
+
+#### Exemplo real criado no projeto:
+
+```shell
+php artisan make:migration add_picture_to_products_table
+```
+
+Isso gera um arquivo em `database/migrations` para adicionar a coluna `picture` na tabela `products`.
+
+### Exemplo de migration para adicionar coluna
+
+Arquivo: `2025_08_31_174648_add_picture_to_products_table.php`
+
+```php
+Schema::table('products', function (Blueprint $table) {
+	$table->string('picture', 200)
+		->nullable()
+		->after('description');
+});
+```
+
+### Exemplo de migration para alterar coluna (change)
+
+Arquivo: `2025_08_31_175757_change_description_to_products_table.php`
+
+```php
+Schema::table('products', function (Blueprint $table) {
+	$table->string('description', 200)
+		->nullable()
+		->change();
+});
+```
+
+O método `change()` permite alterar o tipo, tamanho ou outras propriedades de uma coluna existente.
+
+### Como simular (preview) as alterações sem executar
+
+Use o parâmetro `--pretend` para ver o SQL que será executado:
+
+```shell
+php artisan migrate --pretend
+```
+
+Assim, você pode revisar as queries antes de aplicar as mudanças no banco.
+
+### Como rodar as migrations
+
+```shell
+php artisan migrate
+```
+
+### Como desfazer uma migration
+
+```shell
+php artisan migrate:rollback
+```
+
+Esses exemplos mostram como criar, modificar e simular migrations no Laravel, usando comandos e arquivos reais do projeto.
+definida nas migrations.
