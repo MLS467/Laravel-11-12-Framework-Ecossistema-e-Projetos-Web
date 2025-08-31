@@ -1,3 +1,5 @@
+definida nas migrations.
+
 # Documentação de Conexão com Banco de Dados
 
 Este projeto demonstra como conectar o Laravel a diferentes bancos de dados utilizando as configurações do arquivo `.env` e um teste de conexão simples em `routes/web.php`.
@@ -212,3 +214,35 @@ Route::get('/dinamica', function () {
 ```
 
 Esses exemplos mostram como trabalhar com múltiplas conexões e como criar conexões de banco de dados em tempo de execução no Laravel.
+
+## Migrations
+
+O projeto utiliza migrations para versionar e criar as tabelas do banco de dados de forma automatizada.
+
+### Exemplo de migration criada
+
+Arquivo: `database/migrations/2025_08_31_160617_create_users_table.php`
+
+```php
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+Schema::create('users', function (Blueprint $table) {
+	$table->id();
+	$table->string('username', 100)->nullable();
+	$table->string('password', 300)->nullable();
+	$table->boolean('active')->default(true);
+	$table->timestamps(); // cria as colunas updated_at e created_at
+	$table->softDeletes(); // cria a coluna deleted_at
+});
+```
+
+Essa migration cria a tabela `users` com os campos principais, além de timestamps e soft deletes para controle de exclusão lógica.
+
+Para rodar as migrations, utilize:
+
+```shell
+php artisan migrate
+```
+
+Assim, o banco de dados é criado ou atualizado conforme a estrutura
