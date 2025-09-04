@@ -1,61 +1,282 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Este projeto foi desenvolvido durante o curso de Laravel 11/12 da Udemy, focando no aprendizado do framework Laravel e suas funcionalidades, especialmente o Laravel Query Builder para execução de queries no banco de dados.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 🎯 Objetivo do Projeto
 
-## About Laravel
+Demonstrar o uso prático do **Laravel Query Builder** através de exemplos de consultas SQL utilizando a facade `DB`, explorando diferentes métodos de busca, filtros e manipulação de dados.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🏗️ Arquitetura do Projeto
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Modelos (Models)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+O projeto conta com 4 modelos principais que representam um sistema de pedidos:
 
-## Learning Laravel
+#### 1. **Client** (`app/Models/Client.php`)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   **Campos**: `client_name`, `email`, `active`
+-   **Recursos**: Soft Deletes habilitado
+-   **Relacionamentos**: Possui telefones e pedidos
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+#### 2. **Phone** (`app/Models/Phone.php`)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+-   **Campos**: `client_id`, `phone_number`
+-   **Relacionamentos**: Pertence a um cliente
 
-## Laravel Sponsors
+#### 3. **Products** (`app/Models/Products.php`)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+-   **Campos**: `product_name`, `price`
+-   **Recursos**: Soft Deletes habilitado
 
-### Premium Partners
+#### 4. **Order** (`app/Models/Order.php`)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   **Campos**: `order_number`, `client_id`, `product_id`, `quantity`
+-   **Relacionamentos**: Pertence a um cliente e a um produto
 
-## Contributing
+### Banco de Dados
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+O projeto utiliza **SQLite** como banco de dados (`database/curso_laravel.sqlite3`).
 
-## Code of Conduct
+#### Estrutura das Tabelas:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```sql
+-- Tabela clients
+id, client_name, email, active, deleted_at, created_at, updated_at
 
-## Security Vulnerabilities
+-- Tabela phones
+id, client_id, phone_number, deleted_at, created_at, updated_at
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+-- Tabela products
+id, product_name, price, deleted_at, created_at, updated_at
 
-## License
+-- Tabela orders
+id, order_number, client_id, product_id, quantity, deleted_at, created_at, updated_at
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Migrations
+
+4 migrations foram criadas para estruturar o banco:
+
+1. `2025_09_03_162416_create_clients_table.php`
+2. `2025_09_03_162438_create_phones_table.php`
+3. `2025_09_03_162447_create_products_table.php`
+4. `2025_09_03_162512_create_orders_table.php`
+
+### Factories & Seeders
+
+**Factories configuradas:**
+
+-   `ClientFactory`: Gera 500 clientes com dados fake
+-   `PhoneFactory`: Gera telefones para os clientes
+-   `ProductsFactory`: Gera produtos com preços aleatórios
+-   `OrderFactory`: Gera pedidos relacionando clientes e produtos
+
+**Seeders implementados:**
+
+-   `clientSeedersTable`: Popula tabela clients
+-   `ProductsSeeder`: Popula tabela products
+-   `OrderSeeder`: Popula tabela orders
+-   `PhoneSeeder`: Popula tabela phones
+
+## 🔍 Laravel Query Builder - Exemplos Implementados
+
+### Controller Principal (`app/Http/Controllers/MainController.php`)
+
+O controller contém diversos exemplos de uso do Laravel Query Builder:
+
+#### 📊 Consultas Básicas
+
+```php
+// Buscar todos os registros
+DB::table('clients')->get();
+
+// Buscar colunas específicas
+DB::table('clients')->get(['client_name', 'email']);
+
+// Buscar primeiro/último registro
+DB::table('clients')->first();
+DB::table('clients')->last();
+
+// Buscar por ID
+DB::table('clients')->find(10);
+```
+
+#### 🔎 Filtros e Condições
+
+```php
+// Where simples
+DB::table('clients')->where('id', 10)->get();
+
+// Múltiplas condições (AND)
+DB::table('clients')
+    ->where('id', '>', 10)
+    ->where('client_name', 'like', 'a%')
+    ->get();
+
+// Condições OR
+DB::table('clients')
+    ->where('id', '>', 450)
+    ->orWhere('client_name', 'like', 'a%')
+    ->get();
+
+// Where com array (equivale ao AND)
+DB::table('clients')->where([
+    ['id', '>', 400],
+    ['client_name', 'like', 'a%']
+])->get();
+```
+
+#### 🔍 Consultas Avançadas
+
+```php
+// Consultas complexas com closure
+DB::table('clients')
+    ->where('id', '>', 450)
+    ->orWhere(function (Builder $item) {
+        $item->where('client_name', 'like', 'a%');
+    })->get();
+
+// NOT LIKE
+DB::table('products')
+    ->where('product_name', 'not like', 'M%')
+    ->get();
+
+// whereNot
+DB::table('products')
+    ->whereNot('product_name', 'like', 'M%')
+    ->get();
+
+// whereAny - busca em múltiplas colunas
+DB::table('clients')
+    ->whereAny(['client_name', 'email'], 'like', '%tr%')
+    ->get();
+
+// whereBetween - valores dentro de um intervalo
+DB::table('products')
+    ->whereBetween('price', [60000, 100000])
+    ->get();
+
+// whereNotBetween - valores fora do intervalo
+DB::table('products')
+    ->whereNotBetween('price', [60000, 100000])
+    ->get();
+```
+
+#### 📋 Métodos de Extração de Dados
+
+```php
+// pluck - extrair valores de uma coluna
+DB::table('clients')
+    ->where('id', '>', 400)
+    ->pluck('email');
+
+// select específico
+DB::table('clients')
+    ->select('client_name')
+    ->where('id', 10)
+    ->get();
+```
+
+#### 🛠️ Métodos Utilitários
+
+```php
+// Converter para array
+DB::table('clients')->get()->toArray();
+
+// Mapear resultados
+DB::table('clients')->get()->map(function ($item) {
+    return (array) $item;
+});
+```
+
+## 🛠️ Configuração e Instalação
+
+### Pré-requisitos
+
+-   PHP 8.1+
+-   Composer
+-   SQLite
+
+### Instalação
+
+1. **Clone o repositório:**
+
+```bash
+git clone [repository-url]
+cd curso_laravel_udemy
+```
+
+2. **Instale as dependências:**
+
+```bash
+composer install
+```
+
+3. **Configure o ambiente:**
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. **Execute as migrations:**
+
+```bash
+php artisan migrate
+```
+
+5. **Execute os seeders:**
+
+```bash
+php artisan db:seed
+```
+
+6. **Inicie o servidor:**
+
+```bash
+php artisan serve
+```
+
+## 🚀 Como Usar
+
+1. Acesse `http://localhost:8000` para ver a aplicação
+2. Os exemplos de Query Builder estão comentados no `MainController`
+3. Descomente as linhas que deseja testar
+4. Utilize os métodos `showRawData()` ou `showRawTable()` para visualizar os resultados
+
+## 📁 Estrutura de Arquivos Principais
+
+```
+curso_laravel_udemy/
+├── app/
+│   ├── Http/Controllers/
+│   │   └── MainController.php        # Controller principal com exemplos
+│   └── Models/                       # Modelos Eloquent
+├── database/
+│   ├── factories/                    # Factories para dados fake
+│   ├── migrations/                   # Estrutura do banco
+│   ├── seeders/                      # Populadores de dados
+│   └── curso_laravel.sqlite3         # Banco SQLite
+└── routes/
+    └── web.php                       # Rotas da aplicação
+```
+
+## 🎓 Conceitos Aprendidos
+
+-   **Laravel Query Builder**: Construção de queries SQL de forma fluente
+-   **Migrations**: Controle de versão do banco de dados
+-   **Seeders & Factories**: Geração de dados de teste
+-   **Soft Deletes**: Exclusão lógica de registros
+-   **Relacionamentos**: Chaves estrangeiras entre tabelas
+-   **Métodos de Consulta**: get(), first(), last(), find(), pluck()
+-   **Filtros Avançados**: where(), orWhere(), whereNot(), whereAny(), whereBetween()
+
+## 📖 Recursos de Aprendizado
+
+-   Documentação oficial do Laravel Query Builder
+-   Exemplos práticos de consultas SQL
+-   Padrões de desenvolvimento com Laravel
+-   Boas práticas de estruturação de projetos
+
+---
+
+**Desenvolvido durante o curso:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
+**Seção Atual:** Executando Queries com Laravel Query Builder

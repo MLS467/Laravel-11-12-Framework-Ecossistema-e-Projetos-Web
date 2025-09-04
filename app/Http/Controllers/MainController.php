@@ -11,62 +11,62 @@ class MainController extends Controller
     {
 
         // pegando todos dados de uma tabela retornando um obj
-        // $clients = DB::table('clients')->get();
+        // $result = DB::table('clients')->get();
 
 
         // pegando todos dados de uma tabela retornando um array
-        // $clients = DB::table('clients')->get()->toArray();
+        // $result = DB::table('clients')->get()->toArray();
 
 
         // transformando em um array de arrays
-        // $clients = DB::table('clients')->get()->map(function ($item) {
+        // $result = DB::table('clients')->get()->map(function ($item) {
         //     return (array) $item;
         // });
 
 
         // pegando algumas colunas 
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->get(['client_name', 'email']);
 
 
         // pegando primeiro registro de algumas colunas 
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->get(['client_name', 'email'])
         //     ->first();
 
 
         // pegando último registro de algumas colunas 
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->get(['client_name', 'email'])
         //     ->last();
 
 
         // pegando um valor específico
-        // $clients = DB::table('clients')->find(10);
+        // $result = DB::table('clients')->find(10);
 
 
         // pegando um valor específico com where
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->where('id', 10)
         //     ->get();
 
 
         // pegando todos registro com apenas uma coluna com select
         // se pegar com where pode filtrar
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->select('client_name')
         //     ->where('id', 10)
         //     ->get();
 
 
         // pegando todos os valores de uma coluna e transformando em array
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->where('id', '>', 400)
         //     ->pluck('email');
 
 
         // fazendo query com multiplos where (and)
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->where('id', '>', 10)
         //     ->where('client_name', 'like', 'a%')
         //     ->get();
@@ -74,21 +74,21 @@ class MainController extends Controller
 
 
         // fazendo query com multiplos where (or)
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->where('id', '>', 450)
         //     ->orWhere('client_name', 'like', 'a%')
         //     ->get();
 
 
         // fazendo query com multiplos where usando where com array equivale a o and
-        // $clients = DB::table('clients')->where([
+        // $result = DB::table('clients')->where([
         //     ['id', '>', 400],
         //     ['client_name', 'like', 'a%']
         // ])->get();
 
 
         // fazendo query complexa
-        // $clients = DB::table('clients')
+        // $result = DB::table('clients')
         //     ->where('id', '>', 450)
         //     ->orWhere(function (Builder $item) {
         //         $item->where('client_name', 'like', 'a%');
@@ -96,7 +96,38 @@ class MainController extends Controller
 
 
 
-        // $this->showRawData($clients);
+        // pegar todos os produtos que não começam com a letra M not like
+        // $result = DB::table('products')
+        //     ->where('product_name', 'not like', 'M%')
+        //     ->get();
+
+
+        // pegar todos os produtos que não começam com a letra M whereNot
+        // $result = DB::table('products')
+        //     ->whereNot('product_name', 'like', 'M%') // esse valor começa com M (eu não quero)
+        //     ->get();
+
+
+        // peganto todos registro que tem tr no nome ou no email com whereAny
+        // $result = DB::table('clients')
+        //     ->whereAny(['client_name', 'email'], 'like', '%tr%')
+        //     ->get();
+
+
+        // pegando valores por intervalo usando whereBetween
+        // $result = DB::table('products')
+        //     ->whereBetween('price', [60000, 100000])
+        //     ->get();
+
+
+        // pegando valores fora intervalo usando whereNotBetween
+        // $result = DB::table('products')
+        //     ->whereNotBetween('price', [60000, 100000])
+        //     ->get();
+
+
+
+        // $this->showRawData($result);
     }
 
     private function showRawData($data)
