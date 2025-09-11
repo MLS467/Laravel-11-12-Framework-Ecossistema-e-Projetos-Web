@@ -187,6 +187,41 @@ DB::table('clients')->get()->map(function ($item) {
 });
 ```
 
+#### 🆕 Consultas Adicionais Implementadas
+
+```php
+// whereIn - buscar por valores específicos em uma lista
+// Equivale a: SELECT * FROM products WHERE id IN (1, 5, 3)
+DB::table('products')
+    ->whereIn('id', [1, 5, 3])
+    ->get();
+
+// whereNotIn - excluir valores específicos de uma lista
+// Equivale a: SELECT * FROM products WHERE id NOT IN (1, 5, 3)
+DB::table('products')
+    ->whereNotIn('id', [1, 5, 3])
+    ->limit(10)
+    ->get();
+
+// whereNotNull - buscar registros com valores não nulos
+DB::table('clients')
+    ->whereNotNull('deleted_at')
+    ->limit(10)
+    ->get();
+
+// whereDate - buscar por data específica
+DB::table('products')
+    ->whereDate('created_at', '2025-09-05')
+    ->limit(10)
+    ->get();
+
+// whereDay - buscar por dia específico do mês
+DB::table('products')
+    ->whereDay('created_at', '03')
+    ->limit(10)
+    ->get();
+```
+
 ## 🛠️ Configuração e Instalação
 
 ### Pré-requisitos
@@ -268,6 +303,10 @@ curso_laravel_udemy/
 -   **Relacionamentos**: Chaves estrangeiras entre tabelas
 -   **Métodos de Consulta**: get(), first(), last(), find(), pluck()
 -   **Filtros Avançados**: where(), orWhere(), whereNot(), whereAny(), whereBetween()
+-   **Filtros de Lista**: whereIn(), whereNotIn()
+-   **Filtros de Nulidade**: whereNotNull(), whereNull()
+-   **Filtros de Data**: whereDate(), whereDay(), whereMonth(), whereYear()
+-   **Limitação de Resultados**: limit(), offset()
 
 ## 📖 Recursos de Aprendizado
 

@@ -113,18 +113,47 @@ class MainController extends Controller
         //     ->whereAny(['client_name', 'email'], 'like', '%tr%')
         //     ->get();
 
-
         // pegando valores por intervalo usando whereBetween
         // $result = DB::table('products')
         //     ->whereBetween('price', [60000, 100000])
         //     ->get();
-
 
         // pegando valores fora intervalo usando whereNotBetween
         // $result = DB::table('products')
         //     ->whereNotBetween('price', [60000, 100000])
         //     ->get();
 
+        // pegando valores que tem os ids 1 ou 5 ou 3
+        // SELECT * FROM products WHERE id=1 OR id=2 OR id=3;
+        // $products = DB::table('products')
+        //     ->whereIn('id', [1, 5, 3])
+        //     ->get();
+
+        // pegando valores que NÃO tem os ids 1 ou 5 ou 3
+        // SELECT * FROM products WHERE id!=1 OR id!=5 OR id!=3;
+        // $products = DB::table('products')
+        //     ->whereNotIn('id', [1, 5, 3])
+        //     ->limit(10)
+        //     ->get();
+
+        // pega valores não nulos
+        // $result = DB::table('clients')
+        //     ->whereNotNull('deleted_at')
+        //     ->limit(10)
+        //     ->get();
+
+        // pega registros por data
+        // $result = DB::table('products')
+        //     ->whereDate('created_at', '2025-09-05')
+        //     ->limit(10)
+        //     ->get();
+
+
+        // pega registros por dia
+        // $result = DB::table('products')
+        //     ->whereDay('created_at', '03')
+        //     ->limit(10)
+        //     ->get();
 
 
         // $this->showRawData($result);
