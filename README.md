@@ -265,6 +265,105 @@ DB::table('clients')
     ->get();
 ```
 
+#### 🗃️ Operações CRUD (Create, Read, Update, Delete)
+
+##### 📝 CREATE - Inserção de Dados
+
+```php
+// Preparar dados com Carbon para timestamps
+$data = [
+    'client_name' => 'batata 5223',
+    'email' => 'batata@frita.com',
+    'active' => rand(0, 1),
+    'created_at' => Carbon::now(),
+    'updated_at' => Carbon::now()
+];
+
+// 1ª maneira - inserir usando variável
+DB::table('clients')->insert($data);
+
+// 2ª maneira - inserir dados diretamente
+DB::table('clients')->insert([
+    'client_name' => 'batata insert direto',
+    'email' => 'batata66@frita.com',
+    'active' => rand(0, 1),
+    'created_at' => Carbon::now(),
+    'updated_at' => Carbon::now()
+]);
+
+// 3ª maneira - inserir múltiplos registros
+DB::table('clients')->insert([
+    [
+        'client_name' => 'batata insert primeiro',
+        'email' => 'batata666@frita.com',
+        'active' => rand(0, 1),
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+    ],
+    [
+        'client_name' => 'batata insert segundo',
+        'email' => 'batat776@frita.com',
+        'active' => rand(0, 1),
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+    ]
+]);
+```
+
+##### ✏️ UPDATE - Atualização de Dados
+
+```php
+// Atualizar registro específico por ID
+DB::table('clients')
+    ->where('id', 1)
+    ->update([
+        'client_name' => 'ALTERADO',
+        'email' => 'batatA776@frita.com',
+        'active' => rand(0, 1),
+        'updated_at' => Carbon::now()
+    ]);
+```
+
+##### 🗑️ DELETE - Exclusão de Dados
+
+```php
+// DELETE HARD - Exclusão física (permanente)
+$id = 2;
+
+// Excluir registros relacionados primeiro
+DB::table('phones')->where('client_id', $id)->delete();
+DB::table('orders')->where('client_id', $id)->delete();
+
+// Excluir o cliente
+DB::table('clients')->where('id', $id)->delete();
+
+// DELETE SOFT - Exclusão lógica (soft delete)
+$id = 3;
+
+DB::table('clients')
+    ->where('id', $id)
+    ->update(['deleted_at' => Carbon::now()]);
+
+// Buscar registros soft deleted
+$result = DB::table('clients')
+    ->whereNotNull('deleted_at')
+    ->get();
+```
+
+##### 🛡️ Tratamento de Erros
+
+```php
+// Usar try-catch para operações CRUD
+try {
+    DB::table('clients')->insert($data);
+
+    // Outras operações...
+
+} catch (Exception $error) {
+    echo $error->getMessage();
+}
+```
+
 ## 🛠️ Configuração e Instalação
 
 ### Pré-requisitos
@@ -352,6 +451,10 @@ curso_laravel_udemy/
 -   **Limitação de Resultados**: limit(), offset()
 -   **Funções de Agregação**: count(), max(), min(), avg(), sum()
 -   **Ordenação de Dados**: orderBy() com asc/desc
+-   **Operações CRUD**: insert(), update(), delete()
+-   **Gerenciamento de Timestamps**: Carbon::now()
+-   **Tratamento de Erros**: try-catch com Exception
+-   **Soft Delete Manual**: Atualização do campo deleted_at
 
 ## 📖 Recursos de Aprendizado
 

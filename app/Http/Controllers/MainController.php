@@ -2,183 +2,109 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class MainController extends Controller
 {
     public function index()
     {
 
-        // pegando todos dados de uma tabela retornando um obj
-        // $result = DB::table('clients')->get();
+        // INSERT
+
+        $data = [
+            'client_name' => 'batata 5223',
+            'email' => 'batata@frita.com',
+            'active' => rand(0, 1),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ];
+
+        try {
+
+            // 1ª maneira de inserir dados usando Query Builder
+            // try {
+            //     DB::table('clients')
+            //         ->insert($data);
 
 
-        // pegando todos dados de uma tabela retornando um array
-        // $result = DB::table('clients')->get()->toArray();
+            // 2ª maneira de inserir dados usando Query Builder
+            // DB::table('clients')
+            //     ->insert([
+            //         'client_name' => 'batata insert direto',
+            //         'email' => 'batata66@frita.com',
+            //         'active' => rand(0, 1),
+            //         'created_at' => Carbon::now(),
+            //         'updated_at' => Carbon::now()
+            //     ]);
+
+            // 3ª maneira de inserir vários registros
+            // DB::table('clients')
+            //     ->insert(
+            //         [
+            //             [
+            //                 'client_name' => 'batata insert primeiro',
+            //                 'email' => 'batata666@frita.com',
+            //                 'active' => rand(0, 1),
+            //                 'created_at' => Carbon::now(),
+            //                 'updated_at' => Carbon::now()
+            //             ],
+            //             [
+            //                 'client_name' => 'batata insert segundo',
+            //                 'email' => 'batat776@frita.com',
+            //                 'active' => rand(0, 1),
+            //                 'created_at' => Carbon::now(),
+            //                 'updated_at' => Carbon::now()
+            //             ]
+            //         ]
+            //     );
 
 
-        // transformando em um array de arrays
-        // $result = DB::table('clients')->get()->map(function ($item) {
-        //     return (array) $item;
-        // });
+            // UPDATE
+            // DB::table('clients')
+            //     ->where('id', 1)
+            //     ->update(
+            //         [
+            //             'client_name' => 'ALTERADO',
+            //             'email' => 'batatA776@frita.com',
+            //             'active' => rand(0, 1),
+            //             'created_at' => Carbon::now(),
+            //             'updated_at' => Carbon::now()
+            //         ]
+            //     );
 
+            // DELETE HARD
+            // $id = 2;
 
-        // pegando algumas colunas 
-        // $result = DB::table('clients')
-        //     ->get(['client_name', 'email']);
+            // DB::table('phones')
+            //     ->where('client_id', $id)
+            //     ->delete();
 
+            // DB::table('orders')
+            //     ->where('client_id', $id)
+            //     ->delete();
 
-        // pegando primeiro registro de algumas colunas 
-        // $result = DB::table('clients')
-        //     ->get(['client_name', 'email'])
-        //     ->first();
+            // DB::table('clients')
+            //     ->where('id', $id)
+            //     ->delete();
 
+            //DELETE SOFT
+            //     $id = 3;
 
-        // pegando último registro de algumas colunas 
-        // $result = DB::table('clients')
-        //     ->get(['client_name', 'email'])
-        //     ->last();
+            //     DB::table('clients')
+            //         ->where('id', $id)
+            //         ->update([
+            //             'deleted_at' => Carbon::now()
+            //         ]);
 
-
-        // pegando um valor específico
-        // $result = DB::table('clients')->find(10);
-
-
-        // pegando um valor específico com where
-        // $result = DB::table('clients')
-        //     ->where('id', 10)
-        //     ->get();
-
-
-        // pegando todos registro com apenas uma coluna com select
-        // se pegar com where pode filtrar
-        // $result = DB::table('clients')
-        //     ->select('client_name')
-        //     ->where('id', 10)
-        //     ->get();
-
-
-        // pegando todos os valores de uma coluna e transformando em array
-        // $result = DB::table('clients')
-        //     ->where('id', '>', 400)
-        //     ->pluck('email');
-
-
-        // fazendo query com multiplos where (and)
-        // $result = DB::table('clients')
-        //     ->where('id', '>', 10)
-        //     ->where('client_name', 'like', 'a%')
-        //     ->get();
-
-
-
-        // fazendo query com multiplos where (or)
-        // $result = DB::table('clients')
-        //     ->where('id', '>', 450)
-        //     ->orWhere('client_name', 'like', 'a%')
-        //     ->get();
-
-
-        // fazendo query com multiplos where usando where com array equivale a o and
-        // $result = DB::table('clients')->where([
-        //     ['id', '>', 400],
-        //     ['client_name', 'like', 'a%']
-        // ])->get();
-
-
-        // fazendo query complexa
-        // $result = DB::table('clients')
-        //     ->where('id', '>', 450)
-        //     ->orWhere(function (Builder $item) {
-        //         $item->where('client_name', 'like', 'a%');
-        //     })->get();
-
-
-
-        // pegar todos os produtos que não começam com a letra M not like
-        // $result = DB::table('products')
-        //     ->where('product_name', 'not like', 'M%')
-        //     ->get();
-
-
-        // pegar todos os produtos que não começam com a letra M whereNot
-        // $result = DB::table('products')
-        //     ->whereNot('product_name', 'like', 'M%') // esse valor começa com M (eu não quero)
-        //     ->get();
-
-
-        // peganto todos registro que tem tr no nome ou no email com whereAny
-        // $result = DB::table('clients')
-        //     ->whereAny(['client_name', 'email'], 'like', '%tr%')
-        //     ->get();
-
-        // pegando valores por intervalo usando whereBetween
-        // $result = DB::table('products')
-        //     ->whereBetween('price', [60000, 100000])
-        //     ->get();
-
-        // pegando valores fora intervalo usando whereNotBetween
-        // $result = DB::table('products')
-        //     ->whereNotBetween('price', [60000, 100000])
-        //     ->get();
-
-        // pegando valores que tem os ids 1 ou 5 ou 3
-        // SELECT * FROM products WHERE id=1 OR id=2 OR id=3;
-        // $products = DB::table('products')
-        //     ->whereIn('id', [1, 5, 3])
-        //     ->get();
-
-        // pegando valores que NÃO tem os ids 1 ou 5 ou 3
-        // SELECT * FROM products WHERE id!=1 OR id!=5 OR id!=3;
-        // $products = DB::table('products')
-        //     ->whereNotIn('id', [1, 5, 3])
-        //     ->limit(10)
-        //     ->get();
-
-        // pega valores não nulos
-        // $result = DB::table('clients')
-        //     ->whereNotNull('deleted_at')
-        //     ->limit(10)
-        //     ->get();
-
-        // pega registros por data
-        // $result = DB::table('products')
-        //     ->whereDate('created_at', '2025-09-05')
-        //     ->limit(10)
-        //     ->get();
-
-
-        // pega registros por dia
-        // $result = DB::table('products')
-        //     ->whereDay('created_at', '03')
-        //     ->limit(10)
-        //     ->get();
-
-
-        //funções de agregação 
-        // $count = DB::table('products')->count('id');
-        // $max = DB::table('products')->max('price');
-        // $avg = DB::table('products')->avg('price');
-        // $min = DB::table('products')->min('price');
-        // $sum_price = DB::table('products')->sum('price');
-
-
-        // $agregation = [
-        //     'count' => $count,
-        //     'max' => $max,
-        //     'avg' => $avg,
-        //     'min' => $min,
-        //     'sum' => $sum_price,
-        // ];
-
-
-        // ordenando dados com orderBy e limitando a 10 registros com limit
-        // $result = DB::table('products')
-        //     ->orderBy('price', 'desc')
-        //     ->limit(10)
-        //     ->get();
-
+            // $result = DB::table('clients')
+            //     ->whereNotNull('deleted_at')
+            //     ->get();
+        } catch (Exception $error) {
+            echo $error->getMessage();
+        }
 
 
 
