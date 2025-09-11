@@ -222,6 +222,49 @@ DB::table('products')
     ->get();
 ```
 
+#### 📊 Funções de Agregação
+
+```php
+// Contar registros
+$count = DB::table('products')->count('id');
+
+// Valor máximo
+$max = DB::table('products')->max('price');
+
+// Valor médio
+$avg = DB::table('products')->avg('price');
+
+// Valor mínimo
+$min = DB::table('products')->min('price');
+
+// Soma de valores
+$sum_price = DB::table('products')->sum('price');
+
+// Exemplo de uso combinado das funções de agregação
+$agregation = [
+    'count' => $count,
+    'max' => $max,
+    'avg' => $avg,
+    'min' => $min,
+    'sum' => $sum_price,
+];
+```
+
+#### 📋 Ordenação e Limitação de Resultados
+
+```php
+// Ordenar por preço (decrescente) e limitar a 10 registros
+DB::table('products')
+    ->orderBy('price', 'desc')
+    ->limit(10)
+    ->get();
+
+// Ordenar por nome (crescente)
+DB::table('clients')
+    ->orderBy('client_name', 'asc')
+    ->get();
+```
+
 ## 🛠️ Configuração e Instalação
 
 ### Pré-requisitos
@@ -307,6 +350,8 @@ curso_laravel_udemy/
 -   **Filtros de Nulidade**: whereNotNull(), whereNull()
 -   **Filtros de Data**: whereDate(), whereDay(), whereMonth(), whereYear()
 -   **Limitação de Resultados**: limit(), offset()
+-   **Funções de Agregação**: count(), max(), min(), avg(), sum()
+-   **Ordenação de Dados**: orderBy() com asc/desc
 
 ## 📖 Recursos de Aprendizado
 

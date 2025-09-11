@@ -156,6 +156,32 @@ class MainController extends Controller
         //     ->get();
 
 
+        //funções de agregação 
+        // $count = DB::table('products')->count('id');
+        // $max = DB::table('products')->max('price');
+        // $avg = DB::table('products')->avg('price');
+        // $min = DB::table('products')->min('price');
+        // $sum_price = DB::table('products')->sum('price');
+
+
+        // $agregation = [
+        //     'count' => $count,
+        //     'max' => $max,
+        //     'avg' => $avg,
+        //     'min' => $min,
+        //     'sum' => $sum_price,
+        // ];
+
+
+        // ordenando dados com orderBy e limitando a 10 registros com limit
+        // $result = DB::table('products')
+        //     ->orderBy('price', 'desc')
+        //     ->limit(10)
+        //     ->get();
+
+
+
+
         // $this->showRawData($result);
     }
 
