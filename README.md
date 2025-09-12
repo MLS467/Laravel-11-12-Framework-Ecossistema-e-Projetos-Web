@@ -1,101 +1,153 @@
-## 🔍 Consultas Avançadas com Eloquent ORM
+# 📚 Laravel Eloquent ORM - Consultas e Funções de Agregação
 
-### 🎯 **Filtros com WHERE**
+Este projeto demonstra o uso avançado do **Laravel Eloquent ORM** para realizar consultas condicionais, tratamento de erros e funções de agregação.
 
-#### 1. **Filtro com Condição Simples**
+## 🎯 Funcionalidades Implementadas
 
-```php
-// Buscando produtos com preço >= 70
-$result = Product::where('price', '>=', 70)
-    ->get()
-    ->toArray();
-```
+### 1. 🔍 **Consultas Condicionais com WHERE**
 
-#### 2. **Primeiro Resultado com WHERE**
+#### Busca com Condição + First
 
 ```php
-// Pegando apenas o primeiro produto que atende a condição
-$result = Product::where('price', '>=', 70)
-    ->first()
-    ->toArray();
+// Busca o primeiro produto com preço >= 60
+$result = Product::where('price', '>=', 60)->first();
 ```
 
-### 🛡️ **Tratamento de Resultados Vazios**
-
-#### 3. **firstOr() - Tratamento de Resultado Vazio**
+#### Método Alternativo: firstWhere
 
 ```php
-// Se não encontrar nenhum produto, executa uma função de fallback
-$result = Product::where('price', '>=', 170)
-    ->firstOr(function () {
-        return []; // Retorna array vazio se não encontrar
-    });
-
-// Verificando e convertendo o resultado
-$result = !is_array($result) ? $result->toArray() : $result;
+// Forma mais direta de fazer WHERE + FIRST
+$result = Product::firstWhere('price', '>=', 60);
 ```
 
-### 🔄 **Manipulação de Dados em Memória**
-
-#### 4. **Modificação Temporária com refresh()**
+#### Manipulação dos Dados
 
 ```php
-// Busca o produto
-$result = Product::find(10);
-echo $result->price; // Preço original do BD
-
-// Modifica o preço apenas na memória (não salva no BD)
-$result->price = 200;
-echo $result->price; // Novo preço (200)
-
-// Refresh recarrega os dados originais do BD
-$result->refresh();
-echo $result->price; // Preço original novamente
+// Acessando propriedades do modelo
+$name = strtoupper($result->product_name);
+$price = strtoupper($result->price);
+echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
 ```
-
-### 📋 **Conceitos Demonstrados**
-
-| Método          | Funcionalidade                  | Quando Usar                                |
-| --------------- | ------------------------------- | ------------------------------------------ |
-| **`where()`**   | Filtro com condições            | Buscar registros específicos               |
-| **`first()`**   | Primeiro resultado              | Quando espera apenas 1 resultado           |
-| **`firstOr()`** | Primeiro resultado com fallback | Tratar casos onde pode não haver resultado |
-| **`refresh()`** | Recarrega dados do BD           | Desfazer mudanças temporárias              |
-
-### 💡 **Importantes Observações**
-
-#### **Diferença entre `first()` e `firstOr()`**
-
--   **`first()`**: Pode retornar `null` se não encontrar
--   **`firstOr()`**: Executa uma função se não encontrar (mais seguro)
-
-#### **Modificações em Memória**
-
--   Alterações diretas nas propriedades **NÃO** salvam automaticamente
--   Use `refresh()` para desfazer mudanças temporárias
--   Para salvar: use `save()` após as modificações
-
-#### **Tratamento de Tipos**
-
-```php
-// Verificação para garantir conversão correta
-$result = !is_array($result) ? $result->toArray() : $result;
-```
-
-### 🎓 **Novos Conceitos Aprendidos**
-
--   **Consultas Condicionais**: Filtros com operadores de comparação
--   **Fallback Methods**: Métodos que tratam resultados vazios
--   **Manipulação Temporária**: Modificar dados sem persistir
--   **Refresh de Modelos**: Recarregar dados originais do banco
--   **Verificação de Tipos**: Tratamento seguro de diferentes tipos de retorno
-
-### 🚀 **Vantagens do Eloquent Demonstradas**
-
-1. **Sintaxe Expressiva**: `where('price', '>=', 70)` é mais legível
-2. **Métodos de Segurança**: `firstOr()` evita erros de null
-3. **Manipulação Flexível**: Modificar dados temporariamente
-4. **Controle de Estado**: `refresh()` para reverter mudanças
-5. **Conversão Inteligente**: Facilidade para converter tipos
 
 ---
+
+### 2. 🛡️ **Tratamento de Erros em Consultas**
+
+#### findOr() - Fallback Personalizado
+
+```php
+// Se não encontrar ID 10, executa função de fallback
+$result = Product::findOr(10, function () {
+    return "NÃO FOI ENCONTRADO!";
+});
+
+// Verificação de tipo para tratamento seguro
+if ($result instanceof Product) {
+    $name = strtoupper($result->product_name);
+    $price = strtoupper($result->price);
+    echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
+} else {
+    echo $result; // Mensagem de erro
+}
+```
+
+#### findOrFail() - Exception Automática
+
+```php
+// Lança exception se não encontrar o ID 110
+$result = Product::findOrFail(110);
+$name = strtoupper($result->product_name);
+$price = strtoupper($result->price);
+echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
+```
+
+---
+
+### 3. 📊 **Funções de Agregação**
+
+#### Implementação Completa
+
+```php
+// Coletando todas as estatísticas dos produtos
+$count = Product::count();        // Total de produtos
+$min = Product::min('price');     // Menor preço
+$max = Product::max('price');     // Maior preço
+$avg = Product::avg('price');     // Preço médio
+$sum = Product::sum('price');     // Soma total dos preços
+
+// Organizando em array para exibição
+$result = [
+    'count' => $count,
+    'min' => $min,
+    'max' => $max,
+    'avg' => $avg,
+    'sum' => $sum,
+];
+
+$this->show_data($result);
+```
+
+---
+
+## 📋 Métodos Eloquent Utilizados
+
+| Método         | Descrição                | Exemplo                                  |
+| -------------- | ------------------------ | ---------------------------------------- |
+| `where()`      | Filtro com condições     | `Product::where('price', '>=', 60)`      |
+| `first()`      | Primeiro resultado       | `->first()`                              |
+| `firstWhere()` | WHERE + FIRST combinados | `Product::firstWhere('price', '>=', 60)` |
+| `find()`       | Busca por ID             | `Product::find(10)`                      |
+| `findOr()`     | Busca com fallback       | `Product::findOr(10, $callback)`         |
+| `findOrFail()` | Busca com exception      | `Product::findOrFail(110)`               |
+| `count()`      | Conta registros          | `Product::count()`                       |
+| `min()`        | Valor mínimo             | `Product::min('price')`                  |
+| `max()`        | Valor máximo             | `Product::max('price')`                  |
+| `avg()`        | Média aritmética         | `Product::avg('price')`                  |
+| `sum()`        | Soma total               | `Product::sum('price')`                  |
+
+---
+
+## 🎓 Conceitos Demonstrados
+
+### ✅ **Tratamento Seguro de Dados**
+
+-   Verificação de tipos com `instanceof`
+-   Uso de `findOr()` para fallbacks
+-   Exception handling com `findOrFail()`
+
+### ✅ **Consultas Otimizadas**
+
+-   `firstWhere()` como alternativa mais limpa
+-   Funções de agregação diretas no banco
+-   Uso eficiente de WHERE conditions
+
+### ✅ **Manipulação de Resultados**
+
+-   Acesso direto às propriedades do modelo
+-   Formatação de dados com `strtoupper()`
+-   Organização de dados em arrays estruturados
+
+---
+
+## 🚀 Vantagens do Eloquent ORM
+
+1. **Sintaxe Intuitiva**: Código mais legível e expressivo
+2. **Tratamento de Erros**: Métodos específicos para diferentes cenários
+3. **Funções de Agregação**: Cálculos diretos no banco de dados
+4. **Type Safety**: Verificação de tipos nativos do PHP
+5. **Performance**: Consultas otimizadas automaticamente
+
+---
+
+## 💡 Boas Práticas Implementadas
+
+-   ✅ Sempre verificar tipos antes de acessar propriedades
+-   ✅ Usar `findOrFail()` quando o registro deve existir obrigatoriamente
+-   ✅ Usar `findOr()` quando há necessidade de fallback personalizado
+-   ✅ Organizar dados de agregação em arrays estruturados
+-   ✅ Utilizar `firstWhere()` para consultas WHERE + FIRST
+
+---
+
+**Desenvolvido durante:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
+**Seção:** 13 - Laravel Eloquent ORM

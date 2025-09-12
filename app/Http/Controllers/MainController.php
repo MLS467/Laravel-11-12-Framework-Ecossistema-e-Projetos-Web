@@ -4,49 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 
+use function PHPSTORM_META\type;
+use function PHPUnit\Framework\isObject;
 
 class MainController extends Controller
 {
     public function __invoke()
     {
-        // usando cláusula where
-        // $result = Product::where('price', '>=', 70)
-        //     ->get()
-        //     ->toArray();
+        // $result = Product::where('price', '>=', 60)->first();
 
-        // pegando apenas a primeira recorrência (se não tiver quebra)
-        // $result = Product::where('price', '>=', 70)
-        //     ->first()
-        //     ->toArray();
+        // $result = Product::firstWhere('price', '>=', 60);
 
-        // se não tiver como deve tratar
-        // $result = Product::where('price', '>=', 170)
-        //     ->firstOr(function () {
-        //         return [];
-        //     });
-
-        // $result = !is_array($result) ? $result->toArray() : $result;
-
-        /**
-         * procuta o produto
-         * muda o preço na memória sem salvar no BD
-         * depois faz o refresh
-         * e pega novamente o valor do BD
-         * 
-         *  $result = Product::find(10);
-         *  echo $result->price;
-         *  echo "<br>";
-
-         *  $result->price = 200;
-         *  echo $result->price;
-         *  echo "<br>";
-
-         *  $result->refresh();
-         *  echo $result->price;
-         *  echo "<br>";
-         */
+        // $name = strtoupper($result->product_name);
+        // $price = strtoupper($result->price);
+        // echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
 
 
-        // $this->show_data($result);
+        // $result = Product::findOr(10, function () {
+        //     return "NÃO FOI ENCONTRADO!";
+        // });
+
+        // if ($result instanceof Product) {
+        //     $name = strtoupper($result->product_name);
+        //     $price = strtoupper($result->price);
+        //     echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
+        // } else
+        //     echo $result;
+
+
+        // $result = Product::findOrFail(110);
+        // $name = strtoupper($result->product_name);
+        // $price = strtoupper($result->price);
+        // echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
+
+        $count = Product::count();
+        $min = Product::min('price');
+        $max = Product::max('price');
+        $avg = Product::avg('price');
+        $sum = Product::sum('price');
+
+        $result = [
+            'count' => $count,
+            'min' => $min,
+            'max' => $max,
+            'avg' => $avg,
+            'sum' => $sum,
+        ];
+
+        $this->show_data($result);
     }
 }
