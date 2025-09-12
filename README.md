@@ -1,61 +1,266 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+-   exclui todas as pasta do phpunit
+-   removi o phpunit com o comando composer remove phpunit/phpunit
+-   adicionei o pestphp usando o comando composer composer require pestphp/pest --dev --with-all-dependencies
+-   iniciar o pest usando o comando ./vendor/bin/pest --init
+-   testar se está funcion ./vendor/bin/pest
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+# 🧪 Seção 27: Testes Funcionais e Unitários com Pest PHP
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Esta seção documenta a migração do PHPUnit para o **Pest PHP** e a implementação de testes funcionais e unitários no projeto Laravel.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🔄 Migração do PHPUnit para Pest PHP
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 📋 **Passos da Migração**
 
-## Learning Laravel
+#### 1. **Remoção do PHPUnit**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+# Remover PHPUnit do projeto
+composer remove phpunit/phpunit
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+#### 2. **Instalação do Pest PHP**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+# Instalar Pest PHP com todas as dependências
+composer require pestphp/pest --dev --with-all-dependencies
+```
 
-## Laravel Sponsors
+#### 3. **Inicialização do Pest**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# Configurar Pest no projeto
+./vendor/bin/pest --init
+```
 
-### Premium Partners
+#### 4. **Atualização das Dependências (IMPORTANTE)**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+# Atualizar dependências para resolver conflitos de versão
+composer update
+```
 
-## Contributing
+#### 5. **Execução dos Testes**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Executar todos os testes
+./vendor/bin/pest
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🏗️ Estrutura de Testes Implementada
 
-## Security Vulnerabilities
+### 📁 **Organização dos Arquivos**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+tests/
+├── Feature/
+│   └── ExampleTest.php     # Testes funcionais (HTTP)
+├── Unit/
+│   └── ExampleTest.php     # Testes unitários
+└── Pest.php               # Configuração do Pest
+```
 
-## License
+### ⚙️ **Configuração do Pest (`tests/Pest.php`)**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```php
+<?php
+
+// Extende a classe TestCase do Laravel para testes Feature
+pest()->extend(Tests\TestCase::class)
+    ->in('Feature');
+
+// Configurações adicionais de expectations e funções globais
+```
+
+---
+
+## 🧪 Testes Implementados
+
+### 1. **Teste Unitário** (`tests/Unit/ExampleTest.php`)
+
+```php
+<?php
+
+// Teste básico de unidade
+test('that true is true', function () {
+    expect(true)->toBeTrue();
+});
+```
+
+**Características:**
+
+-   ✅ Sintaxe limpa e expressiva
+-   ✅ Usa `expect()` ao invés de `assert()`
+-   ✅ Teste isolado (não depende do Laravel)
+
+### 2. **Teste Funcional** (`tests/Feature/ExampleTest.php`)
+
+```php
+<?php
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+
+// Teste de resposta HTTP
+it('returns a successful response', function () {
+    $response = $this->get('/');
+    $response->assertStatus(200);
+});
+```
+
+**Características:**
+
+-   ✅ Testa a aplicação completa (end-to-end)
+-   ✅ Simula requisições HTTP reais
+-   ✅ Verifica status codes e respostas
+
+---
+
+## 🎯 Rota Testada
+
+### **Configuração da Rota** (`routes/web.php`)
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+// Rota simples que retorna "ok"
+Route::get('/', function () {
+    echo "ok";
+});
+```
+
+---
+
+## 📊 Resultados dos Testes
+
+### ✅ **Teste Unitário (Sucesso)**
+
+```
+PASS  Tests\Unit\ExampleTest
+✓ that true is true    0.03s
+```
+
+### ❌ **Teste Funcional (Erro)**
+
+```
+FAIL  Tests\Feature\ExampleTest
+⨯ it returns a successful response    0.44s
+───────────────────────────────────────────────────
+FAILED  Tests\Feature\ExampleTest > it returns a successful response
+ArgumentCountError: Too few arguments to function PHPUnit\Runner\ErrorHandler::enable()
+```
+
+### 🔧 **Solução do Erro - Composer Update**
+
+O erro `ArgumentCountError` foi causado por incompatibilidade de versões entre dependências. A solução foi executar:
+
+```bash
+# Atualizar todas as dependências após instalar o Pest
+composer update
+```
+
+**Por que funcionou:**
+
+-   ✅ Resolve conflitos de versão entre Pest e PHPUnit
+-   ✅ Atualiza dependências para versões compatíveis
+-   ✅ Sincroniza todas as bibliotecas de teste
+-   ✅ Corrige problemas de ErrorHandler do PHPUnit
+
+### ✅ **Resultado Após a Correção**
+
+```
+PASS  Tests\Unit\ExampleTest
+✓ that true is true    0.03s
+
+PASS  Tests\Feature\ExampleTest
+✓ it returns a successful response    0.12s
+
+Tests:    2 passed (2 assertions)
+Duration: 0.35s
+```
+
+---
+
+## 🔧 Principais Diferenças: PHPUnit vs Pest PHP
+
+| Aspecto          | PHPUnit                | Pest PHP               |
+| ---------------- | ---------------------- | ---------------------- |
+| **Sintaxe**      | Classes e métodos      | Funções e closures     |
+| **Legibilidade** | `$this->assertTrue()`  | `expect()->toBeTrue()` |
+| **Configuração** | `phpunit.xml`          | `Pest.php`             |
+| **Execução**     | `./vendor/bin/phpunit` | `./vendor/bin/pest`    |
+| **Estrutura**    | Orientada a objetos    | Funcional              |
+
+---
+
+## 💡 Vantagens do Pest PHP
+
+### ✅ **Sintaxe Moderna**
+
+```php
+// PHPUnit (verboso)
+public function test_user_can_login()
+{
+    $this->assertTrue(true);
+}
+
+// Pest PHP (conciso)
+test('user can login', function () {
+    expect(true)->toBeTrue();
+});
+```
+
+### ✅ **Expectations Expressivas**
+
+```php
+// Pest oferece expectations mais legíveis
+expect($user->email)->toBe('test@example.com');
+expect($products)->toHaveCount(5);
+expect($response)->toBeJson();
+```
+
+### ✅ **Menos Boilerplate**
+
+-   Não precisa de classes
+-   Funções globais `test()` e `it()`
+-   Configuração mais simples
+
+---
+
+## 🎓 Conceitos de Teste Demonstrados
+
+-   **Testes Unitários**: Testam funções/métodos isoladamente
+-   **Testes Funcionais**: Testam fluxos completos da aplicação
+-   **HTTP Testing**: Simulação de requisições web
+-   **Expectations**: Asserções expressivas do Pest
+-   **Test Organization**: Separação entre Unit e Feature
+-   **Framework Migration**: Transição entre ferramentas de teste
+
+---
+
+## 🚀 Próximos Passos
+
+### 📝 **Testes a Implementar**
+
+1. Testes de modelo (Eloquent)
+2. Testes de validação de formulários
+3. Testes de API endpoints
+4. Testes de autenticação
+5. Testes de banco de dados
+
+### ✅ **Problemas Resolvidos**
+
+-   ✅ Erro de `ArgumentCountError` resolvido com `composer update`
+-   ✅ Compatibilidade entre Pest e Laravel estabelecida
+-   ✅ Testes funcionais executando corretamente
+
+---
+
+**Desenvolvido durante:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
+**Seção:** 27 - Testes Funcionais e Unitários com Pest PHP
