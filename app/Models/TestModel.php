@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class TestModel extends Model
@@ -23,5 +25,5 @@ class TestModel extends Model
     const UPDATED_AT = 'atualizado em';
 
 
-    protected $connection = 'mysql_new'; // caso use mais de uma base, pode definir a qual banco deve pegar informações
+    protected $connection = 'mysql'; // caso use mais de uma base, pode definir a qual banco deve pegar informações
 }

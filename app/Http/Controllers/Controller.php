@@ -10,4 +10,15 @@ abstract class Controller
         print_r($data);
         echo '</pre>';
     }
+
+    public function array_of_object($data)
+    {
+        $tmp = [];
+
+        foreach ($data as $key => $value) {
+            $tmp[] = (object) $value;
+        }
+
+        return $tmp;
+    }
 }

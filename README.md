@@ -137,3 +137,77 @@ Route::get('/', MainController::class);
 
 **Desenvolvido durante o curso:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
 **Seção Atual:** 13 - Laravel Eloquent ORM
+
+## 📊 Exemplos Práticos de Eloquent ORM
+
+### 🔍 **Consultas Básicas com Eloquent**
+
+#### 1. **Buscar Todos os Registros**
+
+```php
+// Retorna Eloquent\Collection Object
+$result = Product::all();
+
+// Convertendo para array
+$result = Product::all()->toArray();
+```
+
+#### 2. **Conversão de Dados**
+
+```php
+// Convertendo Collection para Array de Objetos stdClass
+$result = $this->array_of_object(Product::all()->toArray());
+```
+
+#### 3. **Ordenação de Resultados**
+
+```php
+// Ordenando produtos pelo nome (A-Z)
+$result = Product::orderBy('product_name', 'asc')
+    ->get()
+    ->toArray();
+```
+
+#### 4. **Limitação de Resultados**
+
+```php
+// Pegando apenas os 3 primeiros produtos
+$result = Product::limit(3)
+    ->get()
+    ->toArray();
+```
+
+#### 5. **Busca por ID Específico**
+
+```php
+// Buscando produto por ID
+$result = Product::find(10)->toArray();
+```
+
+### 🎯 **Conceitos Demonstrados**
+
+-   **Eloquent Collections**: Objetos nativos do Laravel para manipulação de dados
+-   **Method Chaining**: Encadeamento de métodos para consultas mais fluidas
+-   **Conversão de Dados**: Transformação entre Collection, Array e stdClass
+-   **Consultas Otimizadas**: Uso de `orderBy()`, `limit()`, `find()`
+-   **Flexibilidade**: Diferentes formas de obter e manipular os mesmos dados
+
+### 💡 **Diferenças entre Query Builder e Eloquent**
+
+| Aspecto         | Query Builder            | Eloquent ORM                    |
+| --------------- | ------------------------ | ------------------------------- |
+| **Sintaxe**     | `DB::table('products')`  | `Product::`                     |
+| **Retorno**     | Array/Collection simples | Eloquent Collection             |
+| **Recursos**    | Consultas SQL diretas    | Relacionamentos, Mutators, etc. |
+| **Performance** | Mais rápido              | Ligeiramente mais lento         |
+| **Facilidade**  | Sintaxe SQL              | Orientado a objetos             |
+
+### 🚀 **Vantagens do Eloquent Demonstradas**
+
+1. **Sintaxe Mais Limpa**: `Product::all()` vs `DB::table('products')->get()`
+2. **Orientação a Objetos**: Trabalha diretamente com modelos
+3. **Collections Poderosas**: Métodos como `toArray()` para conversão
+4. **Method Chaining**: Encadeamento natural de métodos
+5. **Facilidade de Manutenção**: Código mais legível e organizado
+
+---
