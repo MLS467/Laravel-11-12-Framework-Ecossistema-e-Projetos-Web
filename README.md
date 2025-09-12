@@ -1,153 +1,159 @@
-# 📚 Laravel Eloquent ORM - Consultas e Funções de Agregação
+# 📚 Laravel Eloquent ORM - Operações CRUD
 
-Este projeto demonstra o uso avançado do **Laravel Eloquent ORM** para realizar consultas condicionais, tratamento de erros e funções de agregação.
+Este projeto demonstra as diferentes formas de realizar operações CRUD (Create, Read, Update, Delete) usando o **Laravel Eloquent ORM**.
 
-## 🎯 Funcionalidades Implementadas
+## 🎯 Operações de Inserção (CREATE)
 
-### 1. 🔍 **Consultas Condicionais com WHERE**
+### 1. 📝 **Inserção Individual com save()**
 
-#### Busca com Condição + First
-
-```php
-// Busca o primeiro produto com preço >= 60
-$result = Product::where('price', '>=', 60)->first();
-```
-
-#### Método Alternativo: firstWhere
+#### Método 1: Instanciação e save()
 
 ```php
-// Forma mais direta de fazer WHERE + FIRST
-$result = Product::firstWhere('price', '>=', 60);
+// Criando nova instância do modelo
+$product = new Product();
+$product->price = 50;
+$product->product_name = 'produto 1';
+$product->save(); // Salva no banco de dados
 ```
 
-#### Manipulação dos Dados
+**Características:**
 
-```php
-// Acessando propriedades do modelo
-$name = strtoupper($result->product_name);
-$price = strtoupper($result->price);
-echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
-```
+-   ✅ Controle total sobre cada propriedade
+-   ✅ Permite validações antes do save()
+-   ✅ Retorna boolean (true/false)
+-   ✅ Ideal para dados dinâmicos ou condicionais
 
 ---
 
-### 2. 🛡️ **Tratamento de Erros em Consultas**
+### 2. 🚀 **Inserção com create()**
 
-#### findOr() - Fallback Personalizado
+#### Método 2: Mass Assignment
 
 ```php
-// Se não encontrar ID 10, executa função de fallback
-$result = Product::findOr(10, function () {
-    return "NÃO FOI ENCONTRADO!";
-});
+// Inserção direta com array de dados
+Product::create([
+    'product_name' => 'Fogão',
+    'price' => 500
+]);
+```
 
-// Verificação de tipo para tratamento seguro
-if ($result instanceof Product) {
-    $name = strtoupper($result->product_name);
-    $price = strtoupper($result->price);
-    echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
-} else {
-    echo $result; // Mensagem de erro
+**Características:**
+
+-   ✅ Sintaxe mais limpa e concisa
+-   ✅ Inserção em uma única linha
+-   ✅ Retorna a instância criada
+-   ⚠️ Requer configuração de `$fillable` no modelo
+
+---
+
+### 3. ⚡ **Inserção Múltipla com insert()**
+
+#### Método 3: Bulk Insert
+
+```php
+// Inserindo múltiplos registros de uma vez
+Product::insert([
+    [
+        'product_name' => 'product 500',
+        'price' => 500
+    ],
+    [
+        'product_name' => 'product 600',
+        'price' => 600
+    ],
+    [
+        'product_name' => 'product 700',
+        'price' => 700
+    ]
+]);
+```
+
+**Características:**
+
+-   ✅ Performance otimizada para múltiplos registros
+-   ✅ Uma única query SQL para todos os registros
+-   ✅ Ideal para imports ou seeders
+-   ⚠️ Não dispara eventos do Eloquent
+-   ⚠️ Não retorna instâncias dos modelos criados
+
+---
+
+## 📊 Comparação dos Métodos
+
+| Método     | Performance | Eventos Eloquent | Retorno        | Uso Ideal          |
+| ---------- | ----------- | ---------------- | -------------- | ------------------ |
+| `save()`   | ⭐⭐        | ✅               | Boolean        | Dados condicionais |
+| `create()` | ⭐⭐⭐      | ✅               | Model Instance | Inserção simples   |
+| `insert()` | ⭐⭐⭐⭐⭐  | ❌               | Boolean        | Bulk operations    |
+
+---
+
+## 🔧 Configuração Necessária
+
+### Model Product
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    // Campos permitidos para mass assignment
+    protected $fillable = [
+        'product_name',
+        'price'
+    ];
+
+    // Ou desabilitar proteção (não recomendado)
+    // protected $guarded = [];
 }
 ```
 
-#### findOrFail() - Exception Automática
-
-```php
-// Lança exception se não encontrar o ID 110
-$result = Product::findOrFail(110);
-$name = strtoupper($result->product_name);
-$price = strtoupper($result->price);
-echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
-```
-
 ---
 
-### 3. 📊 **Funções de Agregação**
+## 💡 Boas Práticas
 
-#### Implementação Completa
+### ✅ **Quando usar cada método:**
 
-```php
-// Coletando todas as estatísticas dos produtos
-$count = Product::count();        // Total de produtos
-$min = Product::min('price');     // Menor preço
-$max = Product::max('price');     // Maior preço
-$avg = Product::avg('price');     // Preço médio
-$sum = Product::sum('price');     // Soma total dos preços
+#### Use `save()` quando:
 
-// Organizando em array para exibição
-$result = [
-    'count' => $count,
-    'min' => $min,
-    'max' => $max,
-    'avg' => $avg,
-    'sum' => $sum,
-];
+-   Precisar de validação complexa
+-   Houver lógica condicional
+-   Necessitar de controle granular
 
-$this->show_data($result);
-```
+#### Use `create()` quando:
 
----
+-   Inserir um registro simples
+-   Quiser aproveitar eventos do Eloquent
+-   Precisar da instância retornada
 
-## 📋 Métodos Eloquent Utilizados
+#### Use `insert()` quando:
 
-| Método         | Descrição                | Exemplo                                  |
-| -------------- | ------------------------ | ---------------------------------------- |
-| `where()`      | Filtro com condições     | `Product::where('price', '>=', 60)`      |
-| `first()`      | Primeiro resultado       | `->first()`                              |
-| `firstWhere()` | WHERE + FIRST combinados | `Product::firstWhere('price', '>=', 60)` |
-| `find()`       | Busca por ID             | `Product::find(10)`                      |
-| `findOr()`     | Busca com fallback       | `Product::findOr(10, $callback)`         |
-| `findOrFail()` | Busca com exception      | `Product::findOrFail(110)`               |
-| `count()`      | Conta registros          | `Product::count()`                       |
-| `min()`        | Valor mínimo             | `Product::min('price')`                  |
-| `max()`        | Valor máximo             | `Product::max('price')`                  |
-| `avg()`        | Média aritmética         | `Product::avg('price')`                  |
-| `sum()`        | Soma total               | `Product::sum('price')`                  |
+-   Inserir muitos registros
+-   Performance for prioridade
+-   Não precisar de eventos do Eloquent
+
+### ⚠️ **Importantes considerações:**
+
+-   `create()` requer configuração de `$fillable` no modelo
+-   `insert()` não dispara eventos como `creating`, `created`
+-   `insert()` não atualiza `timestamps` automaticamente
+-   Sempre validar dados antes da inserção
 
 ---
 
 ## 🎓 Conceitos Demonstrados
 
-### ✅ **Tratamento Seguro de Dados**
-
--   Verificação de tipos com `instanceof`
--   Uso de `findOr()` para fallbacks
--   Exception handling com `findOrFail()`
-
-### ✅ **Consultas Otimizadas**
-
--   `firstWhere()` como alternativa mais limpa
--   Funções de agregação diretas no banco
--   Uso eficiente de WHERE conditions
-
-### ✅ **Manipulação de Resultados**
-
--   Acesso direto às propriedades do modelo
--   Formatação de dados com `strtoupper()`
--   Organização de dados em arrays estruturados
-
----
-
-## 🚀 Vantagens do Eloquent ORM
-
-1. **Sintaxe Intuitiva**: Código mais legível e expressivo
-2. **Tratamento de Erros**: Métodos específicos para diferentes cenários
-3. **Funções de Agregação**: Cálculos diretos no banco de dados
-4. **Type Safety**: Verificação de tipos nativos do PHP
-5. **Performance**: Consultas otimizadas automaticamente
-
----
-
-## 💡 Boas Práticas Implementadas
-
--   ✅ Sempre verificar tipos antes de acessar propriedades
--   ✅ Usar `findOrFail()` quando o registro deve existir obrigatoriamente
--   ✅ Usar `findOr()` quando há necessidade de fallback personalizado
--   ✅ Organizar dados de agregação em arrays estruturados
--   ✅ Utilizar `firstWhere()` para consultas WHERE + FIRST
+-   **Mass Assignment**: Inserção com arrays de dados
+-   **Eloquent Events**: Diferenças entre métodos que disparam eventos
+-   **Bulk Operations**: Operações em lote para performance
+-   **Model Instantiation**: Criação manual de instâncias
+-   **Fillable Protection**: Segurança contra mass assignment vulnerabilities
 
 ---
 
 **Desenvolvido durante:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
-**Seção:** 13 - Laravel Eloquent ORM
+**Seção:** 13 - Laravel Eloquent ORM - Operações CRUD

@@ -4,53 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 
-use function PHPSTORM_META\type;
-use function PHPUnit\Framework\isObject;
 
 class MainController extends Controller
 {
     public function __invoke()
     {
-        // $result = Product::where('price', '>=', 60)->first();
+        // formas de inserir dados no banco
 
-        // $result = Product::firstWhere('price', '>=', 60);
+        // $product = new Product();
+        // $product->price = 50;
+        // $product->product_name = 'produto 1';
+        // $product->save();
 
-        // $name = strtoupper($result->product_name);
-        // $price = strtoupper($result->price);
-        // echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
+        // Product::create([
+        //     'product_name' => 'Fogão',
+        //     'price' => 500
+        // ]);
 
-
-        // $result = Product::findOr(10, function () {
-        //     return "NÃO FOI ENCONTRADO!";
-        // });
-
-        // if ($result instanceof Product) {
-        //     $name = strtoupper($result->product_name);
-        //     $price = strtoupper($result->price);
-        //     echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
-        // } else
-        //     echo $result;
-
-
-        // $result = Product::findOrFail(110);
-        // $name = strtoupper($result->product_name);
-        // $price = strtoupper($result->price);
-        // echo "Nome do produto <b>$name</b> e o preço é <b>$price</b>";
-
-        $count = Product::count();
-        $min = Product::min('price');
-        $max = Product::max('price');
-        $avg = Product::avg('price');
-        $sum = Product::sum('price');
-
-        $result = [
-            'count' => $count,
-            'min' => $min,
-            'max' => $max,
-            'avg' => $avg,
-            'sum' => $sum,
-        ];
-
-        $this->show_data($result);
+        Product::insert(
+            [
+                [
+                    'product_name' => 'product 500',
+                    'price' => 500
+                ],
+                [
+                    'product_name' => 'product 600',
+                    'price' => 600
+                ],
+                [
+                    'product_name' => 'product 700',
+                    'price' => 700
+                ]
+            ]
+        );
     }
 }
