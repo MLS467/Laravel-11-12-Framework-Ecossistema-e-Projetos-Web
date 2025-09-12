@@ -1,61 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎯 Seção 13: Laravel Eloquent ORM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Esta seção do curso introduz o **Laravel Eloquent ORM** (Object-Relational Mapping), demonstrando como configurar e customizar modelos para trabalhar com diferentes tabelas e bancos de dados.
 
-## About Laravel
+## 🔧 Configuração de Modelos Eloquent
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Modelo de Teste: `TestModel`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Foi criado um modelo de exemplo (`app/Models/TestModel.php`) para demonstrar as principais configurações disponíveis no Eloquent:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### 🏗️ **Configurações Implementadas**
 
-## Learning Laravel
+```php
+<?php
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+namespace App\Models;
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+use Illuminate\Database\Eloquent\Model;
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+class TestModel extends Model
+{
+    // Define qual tabela o modelo vai usar (se diferente do padrão)
+    protected $table = 'phones';
 
-## Laravel Sponsors
+    // Define qual coluna é a chave primária (padrão é 'id')
+    protected $primaryKey = 'id';
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    // Desativa o autoincrement (útil para UUIDs ou chaves manuais)
+    public $incrementing = false;
 
-### Premium Partners
+    // Define o tipo da chave primária (padrão é 'int')
+    protected $keyType = 'string';
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+    // Desativa os timestamps automáticos (created_at, updated_at)
+    public $timestamps = false;
 
-## Contributing
+    // Customiza o formato de data/hora dos timestamps
+    protected $dateFormat = 'Y-m-d H:i:s';
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    // Define nomes personalizados para os campos de timestamp
+    const CREATED_AT = 'criado em';
+    const UPDATED_AT = 'atualizado em';
 
-## Code of Conduct
+    // Define conexão específica (para múltiplos bancos)
+    protected $connection = 'mysql_new';
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### 📋 **Detalhamento das Configurações**
 
-## Security Vulnerabilities
+| Propriedade     | Descrição                    | Exemplo                |
+| --------------- | ---------------------------- | ---------------------- |
+| `$table`        | Nome da tabela no banco      | `'phones'`             |
+| `$primaryKey`   | Campo da chave primária      | `'id'`                 |
+| `$incrementing` | Se a chave é auto-incremento | `false` para UUIDs     |
+| `$keyType`      | Tipo da chave primária       | `'string'` ou `'int'`  |
+| `$timestamps`   | Se usa created_at/updated_at | `false` para desativar |
+| `$dateFormat`   | Formato das datas            | `'Y-m-d H:i:s'`        |
+| `CREATED_AT`    | Nome customizado do campo    | `'criado em'`          |
+| `UPDATED_AT`    | Nome customizado do campo    | `'atualizado em'`      |
+| `$connection`   | Conexão de banco específica  | `'mysql_new'`          |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🚀 Uso Básico do Eloquent
 
-## License
+### Controller Principal: `MainController`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+O controller demonstra o uso básico do Eloquent para buscar dados:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\TestModel;
+
+class MainController extends Controller
+{
+    public function __invoke()
+    {
+        // Busca todos os registros e converte para array
+        $products = TestModel::all()->toArray();
+
+        $this->show_data($products);
+    }
+}
+```
+
+#### 🔍 **Métodos Básicos do Eloquent**
+
+```php
+// Buscar todos os registros
+TestModel::all();
+
+// Buscar todos e converter para array
+TestModel::all()->toArray();
+
+// Buscar por ID
+TestModel::find(1);
+
+// Buscar com condições
+TestModel::where('active', true)->get();
+
+// Buscar primeiro registro
+TestModel::first();
+
+// Contar registros
+TestModel::count();
+```
+
+## 🎓 Conceitos Aprendidos - Eloquent ORM
+
+-   **Configuração de Modelos**: Customização completa de propriedades do modelo
+-   **Mapeamento de Tabelas**: Definição de tabela específica para o modelo
+-   **Chaves Primárias**: Configuração de chaves não-padrão (UUIDs, strings)
+-   **Timestamps**: Controle de campos de data automáticos
+-   **Conexões Múltiplas**: Uso de diferentes bancos de dados
+-   **Consultas Básicas**: Métodos fundamentais do Eloquent (all, find, where)
+-   **Conversão de Dados**: Transformação de coleções em arrays
+
+## 🔗 Rota de Teste
+
+```php
+// routes/web.php
+Route::get('/', MainController::class);
+```
+
+## 💡 Vantagens do Eloquent ORM
+
+1. **Sintaxe Intuitiva**: Código mais legível e orientado a objetos
+2. **Flexibilidade**: Configurações personalizáveis para diferentes cenários
+3. **Produtividade**: Menos código SQL manual
+4. **Segurança**: Proteção automática contra SQL injection
+5. **Relacionamentos**: Facilita trabalho com dados relacionados
+6. **Eventos**: Sistema de eventos para hooks automáticos
+
+---
+
+**Desenvolvido durante o curso:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
+**Seção Atual:** 13 - Laravel Eloquent ORM
