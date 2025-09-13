@@ -2,7 +2,11 @@
 
 test('example', function () {
 
-    $a = true;
+    //primeira versão
+    $value = true;
 
-    expect($a)->toBeTrue();
+    //segunda versão
+    // $value = false;
+
+    expect($value)->toBeTrue();
 });
