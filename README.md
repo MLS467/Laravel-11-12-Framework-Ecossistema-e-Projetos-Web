@@ -1,188 +1,199 @@
-# 📚 Laravel Eloquent ORM - Operações CRUD Completas
+# 🗑️ Laravel Eloquent ORM - Operações de DELETE
 
-Este projeto demonstra as operações CRUD (Create, Read, Update, Delete) usando o **Laravel Eloquent ORM**, com foco especial em diferentes métodos de atualização de dados.
+Este projeto demonstra as diferentes formas de deletar dados no **Laravel Eloquent ORM**, incluindo **hard delete** (exclusão permanente) e **soft delete** (exclusão lógica).
 
-## 🔄 Operações de Atualização (UPDATE)
+## 📂 Estrutura do Projeto
 
-### 1. ✏️ **Atualização com save()**
+### Models
 
-#### Método 1: Find + Modify + Save
+-   **Product**: Model principal com soft delete habilitado
+-   **TestModel**: Demonstra configurações avançadas do Eloquent
+
+### Controllers
+
+-   **MainController**: Implementa exemplos de todas as operações de delete
+
+## 🗑️ Hard Delete - Exclusão Permanente
+
+### 1. **Delete por ID**
 
 ```php
-// Buscar o produto pelo ID
+// Busca e exclui um registro específico
 $product = Product::find(10);
+$product->delete();
+```
 
-// Modificar as propriedades
-$product->product_name = "MELANCIA";
-$product->price = 200;
+### 2. **Truncate - Limpar Tabela Completamente**
 
-// Salvar as alterações no banco
+```php
+// Remove todos os registros e reinicia o auto-increment
+Product::truncate();
+```
+
+### 3. **Destroy - Multiple Delete**
+
+```php
+// Método 1: Passando IDs individuais
+Product::destroy(1, 3, 5);
+
+// Método 2: Usando array de IDs
+$ids = [8, 9, 10];
+Product::destroy($ids);
+```
+
+### 4. **Delete com Condições**
+
+```php
+// Exclui registros baseado em condições
+Product::where('price', '>', 70)->delete();
+```
+
+### 5. **Soft Delete Manual com Update**
+
+```php
+// Simulando soft delete manualmente
+Product::where('id', 12)
+    ->update([
+        'deleted_at' => Carbon::now()
+    ]);
+
+// Ou usando save()
+$product = Product::find(18);
+$product->deleted_at = Carbon::now();
 $product->save();
 ```
 
-**Características:**
+## 🧹 Soft Delete - Exclusão Lógica
 
--   ✅ Controle total sobre cada campo alterado
--   ✅ Permite validações antes do save()
--   ✅ Dispara eventos do Eloquent (updating, updated)
--   ✅ Atualiza apenas campos modificados
--   ✅ Retorna boolean (true/false)
-
-**Fluxo de Execução:**
-
-1. `find()` - Busca o registro no banco
-2. Modificação - Altera propriedades em memória
-3. `save()` - Persiste mudanças no banco
-
----
-
-### 2. 🔀 **Atualização Inteligente com updateOrCreate()**
-
-#### Método 2: Update ou Create Condicional
+### Configuração no Model
 
 ```php
-// Busca por ID 110, se não existir, cria novo registro
-$product = Product::updateOrCreate(
-    ['id' => '110'],              // Condição de busca
-    ['product_name' => 'melancia'] // Dados para update/create
-);
-```
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-**Características:**
+class Product extends Model
+{
+    use SoftDeletes;
 
--   ✅ **Upsert Operation**: Update se existir, Create se não existir
--   ✅ Operação atômica (thread-safe)
--   ✅ Evita condições de corrida (race conditions)
--   ✅ Retorna a instância do modelo
--   ✅ Ideal para sincronização de dados
-
-**Fluxo de Execução:**
-
-1. Busca registro pela condição (`id = 110`)
-2. **Se encontrar**: Atualiza com os novos dados
-3. **Se não encontrar**: Cria novo registro com todos os dados
-
----
-
-## 📊 Comparação dos Métodos de Atualização
-
-| Método             | Flexibilidade | Performance | Caso de Uso              | Retorno        |
-| ------------------ | ------------- | ----------- | ------------------------ | -------------- |
-| `save()`           | ⭐⭐⭐⭐⭐    | ⭐⭐⭐      | Atualizações específicas | Boolean        |
-| `updateOrCreate()` | ⭐⭐⭐        | ⭐⭐⭐⭐    | Sincronização de dados   | Model Instance |
-
----
-
-## 🎯 Casos de Uso Práticos
-
-### 💡 **Quando usar save():**
-
-```php
-// Cenário: Atualização de estoque baseada em condições
-$product = Product::find($id);
-
-if ($product->stock > 0) {
-    $product->stock -= $quantity;
-    $product->last_sold = now();
-    $product->save();
+    protected $fillable = [
+        'product_name',
+        'price'
+    ];
 }
 ```
 
-### 💡 **Quando usar updateOrCreate():**
+### 1. **Soft Delete Básico**
 
 ```php
-// Cenário: Sincronização de dados externos (APIs, imports)
-Product::updateOrCreate(
-    ['external_id' => $apiData['id']], // Identificador único
-    [
-        'product_name' => $apiData['name'],
-        'price' => $apiData['price'],
-        'updated_from_api' => now()
-    ]
-);
+// Marca como deletado (seta deleted_at)
+$delete = Product::find(22);
+$delete->delete();
 ```
 
----
-
-## 🔧 Outros Métodos de Atualização
-
-### 3. **update()** - Atualização em Massa
+### 2. **Consultar Registros Deletados**
 
 ```php
-// Atualizar múltiplos registros de uma vez
-Product::where('category', 'electronics')
-    ->update(['discount' => 10]);
+// Busca incluindo registros com soft delete
+$product = Product::withTrashed()->find(22);
 ```
 
-### 4. **updateOrInsert()** - Versão Mais Baixo Nível
+### 3. **Restaurar Registro Deletado**
 
 ```php
-// Similar ao updateOrCreate, mas retorna boolean
-Product::updateOrInsert(
-    ['id' => 110],
-    ['product_name' => 'melancia', 'price' => 50]
-);
+// Remove o deleted_at, "ressuscitando" o registro
+$product->restore();
 ```
 
----
+## 📊 Comparação: Hard Delete vs Soft Delete
 
-## ⚡ Performance e Boas Práticas
+| Aspecto             | Hard Delete         | Soft Delete               |
+| ------------------- | ------------------- | ------------------------- |
+| **Recuperação**     | ❌ Impossível       | ✅ Totalmente recuperável |
+| **Performance**     | ✅ Melhor           | ⚠️ Consultas extras       |
+| **Espaço em Disco** | ✅ Libera espaço    | ❌ Mantém dados           |
+| **Auditoria**       | ❌ Perde histórico  | ✅ Mantém histórico       |
+| **Integridade**     | ⚠️ Pode quebrar FKs | ✅ Preserva relações      |
 
-### ✅ **Otimizações:**
+## 🎯 Quando Usar Cada Método
 
-#### Para Registro Único:
+### ✅ **Use Hard Delete quando:**
+
+-   Dados são temporários (logs, cache)
+-   LGPD/GDPR exigem exclusão definitiva
+-   Performance é crítica
+-   Espaço em disco é limitado
+
+### ✅ **Use Soft Delete quando:**
+
+-   Dados têm valor histórico
+-   Usuários podem "desfazer" exclusões
+-   Auditoria é necessária
+-   Relações são complexas
+
+## 💡 Boas Práticas
+
+### 🔒 **Segurança**
 
 ```php
-// ✅ Bom: Busca específica
-$product = Product::find($id);
+// ✅ Sempre validar propriedade antes de deletar
+if ($user->canDelete($product)) {
+    $product->delete();
+}
 
-// ❌ Evitar: Busca desnecessária
-$product = Product::where('id', $id)->first();
+// ✅ Usar transações para operações críticas
+DB::transaction(function () use ($product) {
+    $product->orders()->delete();
+    $product->delete();
+});
 ```
 
-#### Para Múltiplos Registros:
+### ⚡ **Performance**
 
 ```php
-// ✅ Melhor: Update em massa
-Product::whereIn('id', $ids)->update(['status' => 'active']);
+// ✅ Para múltiplos registros, use operações em massa
+Product::whereIn('id', $ids)->delete();
 
-// ❌ Evitar: Loop com save()
-foreach ($ids as $id) {
-    $product = Product::find($id);
-    $product->status = 'active';
-    $product->save();
+// ❌ Evitar loops com delete individual
+foreach ($products as $product) {
+    $product->delete(); // Lento!
 }
 ```
 
-### 🛡️ **Segurança:**
+### 🔍 **Consultas com Soft Delete**
 
--   Sempre validar dados antes da atualização
--   Usar `$fillable` ou `$guarded` nos modelos
--   Verificar se o registro existe antes de modificar
+```php
+// Apenas registros ativos (padrão)
+$products = Product::all();
+
+// Incluindo deletados
+$products = Product::withTrashed()->get();
+
+// Apenas deletados
+$products = Product::onlyTrashed()->get();
+```
+
+## 🛠️ Configurações Avançadas (TestModel)
+
+O projeto também demonstra configurações avançadas do Eloquent:
+
+```php
+class TestModel extends Model
+{
+    protected $table = 'phones';           // Tabela customizada
+    protected $primaryKey = 'id';          // Chave primária customizada
+    public $incrementing = false;          // Desativa auto-increment
+    protected $keyType = 'string';         // Tipo da chave primária
+    public $timestamps = false;            // Desativa timestamps automáticos
+    protected $dateFormat = 'Y-m-d H:i:s'; // Formato de data customizado
+
+    // Nomes customizados para timestamps
+    const CREATED_AT = 'criado em';
+    const UPDATED_AT = 'atualizado em';
+
+    protected $connection = 'mysql';       // Conexão específica
+}
+```
 
 ---
 
-## 🎓 Conceitos Demonstrados
-
--   **Eloquent Models**: Manipulação orientada a objetos
--   **Upsert Operations**: updateOrCreate para operações atômicas
--   **Active Record Pattern**: Objetos que representam registros do banco
--   **Dirty Tracking**: Eloquent rastreia campos modificados
--   **Mass Assignment**: Proteção contra atribuição em massa
--   **Event System**: Eventos automáticos em operações do modelo
-
----
-
-## 💡 Principais Vantagens do Eloquent
-
-1. **Sintaxe Intuitiva**: Código mais legível que SQL puro
-2. **Type Safety**: Trabalha com objetos tipados
-3. **Event Hooks**: Sistema automático de eventos
-4. **Dirty Tracking**: Só atualiza campos modificados
-5. **Relationship Management**: Facilita trabalho com relacionamentos
-6. **Query Optimization**: Otimizações automáticas de consultas
-
----
-
-**Desenvolvido durante:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
-**Seção:** 13 - Laravel Eloquent ORM - Operações de Atualização
+**📚 Projeto desenvolvido durante:** Laravel 11/12 - Framework, Ecossistema e Projetos Web (Udemy)  
+**📖 Seção:** 13 - Laravel Eloquent ORM - Operações de Delete
