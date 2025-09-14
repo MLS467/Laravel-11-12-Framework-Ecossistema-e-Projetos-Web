@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Product;
 use Carbon\Carbon;
 
@@ -9,51 +10,43 @@ class MainController extends Controller
 {
     public function __invoke()
     {
-        // -------------------------------------
-        //| DELETE - hard delete                |
-        // -------------------------------------
+        echo "ELOQUENT RELATIONSHIPS";
+    }
 
-        // Exclui o registro pelo id
-        // $product = Product::find(10);
-        // $product->delete();
+    public function one_to_one()
+    {
+        //buscando o telefone de um cliente
+        // $client_phone = Client::find(12)
+        //     ->phone;
 
-        // Exclui todos os dados da tabela e reinicia a contagem do AI da tabela
-        // Product::truncate();
+        // buscando o cliente e usando seu telefone
+        // $client = Client::find(12);
+        // $client_name = $client->client_name;
+        // $phone = $client->phone->phone_number;
 
-        // Exclui vários dados de uma vez só
-        // Product::destroy(1, 3, 5); // passando cada um dos valores
+        // $test = [
+        //     'Nome do cliente' => $client_name,
+        //     'Numero do telefone' => $phone
+        // ];
 
-        // Exclui vários dados de uma vez só (usando array)
-        // $ids = [8, 9, 10];
-        // Product::destroy($ids);
+        // pega os dados do cliente e seus respectivos telefones
+        // $client = Client::with('phone')->find(12);
 
-        // Product::where('price', '>', 70)
-        //     ->delete();
+        $result = Client::with('phone')->get();
 
-        // Product::where('id', 12)
-        //     ->update([
-        //         'deleted_at' => Carbon::now()
-        //     ]);
+        foreach ($result as $key => $value) {
+            echo "<br>";
+            echo "<hr>";
 
-        // $product = Product::find(18);
-        // $product->deleted_at = Carbon::now();
-        // $product->save();
+            $phone = $value->phone != '' ? $value->phone->phone_number : '<b> Não informado </b>';
+            $client_id = $value->phone != '' ? $value->phone->client_id : '<b> Não informado </b>';
 
-
-        // -------------------------------------
-        //| DELETE -  soft delete               |
-        // -------------------------------------
-
-        // $delete = Product::find(22);
-        // $delete->delete();
-
-        // pega os dados excluídos com soft delete
-        // $product = Product::withTrashed()
-        // ->find(22);
-
-        // Restaura o valor do softDelete
-        // $product->restore();
-
-        // $this->show_data($product);
+            echo "
+            id =>{$value->id} 
+            Nome do cliente => {$value->client_name} 
+            e o telefone  {$phone} 
+            id_cli_rel => {$client_id}
+            ";
+        }
     }
 }
