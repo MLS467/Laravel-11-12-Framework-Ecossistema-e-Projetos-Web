@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Phone;
+use App\Models\Product;
 
 class MainController extends Controller
 {
@@ -103,12 +104,29 @@ class MainController extends Controller
         }
 
 
-
         // $client = Phone::with('client')->find(15);
 
         // $this->show_data($client->toArray());
     }
 
+    public function belongsToMany()
+    {
+        // buscando quais produtos determinado cliente comprou
+        // $result = Client::with('products')->find(10);
+
+        // echo "<h1>{$result->client_name}</h1>";
+        // echo "<h3> Produtos: </h3>";
+
+        // foreach ($result->products as $key => $value) {
+        //     echo "chave->{$key} name->{$value->product_name}<br>";
+        // }
+
+
+        // buscando quais clientes compraram determinado produto
+        // $result = Product::with('clients')->find(10);
+
+        // $this->show_data($result->toArray());
+    }
 
     private function showDataWithHTML($client)
     {

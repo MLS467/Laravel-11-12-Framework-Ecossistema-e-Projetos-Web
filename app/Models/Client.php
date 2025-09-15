@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -13,9 +14,18 @@ class Client extends Model
         return $this->hasOne(Phone::class, 'client_id');
     }
 
-
     public function phones(): HasMany
     {
         return $this->hasMany(Phone::class);
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'orders',
+            'client_id',
+            'product_id'
+        );
     }
 }

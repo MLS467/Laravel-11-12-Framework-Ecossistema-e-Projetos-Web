@@ -13,3 +13,5 @@ Route::get('/one-to-many', [MainController::class, 'one_to_many']);
 
 
 Route::get('/belong-to', [MainController::class, 'belongsTo']);
+
+Route::get('/belong-to-many', [MainController::class, 'belongsToMany']);
