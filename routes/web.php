@@ -10,3 +10,6 @@ Route::get('/one-to-one', [MainController::class, 'one_to_one']);
 
 
 Route::get('/one-to-many', [MainController::class, 'one_to_many']);
+
+
+Route::get('/belong-to', [MainController::class, 'belongsTo']);

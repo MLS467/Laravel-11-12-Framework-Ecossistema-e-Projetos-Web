@@ -1,131 +1,69 @@
 # 🚀 Laravel Eloquent ORM - Relacionamentos
 
-> **Curso**: Laravel 11-12 Framework, Ecossistema e Projetos Web  
-> **Seção**: 13 - Laravel Eloquent ORM  
-> **Foco**: Relacionamentos Between Models
+### 3️⃣ BelongsTo (Relacionamento Inverso)
 
-## 📖 Sobre o Projeto
-
-Este projeto demonstra a implementação prática de relacionamentos no Laravel Eloquent ORM, explorando conceitos fundamentais como **One-to-One** e **One-to-Many** através de exemplos reais com clientes e telefones.
-
-## 🛠️ Stack Tecnológica
-
--   **PHP** `^8.2`
--   **Laravel Framework** `^12.0`
--   **SQLite** (Database)
--   **Tailwind CSS** `^4.0`
--   **Vite** `^7.0` (Build Tool)
--   **Concurrently** `^9.0` (Multi-process)
-
-## 🏗️ Arquitetura do Projeto
-
-### Models Implementados
-
-#### 📱 Client Model
+**Localização**: `/belong-to`
 
 ```php
-// Relacionamentos implementados:
-public function phone(): HasOne          // Um cliente tem um telefone
-public function phones(): HasMany        // Um cliente tem vários telefones
+// Implementação ativa:
+$phones = Phone::with('client')->get();
+
+foreach ($phones as $phone) {
+    echo "<hr><b>Nome: </b> {$phone->client->client_name} | <b>Telefone: </b> {$phone->phone_number} <br>";
+}
 ```
 
-#### 📞 Phone Model
+**Características:**
+
+-   ✅ **Relacionamento inverso**: Do telefone para o cliente
+-   ✅ **Eager Loading**: `Phone::with('client')`
+-   ✅ **Interface formatada**: HTML com separadores
+-   ✅ **Dados relacionais**: Nome do cliente + número do telefone
+
+## 🔧 Métodos Helper Implementados
+
+### `showDataWithHTML($client)`
 
 ```php
-// Estrutura básica preparada para relacionamentos inversos
+// Renderiza dados de clientes e telefones em HTML
+// - Exibe ID e nome do cliente
+// - Lista todos os telefones numerados
+// - Formatação com <hr> e contadores automáticos
 ```
 
-#### 📦 Product & Order Models
+### Métodos Herdados (Controller Base)
 
 ```php
-// Models preparados para expansões futuras
-```
-
-### Controllers
-
-#### 🎯 MainController
-
-**Funcionalidades ativas:**
-
-| Método          | Rota           | Funcionalidade           |
-| --------------- | -------------- | ------------------------ |
-| `__invoke()`    | `/`            | Página inicial           |
-| `one_to_one()`  | `/one-to-one`  | Demonstração One-to-One  |
-| `one_to_many()` | `/one-to-many` | Demonstração One-to-Many |
-
-#### 🔧 Helper Methods
-
-```php
-show_data($data)           // Exibe dados formatados
+show_data($data)           // Exibe dados com print_r formatado
 array_of_object($data)     // Converte arrays em objetos
-showDataWithHTML($client)  // Renderiza dados com HTML
 ```
-
-## 📚 Relacionamentos Implementados
-
-### 1️⃣ One-to-One (Um para Um)
-
-```php
-// Client::find(12)->phone
-// Busca um cliente específico e seu telefone único
-$client = Client::with('phone')->find(12);
-```
-
-**Características:**
-
--   ✅ Eager Loading com `with('phone')`
--   ✅ Tratamento de valores nulos
--   ✅ Acesso direto: `$client->phone->phone_number`
-
-### 2️⃣ One-to-Many (Um para Muitos)
-
-```php
-// Client::find(15)->phones
-// Busca um cliente e todos seus telefones
-$clients = Client::with('phones')->get();
-```
-
-**Características:**
-
--   ✅ Múltiplos telefones por cliente
--   ✅ Listagem numerada automática
--   ✅ Interface HTML responsiva
--   ✅ Iteração otimizada com Eloquent
-
-## 🌐 Rotas Disponíveis
-
-| URL            | Método | Descrição                                 |
-| -------------- | ------ | ----------------------------------------- |
-| `/`            | GET    | Página inicial - "ELOQUENT RELATIONSHIPS" |
-| `/one-to-one`  | GET    | Demo de relacionamento um-para-um         |
-| `/one-to-many` | GET    | Demo de relacionamento um-para-muitos     |
 
 ## 💡 Conceitos Demonstrados
 
-### ⚡ Performance
+### ⚡ **Performance**
 
--   **Eager Loading**: Evita o problema N+1 com `with()`
--   **Query Optimization**: Reduz consultas ao banco
+-   **Eager Loading**: Previne o problema N+1 queries
+-   **Relacionamentos otimizados**: Uma consulta para múltiplas tabelas
 
-### 🛡️ Segurança
+### 🔄 **Tipos de Relacionamentos**
 
--   **Null Safety**: Verificação de dados antes do acesso
--   **Data Validation**: Tratamento de relacionamentos opcionais
+-   **HasOne**: Cliente → Telefone único
+-   **HasMany**: Cliente → Múltiplos telefones
+-   **BelongsTo**: Telefone → Cliente (inverso)
 
-### 🎨 Interface
+### 🎨 **Interface & Apresentação**
 
--   **HTML Rendering**: Saída formatada para web
--   **Data Presentation**: Contadores automáticos e separadores
+-   **HTML nativo**: Renderização direta no navegador
+-   **Formatação visual**: Separadores e contadores
+-   **Dados estruturados**: Organização clara das informações
 
 ## 🚀 Como Executar
 
-### Instalação Rápida
-
 ```bash
-# Clone e configure
+# Instalação
 composer install && npm install
 
-# Ambiente
+# Configuração
 cp .env.example .env
 php artisan key:generate
 
@@ -133,61 +71,56 @@ php artisan key:generate
 touch database/database.sqlite
 php artisan migrate
 
-# Desenvolvimento (4 processos simultâneos)
+# Desenvolvimento (Multi-processo)
 composer run dev
 ```
 
-### Acessar Demonstrações
+## 🌐 URLs de Demonstração
 
--   🏠 **Home**: http://localhost:8000
--   📱 **One-to-One**: http://localhost:8000/one-to-one
--   📞 **One-to-Many**: http://localhost:8000/one-to-many
+-   🏠 **Home**: http://localhost:8000  
+    _Exibe: "ELOQUENT RELATIONSHIPS"_
 
-## 📋 Scripts Composer
+-   📱 **One-to-One**: http://localhost:8000/one-to-one  
+    _Exemplos documentados de relacionamento único_
+
+-   📞 **One-to-Many**: http://localhost:8000/one-to-many  
+    _Demonstração ativa: clientes com múltiplos telefones_
+
+-   🔄 **BelongsTo**: http://localhost:8000/belong-to  
+    _Relacionamento inverso: telefones → clientes_
+
+## 📋 Scripts Disponíveis
 
 ```bash
-composer run dev    # Servidor + Queue + Logs + Vite
-composer run test   # Suite de testes completa
+composer run dev    # Servidor + Queue + Logs + Vite (4 processos)
+composer run test   # Executa testes automatizados
 ```
 
-O comando `dev` executa simultaneamente:
+## 🎯 Status das Implementações
 
--   **Laravel Server** (Port 8000)
--   **Queue Worker**
--   **Real-time Logs** (Pail)
--   **Vite Dev Server** (Assets)
+### ✅ **Completamente Implementado**
 
-## 🎯 Features Implementadas
-
-### ✅ Relacionamentos Eloquent
-
--   [x] **HasOne**: Cliente → Telefone único
 -   [x] **HasMany**: Cliente → Múltiplos telefones
--   [x] **Eager Loading**: Otimização de queries
--   [x] **Null Handling**: Tratamento seguro de dados
+-   [x] **BelongsTo**: Telefone → Cliente
+-   [x] **Eager Loading**: Otimização de consultas
+-   [x] **Interface HTML**: Renderização formatada
+-   [x] **Helper Methods**: Utilitários de apresentação
 
-### ✅ Interface & UX
+### 📝 **Documentado para Estudo**
 
--   [x] **HTML Output**: Renderização web nativa
--   [x] **Data Formatting**: Contadores e separadores
--   [x] **Responsive**: Layout adaptável
+-   [x] **HasOne**: Cliente → Telefone único (código comentado)
+-   [x] **Query examples**: Múltiplas formas de consulta
+-   [x] **Best practices**: Tratamento de nulos e validações
 
-### ✅ Development Experience
+## 🧠 Aprendizados Principais
 
--   [x] **Hot Reload**: Vite + Laravel
--   [x] **Multi-process**: Concorrência automatizada
--   [x] **Code Quality**: Pint (Laravel's opinionated PHP CS Fixer)
-
-## 📖 Aprendizados Principais
-
-1. **Relacionamentos Eloquent**: Diferença prática entre HasOne e HasMany
-2. **Performance**: Importância do Eager Loading para evitar N+1 queries
-3. **Desenvolvimento**: Setup moderno com hot reload e múltiplos processos
-4. **Arquitetura**: Separação clara entre Models, Controllers e apresentação
+1. **Relacionamentos Bidirecionais**: HasMany ↔ BelongsTo
+2. **Eager Loading**: Importância do `with()` para performance
+3. **Apresentação de Dados**: HTML nativo vs. JSON/Arrays
+4. **Desenvolvimento Moderno**: Multi-process com Vite + Laravel
 
 ---
 
-**Branch**: `secao-13-laravel-eloquent-ORM`  
-**Repositório**: Laravel-11-12-Framework-Ecossistema-e-Projetos-Web
-
-_Projeto desenvolvido como parte do estudo prático do Laravel Eloquent ORM_
+**Repositório**: Laravel-11-12-Framework-Ecossistema-e-Projetos-Web  
+**Autor**: MLS467  
+_Projeto de estudo - Laravel Eloquent ORM Relationships_

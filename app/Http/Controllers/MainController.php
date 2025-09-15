@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use App\Models\Product;
-use Carbon\Carbon;
+use App\Models\Phone;
 
 class MainController extends Controller
 {
@@ -84,6 +83,32 @@ class MainController extends Controller
         $clients = Client::with('phones')->get();
         $this->showDataWithHTML($clients);
     }
+
+    public function belongsTo()
+    {
+        //    --------------------------
+        //    | RELAÇÕES INVERSAS
+        //    --------------------------
+        // vamos pegar no model de telefone e descobrir qual cliente está relacionado
+
+        // $phone = Phone::find(10);
+        // $client = $phone->client;
+
+        // echo "<b>Nome: </b> {$client->client_name} | <b>Telefone: </b> {$phone->phone_number}";
+
+        $phones = Phone::with('client')->get();
+
+        foreach ($phones as $phone) {
+            echo "<hr><b>Nome: </b> {$phone->client->client_name} | <b>Telefone: </b> {$phone->phone_number} <br>";
+        }
+
+
+
+        // $client = Phone::with('client')->find(15);
+
+        // $this->show_data($client->toArray());
+    }
+
 
     private function showDataWithHTML($client)
     {
