@@ -1,99 +1,24 @@
-# Curso Laravel - Testes com PestPHP
+# Laravel 11/12 - Framework, Ecossistema e Projetos Web
 
-Este projeto é parte do curso de Laravel na Udemy, focando especialmente na **Seção 27: Testes Funcionais e Unitários com PestPHP**.
+## Seção 27: Testes Funcionais e Unitários com PestPHP
 
-## 🧪 Sistema de Testes
+Este projeto demonstra a implementação de testes unitários utilizando PestPHP no Laravel, focando na validação de controllers e services.
 
-### Configuração do PestPHP
+### 📋 Implementações Realizadas
 
-O projeto foi configurado para utilizar o **PestPHP**, um framework de testes moderno e elegante para PHP que oferece uma sintaxe mais limpa e expressiva comparado ao PHPUnit tradicional.
+#### 1. Testes Unitários
 
-### Estrutura de Testes
+##### MainControllerTest
 
-```
-tests/
-├── Feature/                              # Testes funcionais/integração (vazio)
-├── Unit/
-│   ├── MainControllerTest.php           # Teste unitário do MainController
-│   └── MainOperatorHashGeneratorTest.php # Teste unitário do gerador de hash
-├── Pest.php                             # Configurações globais do Pest
-└── TestCase.php                         # Classe base para testes
-```
-
-## 🎯 Implementações Realizadas
-
-### 1. Controller Principal
-
-**Arquivo**: `app/Http/Controllers/MainController.php`
+-   **Localização**: `tests/Unit/MainControllerTest.php`
+-   **Objetivo**: Validar o método `index()` do MainController
+-   **Testes implementados**:
+    -   Verifica se o método retorna uma string
+    -   Valida se o conteúdo retornado é exatamente "Hello World Test"
 
 ```php
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Services\MainOperations;
-
-class MainController extends Controller
-{
-    public function index(): string
-    {
-        return "Hello World Test";
-    }
-
-    public function showHash(): string
-    {
-        return MainOperations::hash_generation();
-    }
-}
-```
-
-**Características:**
-
--   Método `index()`: Retorna string "Hello World Test"
--   Método `showHash()`: Utiliza o serviço MainOperations para gerar hash
--   Tipagem de retorno explícita em ambos os métodos
--   Integração com a camada de serviços
-
-### 2. Classe de Serviços
-
-**Arquivo**: `app/Services/MainOperations.php`
-
-```php
-<?php
-
-namespace App\Services;
-
-class MainOperations
-{
-    public static function hash_generation(): string
-    {
-        // gera um valor com letras e algarismos com 32 caracteres
-        return bin2hex(random_bytes(16));
-    }
-}
-```
-
-**Características:**
-
--   Método estático `hash_generation()`
--   Gera hash de 32 caracteres usando `bin2hex(random_bytes(16))`
--   Retorna string com letras e números aleatórios
--   Classe focada em operações utilitárias
-
-## 🧪 Testes Implementados
-
-### 1. Teste do MainController
-
-**Arquivo**: `tests/Unit/MainControllerTest.php`
-
-```php
-<?php
-
-use App\Http\Controllers\MainController;
-
 test('class MainController | method index : return string', function () {
     $method_index = new MainController();
-
     $result = $method_index->index();
 
     expect($result)->toBeString();
@@ -101,171 +26,120 @@ test('class MainController | method index : return string', function () {
 });
 ```
 
-**O que este teste verifica:**
+##### MainOperatorHashGeneratorTest
 
--   ✅ **Instanciação**: Cria nova instância do `MainController`
--   ✅ **Execução**: Chama o método `index()`
--   ✅ **Tipo de Retorno**: Verifica se é string (`toBeString()`)
--   ✅ **Valor Específico**: Confirma o valor exato "Hello World Test"
-
-### 2. Teste do Gerador de Hash
-
-**Arquivo**: `tests/Unit/MainOperatorHashGeneratorTest.php`
+-   **Localização**: `tests/Unit/MainOperatorHashGeneratorTest.php`
+-   **Objetivo**: Validar a geração de hashes com tamanhos específicos
+-   **Testes implementados**:
+    -   Verifica se o hash padrão tem 32 caracteres
+    -   Valida hashes personalizados com 64 caracteres
+    -   Confirma hashes personalizados com 80 caracteres
 
 ```php
-<?php
-
-use App\Services\MainOperations;
-
-test('Testando se tem 32 caracteres', function () {
-    $tamanho_esperado = 32;
-
-    $hash_gerada = MainOperations::hash_generation();
-
-    $tamanho_da_hash = strlen($hash_gerada);
-
-    expect($tamanho_da_hash)->toBe($tamanho_esperado);
+test('Testando se tem a qtd caracteres', function () {
+    expect(strlen(MainOperations::hash_generation()))->toEqual(32);
+    expect(strlen(MainOperations::hash_generation(64)))->toEqual(64);
+    expect(strlen(MainOperations::hash_generation(80)))->toEqual(80);
 });
 ```
 
-**O que este teste verifica:**
+#### 2. Service Layer - MainOperations
 
--   ✅ **Geração de Hash**: Chama método estático `hash_generation()`
--   ✅ **Tamanho Correto**: Verifica se a hash tem exatamente 32 caracteres
--   ✅ **Funcionalidade**: Testa a operação matemática `strlen()`
--   ✅ **Expectativa Específica**: Usa `toBe()` para comparação exata
+##### Funcionalidades Implementadas
 
-## 🚀 Como Executar os Testes
+-   **Localização**: `app/Services/MainOperations.php`
+-   **Método**: `hash_generation($num = 32)`
+-   **Propósito**: Gerar hashes hexadecimais com tamanho customizável
 
-### Comandos Básicos
+**Características:**
+
+-   Valor padrão de 32 caracteres
+-   Utiliza `random_bytes()` para garantir aleatoriedade criptográfica
+-   Conversão para hexadecimal com `bin2hex()`
+-   Implementação correta: `bin2hex(random_bytes($num / 2))`
+
+**Observação Importante**: O código inclui um comentário demonstrando uma implementação incorreta que causaria falha nos testes:
+
+```php
+// return bin2hex(random_bytes($num)); // ❌ Implementação incorreta
+```
+
+#### 3. Controller - MainController
+
+##### Métodos Implementados
+
+-   **`index()`**: Retorna string "Hello World Test"
+-   **`showHash()`**: Utiliza o service MainOperations para gerar hash
+
+### 🧪 Execução dos Testes
+
+Para executar os testes unitários:
 
 ```bash
 # Executar todos os testes
-php artisan test
-
-# Executar usando PestPHP diretamente
 ./vendor/bin/pest
+
+# Executar testes específicos
+./vendor/bin/pest tests/Unit/MainControllerTest.php
+./vendor/bin/pest tests/Unit/MainOperatorHashGeneratorTest.php
 ```
 
-### Executar por Tipo de Teste
-
-```bash
-# Executar somente testes unitários
-php artisan test --testsuite=Unit
-
-# Executar somente testes funcionais
-php artisan test --testsuite=Feature
-```
-
-### Filtrar Testes Específicos
-
-```bash
-# Executar apenas o teste do MainController
-php artisan test --testsuite=Unit --filter=MainControllerTest
-
-# Executar apenas o teste do gerador de hash
-php artisan test --testsuite=Unit --filter=MainOperatorHashGeneratorTest
-
-# Filtrar por descrição
-php artisan test --filter="Testando se tem 32 caracteres"
-```
-
-### Opções Avançadas
-
-```bash
-# Executar com relatório de cobertura
-./vendor/bin/pest --coverage
-
-# Executar com saída detalhada
-php artisan test --verbose
-
-# Executar e parar no primeiro erro
-php artisan test --stop-on-failure
-```
-
-## 🛠️ Recursos do PestPHP Utilizados
-
-### Sintaxe e Expectativas
-
--   ✅ **Sintaxe Funcional**: `test('descrição', function() {})`
--   ✅ **Expectativas Variadas**:
-    -   `expect($value)->toBeString()` - Verificação de tipo
-    -   `expect($value)->toEqual('expected')` - Comparação de valor
-    -   `expect($value)->toBe($expected)` - Comparação exata
--   ✅ **Importações Diretas**: `use App\Http\Controllers\MainController`
-
-### Organização e Estrutura
-
--   ✅ **Nomes Descritivos**: Descrições claras do que cada teste faz
--   ✅ **Múltiplas Verificações**: Vários `expect()` em um teste
--   ✅ **Separação de Responsabilidades**: Testes específicos para cada classe
-
-## 📊 Cobertura Atual
-
-### Classes Testadas
-
--   ✅ `MainController::index()` - Teste de retorno de string
--   ✅ `MainOperations::hash_generation()` - Teste de geração de hash
-
-### Tipos de Teste Implementados
-
--   ✅ **Teste de Controller**: Verificação de métodos de controller
--   ✅ **Teste de Service**: Verificação de lógica de negócio
--   ✅ **Teste de Tipo**: Confirmação de tipos de retorno
--   ✅ **Teste de Valor**: Verificação de valores específicos
--   ✅ **Teste de Tamanho**: Validação de comprimento de strings
-
-### Padrões de Teste Aplicados
-
--   ✅ **AAA Pattern**: Arrange (setup) → Act (execution) → Assert (verification)
--   ✅ **Testes Unitários Isolados**: Cada teste verifica uma funcionalidade específica
--   ✅ **Nomenclatura Clara**: Nomes de teste explicam exatamente o que é testado
-
-## 🎯 Boas Práticas Aplicadas
-
-1. **Descrições Explicativas**: Cada teste tem nome que explica sua função
-2. **Verificações Múltiplas**: Testa tanto tipo quanto valor/tamanho
-3. **Isolamento Completo**: Testes não dependem de recursos externos
-4. **Tipagem Explícita**: Métodos usam tipagem para melhor testabilidade
-5. **Separação de Camadas**: Controller e Service testados separadamente
-6. **Métodos Estáticos**: Teste adequado de métodos estáticos
-
-## 📋 Arquitetura Testada
+### 📁 Estrutura de Arquivos
 
 ```
-Controller Layer:
-├── MainController::index() ✅ Testado
-└── MainController::showHash() ⏳ Não testado ainda
+app/
+├── Http/Controllers/
+│   └── MainController.php
+└── Services/
+    └── MainOperations.php
 
-Service Layer:
-└── MainOperations::hash_generation() ✅ Testado
-
-Integration:
-└── Feature Tests ⏳ Pasta preparada mas vazia
+tests/
+└── Unit/
+    ├── MainControllerTest.php
+    └── MainOperatorHashGeneratorTest.php
 ```
 
-## 🔄 Próximos Passos Sugeridos
+### 🎯 Conceitos Demonstrados
 
-### Testes Adicionais
+1. **Testes Unitários com PestPHP**
 
--   [ ] Testar método `MainController::showHash()`
--   [ ] Adicionar testes de integração em `Feature/`
--   [ ] Testar diferentes cenários de geração de hash
--   [ ] Verificar se hash gerada é sempre única
+    - Sintaxe moderna e expressiva
+    - Assertions com `expect()`
+    - Testes focados e específicos
 
-### Melhorias
+2. **Service Layer Pattern**
 
--   [ ] Adicionar testes de exceções
--   [ ] Implementar mocks para dependências
--   [ ] Configurar RefreshDatabase para testes com banco
--   [ ] Adicionar testes de performance para geração de hash
+    - Separação de responsabilidades
+    - Métodos estáticos para operações utilitárias
+    - Validação através de testes
 
-### Expansão
+3. **Test-Driven Development (TDD)**
+    - Testes que validam comportamentos específicos
+    - Documentação através de testes
+    - Detecção de regressões
 
--   [ ] Testar rotas web que usam os controllers
--   [ ] Implementar factories para dados de teste
--   [ ] Adicionar validação de formato hexadecimal da hash
+### 🔧 Tecnologias Utilizadas
+
+-   **Laravel 11/12**
+-   **PestPHP** para testes
+-   **PHPUnit** como base para PestPHP
+-   **PHP 8.x**
+
+### 💡 Principais Aprendizados
+
+1. **Configuração do PestPHP**: Framework de testes moderno e expressivo para PHP
+2. **Testes de Controller**: Validação de retornos de métodos sem dependências externas
+3. **Testes de Service**: Verificação de lógica de negócio e geração de dados
+4. **Assertions Específicas**: Uso de `toBeString()`, `toEqual()` e validações de tamanho
+5. **Estrutura de Testes**: Organização clara entre testes unitários e funcionais
+
+### 🚀 Como Usar
+
+1. Clone o repositório
+2. Execute `composer install`
+3. Configure o arquivo `.env`
+4. Execute os testes com `./vendor/bin/pest`
 
 ---
 
-_Este projeto demonstra implementação prática de testes unitários com PestPHP, cobrindo controllers e services com diferentes tipos de verificações._
+_Este projeto faz parte do curso "Laravel 11/12 - Framework, Ecossistema e Projetos Web" e demonstra as melhores práticas para implementação de testes unitários em aplicações Laravel usando PestPHP._

@@ -3,12 +3,8 @@
 use App\Services\MainOperations;
 //MainOperatorHashGeneratorTest
 
-test('Testando se tem 32 caracteres', function () {
-    $tamanho_esperado = 32;
-
-    $hash_gerada = MainOperations::hash_generation();
-
-    $tamanho_da_hash = strlen($hash_gerada);
-
-    expect($tamanho_da_hash)->toBe($tamanho_esperado);
+test('Testando se tem a qtd caracteres', function () {
+    expect(strlen(MainOperations::hash_generation()))->toEqual(32);
+    expect(strlen(MainOperations::hash_generation(64)))->toEqual(64);
+    expect(strlen(MainOperations::hash_generation(80)))->toEqual(80);
 });
