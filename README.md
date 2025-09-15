@@ -1,20 +1,56 @@
-# Laravel 11/12 - Framework, Ecossistema e Projetos Web
+# Laravel 11 + PestPHP - Testes Funcionais e Unitários
 
-## Seção 27: Testes Funcionais e Unitários com PestPHP
+Este projeto demonstra a implementação de testes funcionais e unitários usando o framework **PestPHP** no Laravel 11. O PestPHP oferece uma sintaxe mais limpa e expressiva para escrever testes em comparação ao PHPUnit tradicional.
 
-Este projeto demonstra a implementação de testes unitários utilizando PestPHP no Laravel, focando na validação de controllers e services.
+## 📚 Conceitos Implementados
 
-### 📋 Implementações Realizadas
+### 1. Testes Funcionais vs Unitários
 
-#### 1. Testes Unitários
+#### **Testes Funcionais**
 
-##### MainControllerTest
+-   Testam funcionalidades completas da aplicação
+-   Incluem interações com rotas, middlewares e banco de dados
+-   Localização: `tests/Feature/`
 
--   **Localização**: `tests/Unit/MainControllerTest.php`
--   **Objetivo**: Validar o método `index()` do MainController
--   **Testes implementados**:
-    -   Verifica se o método retorna uma string
-    -   Valida se o conteúdo retornado é exatamente "Hello World Test"
+#### **Testes Unitários**
+
+-   Testam unidades isoladas de código (métodos, classes)
+-   Não dependem de recursos externos
+-   Localização: `tests/Unit/`
+
+### 2. Sintaxe do PestPHP
+
+#### **Função `test()` vs `it()`**
+
+-   Ambas as funções criam testes
+-   `test()`: Mais descritiva e clara
+-   `it()`: Mais concisa, ideal para BDD (Behavior-Driven Development)
+
+#### **Função `describe()`**
+
+-   Agrupa testes relacionados
+-   Permite organizar múltiplos testes de uma mesma funcionalidade
+-   Facilita a leitura e manutenção dos testes
+
+## 🚀 Implementações Realizadas
+
+### 1. Teste Funcional - HomePageTest.php
+
+```php
+test('Testando a rota home', function () {
+    $response = $this->get('/show-hash');
+    expect($response->status())->toBe(200);
+});
+```
+
+**O que testa:**
+
+-   Verifica se a rota `/show-hash` retorna status HTTP 200
+-   Valida que o endpoint está funcionando corretamente
+
+### 2. Testes Unitários
+
+#### **MainControllerTest.php**
 
 ```php
 test('class MainController | method index : return string', function () {
@@ -26,14 +62,13 @@ test('class MainController | method index : return string', function () {
 });
 ```
 
-##### MainOperatorHashGeneratorTest
+**O que testa:**
 
--   **Localização**: `tests/Unit/MainOperatorHashGeneratorTest.php`
--   **Objetivo**: Validar a geração de hashes com tamanhos específicos
--   **Testes implementados**:
-    -   Verifica se o hash padrão tem 32 caracteres
-    -   Valida hashes personalizados com 64 caracteres
-    -   Confirma hashes personalizados com 80 caracteres
+-   Instancia diretamente o controller
+-   Verifica se o método `index()` retorna uma string
+-   Valida o conteúdo exato da resposta
+
+#### **MainOperatorHashGeneratorTest.php**
 
 ```php
 test('Testando se tem a qtd caracteres', function () {
@@ -43,103 +78,128 @@ test('Testando se tem a qtd caracteres', function () {
 });
 ```
 
-#### 2. Service Layer - MainOperations
+**O que testa:**
 
-##### Funcionalidades Implementadas
+-   Verifica se a função de geração de hash retorna o número correto de caracteres
+-   Testa diferentes tamanhos de hash (32, 64, 80 caracteres)
 
--   **Localização**: `app/Services/MainOperations.php`
--   **Método**: `hash_generation($num = 32)`
--   **Propósito**: Gerar hashes hexadecimais com tamanho customizável
-
-**Características:**
-
--   Valor padrão de 32 caracteres
--   Utiliza `random_bytes()` para garantir aleatoriedade criptográfica
--   Conversão para hexadecimal com `bin2hex()`
--   Implementação correta: `bin2hex(random_bytes($num / 2))`
-
-**Observação Importante**: O código inclui um comentário demonstrando uma implementação incorreta que causaria falha nos testes:
+#### **MathOperationTest.php** - Usando `describe()` e `it()`
 
 ```php
-// return bin2hex(random_bytes($num)); // ❌ Implementação incorreta
+describe('Test all Math operation', function () {
+    it('test sum', function () {
+        $result = MainOperations::MathOperation(10, 5, 'add');
+        expect(intval($result))->toBe(15);
+    });
+
+    it('test subtract', function () {
+        $result = MainOperations::MathOperation(10, 5, 'subtract');
+        expect(intval($result))->toBe(5);
+    });
+
+    // ... outros testes de operações matemáticas
+});
 ```
 
-#### 3. Controller - MainController
+**O que testa:**
 
-##### Métodos Implementados
+-   Agrupa todos os testes de operações matemáticas
+-   Testa soma, subtração, multiplicação e divisão
+-   Verifica tratamento de divisão por zero
+-   Valida comportamento para operações inválidas
 
--   **`index()`**: Retorna string "Hello World Test"
--   **`showHash()`**: Utiliza o service MainOperations para gerar hash
+### 3. Classes de Apoio
 
-### 🧪 Execução dos Testes
+#### **MainController.php**
 
-Para executar os testes unitários:
+```php
+class MainController extends Controller
+{
+    public function index(): string
+    {
+        return "Hello World Test";
+    }
+
+    public function showHash(): string
+    {
+        return MainOperations::hash_generation();
+    }
+}
+```
+
+#### **MainOperations.php**
+
+```php
+class MainOperations
+{
+    public static function hash_generation($num = 32): string
+    {
+        return bin2hex(random_bytes($num / 2));
+    }
+
+    public static function MathOperation(float $valueOne, float $valueTwo, string $operation): float|string
+    {
+        // Implementação das operações matemáticas com tratamento de erros
+    }
+}
+```
+
+## 🔧 Configurações do PestPHP
+
+### **Pest.php**
+
+-   Configura os testes para usar `TestCase` do Laravel
+-   Define expectativas customizadas
+-   Aplica configurações específicas para testes Feature
+
+### **Estrutura de Pastas**
+
+```
+tests/
+├── Feature/           # Testes funcionais
+│   └── HomePageTest.php
+├── Unit/             # Testes unitários
+│   ├── MainControllerTest.php
+│   ├── MainOperatorHashGeneratorTest.php
+│   └── MathOperationTest.php
+├── Pest.php         # Configurações do Pest
+└── TestCase.php     # Classe base para testes
+```
+
+## 🎯 Boas Práticas Demonstradas
+
+1. **Nomenclatura Clara**: Nomes descritivos para testes e métodos
+2. **Isolamento**: Testes unitários não dependem de recursos externos
+3. **Cobertura Completa**: Testa casos de sucesso e erro
+4. **Organização**: Uso de `describe()` para agrupar testes relacionados
+5. **Assertivas Expressivas**: Uso das expectativas do Pest para maior legibilidade
+
+## 🚀 Como Executar os Testes
 
 ```bash
 # Executar todos os testes
 ./vendor/bin/pest
 
-# Executar testes específicos
-./vendor/bin/pest tests/Unit/MainControllerTest.php
-./vendor/bin/pest tests/Unit/MainOperatorHashGeneratorTest.php
+# Executar apenas testes unitários
+./vendor/bin/pest tests/Unit
+
+# Executar apenas testes funcionais
+./vendor/bin/pest tests/Feature
+
+# Executar com detalhes
+./vendor/bin/pest --verbose
 ```
 
-### 📁 Estrutura de Arquivos
+## 📈 Benefícios do PestPHP
 
-```
-app/
-├── Http/Controllers/
-│   └── MainController.php
-└── Services/
-    └── MainOperations.php
-
-tests/
-└── Unit/
-    ├── MainControllerTest.php
-    └── MainOperatorHashGeneratorTest.php
-```
-
-### 🎯 Conceitos Demonstrados
-
-1. **Testes Unitários com PestPHP**
-
-    - Sintaxe moderna e expressiva
-    - Assertions com `expect()`
-    - Testes focados e específicos
-
-2. **Service Layer Pattern**
-
-    - Separação de responsabilidades
-    - Métodos estáticos para operações utilitárias
-    - Validação através de testes
-
-3. **Test-Driven Development (TDD)**
-    - Testes que validam comportamentos específicos
-    - Documentação através de testes
-    - Detecção de regressões
-
-### 🔧 Tecnologias Utilizadas
-
--   **Laravel 11/12**
--   **PestPHP** para testes
--   **PHPUnit** como base para PestPHP
--   **PHP 8.x**
-
-### 💡 Principais Aprendizados
-
-1. **Configuração do PestPHP**: Framework de testes moderno e expressivo para PHP
-2. **Testes de Controller**: Validação de retornos de métodos sem dependências externas
-3. **Testes de Service**: Verificação de lógica de negócio e geração de dados
-4. **Assertions Específicas**: Uso de `toBeString()`, `toEqual()` e validações de tamanho
-5. **Estrutura de Testes**: Organização clara entre testes unitários e funcionais
-
-### 🚀 Como Usar
-
-1. Clone o repositório
-2. Execute `composer install`
-3. Configure o arquivo `.env`
-4. Execute os testes com `./vendor/bin/pest`
+1. **Sintaxe Limpa**: Mais legível que PHPUnit tradicional
+2. **Flexibilidade**: Permite `test()`, `it()` e `describe()`
+3. **Expectativas Expressivas**: API mais intuitiva para assertivas
+4. **Compatibilidade**: 100% compatível com PHPUnit
+5. **Produtividade**: Menos código repetitivo (boilerplate)
 
 ---
 
-_Este projeto faz parte do curso "Laravel 11/12 - Framework, Ecossistema e Projetos Web" e demonstra as melhores práticas para implementação de testes unitários em aplicações Laravel usando PestPHP._
+**Autor**: Implementação baseada no curso Laravel Udemy  
+**Framework**: Laravel 11  
+**Ferramenta de Teste**: PestPHP
