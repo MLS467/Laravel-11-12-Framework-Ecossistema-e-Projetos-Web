@@ -1,205 +1,95 @@
-# Laravel 11 + PestPHP - Testes Funcionais e Unitários
+# Laravel Testing Project - Seção 27
 
-Este projeto demonstra a implementação de testes funcionais e unitários usando o framework **PestPHP** no Laravel 11. O PestPHP oferece uma sintaxe mais limpa e expressiva para escrever testes em comparação ao PHPUnit tradicional.
+## Testes Unitários Implementados
 
-## 📚 Conceitos Implementados
+Este projeto demonstra a implementação de testes unitários usando **PestPHP** no Laravel 12. Os testes foram criados para validar as funcionalidades desenvolvidas na **Seção 27 - Testes Funcionais e Unitários com PestPHP**.
 
-### 1. Testes Funcionais vs Unitários
+### 📁 Estrutura dos Testes Unitários (`tests/Unit/`)
 
-#### **Testes Funcionais**
+#### 1. **ExpectationAPITest.php**
 
--   Testam funcionalidades completas da aplicação
--   Incluem interações com rotas, middlewares e banco de dados
--   Localização: `tests/Feature/`
+Demonstra o uso da API de expectativas do PestPHP com diversos métodos de validação:
 
-#### **Testes Unitários**
+-   `toBe()` - Validação de valores exatos e tipos
+-   `toBeTrue()` / `toBeFalse()` - Validação de valores booleanos
+-   `toBeNull()` - Validação de valores nulos
+-   `toBeEmpty()` - Validação de valores vazios
+-   `toBeArray()` - Validação de arrays
+-   `toBeIn()` - Validação se valor está contido em array
+-   `toBeJson()` - Validação de formato JSON
+-   `toMatch()` - Validação com expressões regulares
+-   `toBeUppercase()` - Validação de strings em maiúsculo
 
--   Testam unidades isoladas de código (métodos, classes)
--   Não dependem de recursos externos
--   Localização: `tests/Unit/`
+#### 2. **MainControllerTest.php**
 
-### 2. Sintaxe do PestPHP
+Testa o controller principal da aplicação:
 
-#### **Função `test()` vs `it()`**
+-   Validação do método `index()` do `MainController`
+-   Verifica se retorna uma string
+-   Valida o conteúdo exato da resposta ("Hello World Test")
 
--   Ambas as funções criam testes
--   `test()`: Mais descritiva e clara
--   `it()`: Mais concisa, ideal para BDD (Behavior-Driven Development)
+#### 3. **MainOperatorHashGeneratorTest.php**
 
-#### **Função `describe()`**
+Testa a funcionalidade de geração de hash:
 
--   Agrupa testes relacionados
--   Permite organizar múltiplos testes de uma mesma funcionalidade
--   Facilita a leitura e manutenção dos testes
+-   Valida se o hash gerado tem 32 caracteres por padrão
+-   Testa geração de hash com 64 caracteres
+-   Testa geração de hash com 80 caracteres
+-   Utiliza o serviço `MainOperations::hash_generation()`
 
-## 🚀 Implementações Realizadas
+#### 4. **MathOperationTest.php**
 
-### 1. Teste Funcional - HomePageTest.php
+Suite completa de testes para operações matemáticas usando `describe()`:
 
-```php
-test('Testando a rota home', function () {
-    $response = $this->get('/show-hash');
-    expect($response->status())->toBe(200);
-});
-```
+-   **Soma (`add`)**: Testa adição de dois números
+-   **Subtração (`subtract`)**: Testa subtração de dois números
+-   **Multiplicação (`multiply`)**: Testa multiplicação de dois números
+-   **Divisão (`divide`)**: Testa divisão normal
+-   **Divisão por zero**: Valida tratamento especial (divisor 0 vira 1)
+-   **Operação inválida**: Testa retorno de mensagem de erro para operações inexistentes
 
-**O que testa:**
+### 🛠️ Tecnologias Utilizadas
 
--   Verifica se a rota `/show-hash` retorna status HTTP 200
--   Valida que o endpoint está funcionando corretamente
+-   **Laravel 12**: Framework PHP
+-   **PestPHP 4.1**: Framework de testes moderno
+-   **PHP 8.2+**: Linguagem base
 
-### 2. Testes Unitários
+### 📋 Serviços Testados
 
-#### **MainControllerTest.php**
+#### `MainOperations` Service
 
-```php
-test('class MainController | method index : return string', function () {
-    $method_index = new MainController();
-    $result = $method_index->index();
+Localizado em `app/Services/MainOperations.php`, contém:
 
-    expect($result)->toBeString();
-    expect($result)->toEqual('Hello World Test');
-});
-```
+1. **`hash_generation($num = 32)`**: Gera hash hexadecimal
+2. **`MathOperation($valueOne, $valueTwo, $operation)`**: Executa operações matemáticas básicas
 
-**O que testa:**
-
--   Instancia diretamente o controller
--   Verifica se o método `index()` retorna uma string
--   Valida o conteúdo exato da resposta
-
-#### **MainOperatorHashGeneratorTest.php**
-
-```php
-test('Testando se tem a qtd caracteres', function () {
-    expect(strlen(MainOperations::hash_generation()))->toEqual(32);
-    expect(strlen(MainOperations::hash_generation(64)))->toEqual(64);
-    expect(strlen(MainOperations::hash_generation(80)))->toEqual(80);
-});
-```
-
-**O que testa:**
-
--   Verifica se a função de geração de hash retorna o número correto de caracteres
--   Testa diferentes tamanhos de hash (32, 64, 80 caracteres)
-
-#### **MathOperationTest.php** - Usando `describe()` e `it()`
-
-```php
-describe('Test all Math operation', function () {
-    it('test sum', function () {
-        $result = MainOperations::MathOperation(10, 5, 'add');
-        expect(intval($result))->toBe(15);
-    });
-
-    it('test subtract', function () {
-        $result = MainOperations::MathOperation(10, 5, 'subtract');
-        expect(intval($result))->toBe(5);
-    });
-
-    // ... outros testes de operações matemáticas
-});
-```
-
-**O que testa:**
-
--   Agrupa todos os testes de operações matemáticas
--   Testa soma, subtração, multiplicação e divisão
--   Verifica tratamento de divisão por zero
--   Valida comportamento para operações inválidas
-
-### 3. Classes de Apoio
-
-#### **MainController.php**
-
-```php
-class MainController extends Controller
-{
-    public function index(): string
-    {
-        return "Hello World Test";
-    }
-
-    public function showHash(): string
-    {
-        return MainOperations::hash_generation();
-    }
-}
-```
-
-#### **MainOperations.php**
-
-```php
-class MainOperations
-{
-    public static function hash_generation($num = 32): string
-    {
-        return bin2hex(random_bytes($num / 2));
-    }
-
-    public static function MathOperation(float $valueOne, float $valueTwo, string $operation): float|string
-    {
-        // Implementação das operações matemáticas com tratamento de erros
-    }
-}
-```
-
-## 🔧 Configurações do PestPHP
-
-### **Pest.php**
-
--   Configura os testes para usar `TestCase` do Laravel
--   Define expectativas customizadas
--   Aplica configurações específicas para testes Feature
-
-### **Estrutura de Pastas**
-
-```
-tests/
-├── Feature/           # Testes funcionais
-│   └── HomePageTest.php
-├── Unit/             # Testes unitários
-│   ├── MainControllerTest.php
-│   ├── MainOperatorHashGeneratorTest.php
-│   └── MathOperationTest.php
-├── Pest.php         # Configurações do Pest
-└── TestCase.php     # Classe base para testes
-```
-
-## 🎯 Boas Práticas Demonstradas
-
-1. **Nomenclatura Clara**: Nomes descritivos para testes e métodos
-2. **Isolamento**: Testes unitários não dependem de recursos externos
-3. **Cobertura Completa**: Testa casos de sucesso e erro
-4. **Organização**: Uso de `describe()` para agrupar testes relacionados
-5. **Assertivas Expressivas**: Uso das expectativas do Pest para maior legibilidade
-
-## 🚀 Como Executar os Testes
+### 🚀 Como Executar os Testes
 
 ```bash
 # Executar todos os testes
-./vendor/bin/pest
+php artisan test
 
 # Executar apenas testes unitários
 ./vendor/bin/pest tests/Unit
 
-# Executar apenas testes funcionais
-./vendor/bin/pest tests/Feature
-
-# Executar com detalhes
-./vendor/bin/pest --verbose
+# Executar teste específico
+./vendor/bin/pest tests/Unit/MathOperationTest.php
 ```
 
-## 📈 Benefícios do PestPHP
+### 📊 Cobertura de Testes
 
-1. **Sintaxe Limpa**: Mais legível que PHPUnit tradicional
-2. **Flexibilidade**: Permite `test()`, `it()` e `describe()`
-3. **Expectativas Expressivas**: API mais intuitiva para assertivas
-4. **Compatibilidade**: 100% compatível com PHPUnit
-5. **Produtividade**: Menos código repetitivo (boilerplate)
+Os testes cobrem:
 
----
+-   ✅ Geração de hash com diferentes tamanhos
+-   ✅ Operações matemáticas básicas (+ - \* /)
+-   ✅ Tratamento de divisão por zero
+-   ✅ Validação de operações inválidas
+-   ✅ Testes de controller
+-   ✅ API de expectativas do PestPHP
 
-**Autor**: Implementação baseada no curso Laravel Udemy  
-**Framework**: Laravel 11  
-**Ferramenta de Teste**: PestPHP
+### 📝 Padrões de Teste Utilizados
+
+-   **Arrange-Act-Assert**: Estrutura clara dos testes
+-   **Describe/It**: Agrupamento lógico de testes relacionados
+-   **Expectation API**: Uso das expectativas modernas do PestPHP
+-   **Edge Cases**: Testes de casos extremos como divisão por zero
