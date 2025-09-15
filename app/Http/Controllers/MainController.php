@@ -6,6 +6,8 @@ use App\Models\Client;
 use App\Models\Phone;
 use App\Models\Product;
 
+use function PHPUnit\Framework\isArray;
+
 class MainController extends Controller
 {
     public function __invoke()
@@ -126,6 +128,47 @@ class MainController extends Controller
         // $result = Product::with('clients')->find(10);
 
         // $this->show_data($result->toArray());
+    }
+
+    public function moreQueryBuilder()
+    {
+        $client = Client::find(10);
+
+        // $products = $client->products()->distinct()->get(['product_name', 'price']);
+        $products = $client->products()
+            ->where('products.id', '>', 10)
+            ->distinct()
+            ->orderBy('products.id')
+            ->get();
+
+        $this->showArrayLoop($products);
+    }
+
+
+    private function showArrayLoop($datas)
+    {
+        echo '<table border="2">';
+
+        echo '<thead>';
+        echo "<tr>";
+        foreach ($datas->toArray()[0] as $key => $data) {
+            echo "<th>";
+            echo  $key;
+            echo "</th>";
+        }
+        echo "</tr>";
+        echo "<tbody>";
+        foreach ($datas as $key => $value) {
+            echo "<tr>";
+            foreach ($value->toArray() as $key => $v) {
+                echo "<td>";
+                echo  $value[$key];
+                echo "</td>";
+            }
+            echo "<tr>";
+        }
+        echo "</tbody>";
+        echo '</thead>';
     }
 
     private function showDataWithHTML($client)
