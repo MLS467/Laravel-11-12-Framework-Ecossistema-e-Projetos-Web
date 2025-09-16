@@ -172,6 +172,50 @@ class MainController extends Controller
         // $this->show_data($result->toArray());
     }
 
+
+    public function collection()
+    {
+        //--------------------------------------
+        // ELOQUENTE ORM - COLLECTIONS PARTE 1
+        //--------------------------------------
+
+        // TAKE pega os primeiros 5 clients 
+        // $client = Client::take(5)->get();
+
+        // foreach ($client as $key => $value) {
+        //     echo  "chave: {$key}   name: {$value->client_name} <br>";
+        // }
+
+
+        // APPEND adiciona os campos só na coleção mas não da BD
+        // $clients = Client::take(5)->get();
+        // $clients->each->append(['name_upper', 'domain_email']);
+
+        // foreach ($clients as $key => $value) {
+        //     $value->name_upper = strtoupper($value->client_name);
+        //     $value->domain_email = explode('@', $value->email)[1];
+        // }
+
+        // foreach ($clients as $key => $value) {
+        //     echo "nome -> {$value->name_upper} | domínio de email -> {$value->domain_email}<br>";
+        // }
+
+        // CONTAINS verifica se contem o valor na coleção retornando TRUE e FALSE
+        // $name = 'Mirela Alice Lopes';
+        // $clients = Client::take(5)->get();
+        // $result = $clients->contains('client_name', $name);
+        // echo $result;
+
+
+        // DIFF pega a diferença entre coleções
+        $clients1 = Client::take(5)->get();
+        $clients2 = Client::take(3)->get();
+
+        $result = $clients1->diff($clients2);
+        $this->show_data($result->toArray());
+    }
+
+
     private function showArrayLoop($datas)
     {
         echo '<table border="2">';
