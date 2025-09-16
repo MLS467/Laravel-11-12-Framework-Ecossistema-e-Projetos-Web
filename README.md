@@ -1,165 +1,104 @@
-# 📚 Curso Laravel - Usando o Query Builder nas Relações
+# Laravel Eloquent ORM - Seção 13
 
-## 🎯 Aula: Usando o Query Builder nas Relações
+## 📋 MainController - Documentação das Mudanças Implementadas
 
-Este projeto demonstra como utilizar o Query Builder do Laravel em conjunto com relacionamentos Eloquent para criar consultas mais específicas e otimizadas.
+### **Novos Métodos Adicionados:**
 
-## 🔧 Funcionalidades Implementadas
+#### 1. **`moreQueryBuilder()`**
 
-### 📋 **MainController - Query Builder com Relacionamentos**
+-   **Funcionalidade:** Demonstra consultas avançadas com Query Builder no relacionamento many-to-many
+-   **Implementação:**
+    -   Busca produtos de um cliente específico (ID 10)
+    -   Aplica filtros: `where('products.id', '>', 10)`
+    -   Usa `distinct()` para evitar duplicatas
+    -   Ordena por `products.id`
+-   **Saída:** Chama `showArrayLoop()` para exibir em formato de tabela
 
-#### **Método: `moreQueryBuilder()`**
+#### 2. **`sameResult()`** ⭐
 
-Implementação de consultas avançadas usando Query Builder em relacionamentos many-to-many:
+-   **Funcionalidade:** Demonstra como obter os mesmos resultados usando Eloquent ORM vs Query Builder
+-   **Implementação Eloquent ORM:**
+    ```php
+    $client = Client::find(2);
+    $this->show_data($client->phones->toArray());
+    ```
+-   **Implementação Query Builder:**
+    ```php
+    $client_qb = DB::table('clients')->find(2);
+    $result = DB::table('phones')->where('client_id', $client_qb->id)->get();
+    $this->show_data($result->toArray());
+    ```
+-   **Objetivo:** Comparar performance e sintaxe entre as duas abordagens
+-   **Uso:** Educacional para entender diferenças entre ORM e Query Builder
 
-```php
-public function moreQueryBuilder()
-{
-    $client = Client::find(10);
+#### 3. **`showArrayLoop()`** (Método Privado)
 
-    $products = $client->products()
-        ->where('products.id', '>', 10)
-        ->distinct()
-        ->orderBy('products.id')
-        ->get();
+-   **Funcionalidade:** Renderiza dados em formato de tabela HTML
+-   **Características:**
+    -   Cria tabela com bordas (`border="2"`)
+    -   Gera cabeçalho dinamicamente baseado nas chaves do primeiro registro
+    -   Itera pelos dados criando linhas da tabela
+-   **Uso:** Método auxiliar para formatação de saída
 
-    $this->showArrayLoop($products);
-}
-```
+#### 4. **`showDataWithHTML()`** (Método Privado)
 
-### 🎯 **Principais Conceitos Aplicados:**
+-   **Funcionalidade:** Formata dados de clientes e telefones em HTML
+-   **Características:**
+    -   Exibe ID e nome do cliente
+    -   Lista todos os telefones associados numerados
+    -   Adiciona separadores visuais (`<hr>`)
 
-#### **1. Query Builder em Relacionamentos**
+### **Melhorias no Código Existente:**
 
--   Uso de `->where()` em relacionamentos
--   Especificação de tabelas para evitar ambiguidade (`products.id`)
--   Aplicação de `distinct()` para evitar duplicatas
--   Ordenação com `orderBy()`
+-   No método `one_to_many()`: adicionada chamada para `showDataWithHTML()` para melhor visualização
+-   No método `belongsTo()`: implementado loop para exibir todos os telefones com seus respectivos clientes
 
-#### **2. Tratamento de Ambiguidade de Colunas**
+### **Padrões de Implementação:**
 
-**Problema Comum:**
+-   ✅ Uso de métodos privados para organização
+-   ✅ Separação de responsabilidades (lógica vs apresentação)
+-   ✅ Demonstração prática de relacionamentos Eloquent
+-   ✅ Comparação entre diferentes abordagens de consulta
 
-```sql
-SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'id' in where clause is ambiguous
-```
+### **Relacionamentos Demonstrados:**
 
-**Solução Aplicada:**
+-   **One to One:** Cliente → Telefone
+-   **One to Many:** Cliente → Múltiplos Telefones
+-   **Belongs To:** Telefone → Cliente (relação inversa)
+-   **Many to Many:** Cliente ↔ Produtos
 
-```php
-->where('products.id', '>', 10)  // Especifica a tabela
-```
+### **Tecnologias Utilizadas:**
 
-#### **3. Métodos de Consulta Utilizados:**
-
--   **`distinct()`** - Remove registros duplicados
--   **`where('table.column', operator, value)`** - Filtragem específica
--   **`orderBy('column')`** - Ordenação dos resultados
--   **`get()`** - Execução da consulta
-
-### 🛠️ **Método de Exibição: `showArrayLoop()`**
-
-Método helper para renderizar dados em formato de tabela HTML:
-
-```php
-private function showArrayLoop($datas)
-{
-    echo '<table border="2">';
-    echo '<thead>';
-    echo "<tr>";
-
-    // Cabeçalhos da tabela
-    foreach ($datas->toArray()[0] as $key => $data) {
-        echo "<th>{$key}</th>";
-    }
-
-    echo "</tr>";
-    echo "<tbody>";
-
-    // Dados da tabela
-    foreach ($datas as $value) {
-        echo "<tr>";
-        foreach ($value->toArray() as $key => $v) {
-            echo "<td>{$value[$key]}</td>";
-        }
-        echo "</tr>";
-    }
-
-    echo "</tbody>";
-    echo '</table>';
-}
-```
-
-## 🚀 **Como Executar**
-
-### **Requisitos:**
-
--   Laravel 12
--   PHP 8.2+
--   MySQL
-
-### **Testando a Funcionalidade:**
-
-1. **Acesse a rota do controller:**
-
-```bash
-php artisan serve
-```
-
-2. **Chame o método específico:**
-
-```php
-Route::get('/query-builder', [MainController::class, 'moreQueryBuilder']);
-```
-
-## 📊 **Casos de Uso Demonstrados**
-
-### **1. Consulta Básica com Filtro**
-
-```php
-$products = $client->products()
-    ->where('products.id', '>', 10)
-    ->get();
-```
-
-### **2. Consulta com Múltiplos Modificadores**
-
-```php
-$products = $client->products()
-    ->where('products.id', '>', 10)
-    ->distinct()
-    ->orderBy('products.id')
-    ->get();
-```
-
-### **3. Alternativas para Evitar Ambiguidade**
-
-**Opção 1 - Especificar tabela:**
-
-```php
-->where('products.id', '>', 10)
-```
-
-**Opção 2 - Usar wherePivot:**
-
-```php
-->wherePivot('product_id', '>', 10)
-```
-
-## 🎯 **Conceitos Importantes Aprendidos**
-
-1. **Ambiguidade de Colunas**: Como resolver conflitos de nomes de colunas em JOINs
-2. **Query Builder em Relacionamentos**: Aplicar filtros específicos em dados relacionados
-3. **Otimização de Consultas**: Uso de `distinct()` e `orderBy()`
-4. **Renderização de Dados**: Métodos helper para exibição formatada
-
-## 📈 **Benefícios da Implementação**
-
--   ✅ **Consultas Otimizadas**: Filtros específicos reduzem dados desnecessários
--   ✅ **Código Limpo**: Métodos bem estruturados e reutilizáveis
--   ✅ **Flexibilidade**: Query Builder permite consultas complexas
--   ✅ **Performance**: Uso adequado de `distinct()` e ordenação
+-   Laravel 11/12
+-   Eloquent ORM
+-   Query Builder
+-   Relacionamentos de Banco de Dados
 
 ---
 
-**Desenvolvido durante o Curso de Laravel - Udemy** 🚀
+## 🔍 **Destaque: Método `sameResult()`**
+
+Este método é fundamental para entender as **diferenças entre Eloquent ORM e Query Builder**:
+
+### **Eloquent ORM (Abordagem Orientada a Objetos):**
+
+```php
+$client = Client::find(2);
+$this->show_data($client->phones->toArray());
+```
+
+-   ✅ **Vantagens:** Sintaxe mais limpa, relacionamentos automáticos
+-   ⚠️ **Considerações:** Pode ser mais lento em consultas complexas
+
+### **Query Builder (Abordagem SQL Direta):**
+
+```php
+$client_qb = DB::table('clients')->find(2);
+$result = DB::table('phones')->where('client_id', $client_qb->id)->get();
+$this->show_data($result->toArray());
+```
+
+-   ✅ **Vantagens:** Performance otimizada, controle total sobre SQL
+-   ⚠️ **Considerações:** Sintaxe mais verbosa, relacionamentos manuais
+
+### **Resultado:** Ambos retornam **exatamente os mesmos dados**

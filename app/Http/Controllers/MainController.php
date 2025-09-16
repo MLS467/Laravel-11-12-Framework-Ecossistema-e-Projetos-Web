@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Phone;
 use App\Models\Product;
-
-use function PHPUnit\Framework\isArray;
+use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller
 {
@@ -144,6 +143,34 @@ class MainController extends Controller
         $this->showArrayLoop($products);
     }
 
+    public function sameResult()
+    {
+        //  -------------------------------
+        // USANDO ELOQUENT ORM
+        //  -------------------------------
+
+        // $client = Client::find(2);
+
+        // $phone = Phone::where('client_id', $client->id)->get();
+
+        // $client = Client::find(2);
+
+        // $this->show_data($client->phones->toArray());
+
+        // echo "<hr>";
+
+        //------------------------------
+        // USANDO QUERY BUILDER
+        //------------------------------
+
+        // $client_qb = DB::table('clients')->find(2);
+
+        // $result = DB::table('phones')
+        //     ->where('client_id', $client_qb->id)
+        //     ->get();
+
+        // $this->show_data($result->toArray());
+    }
 
     private function showArrayLoop($datas)
     {
