@@ -200,6 +200,9 @@ class MainController extends Controller
         //     echo "nome -> {$value->name_upper} | domínio de email -> {$value->domain_email}<br>";
         // }
 
+
+
+
         // CONTAINS verifica se contem o valor na coleção retornando TRUE e FALSE
         // $name = 'Mirela Alice Lopes';
         // $clients = Client::take(5)->get();
@@ -207,12 +210,33 @@ class MainController extends Controller
         // echo $result;
 
 
-        // DIFF pega a diferença entre coleções
-        $clients1 = Client::take(5)->get();
-        $clients2 = Client::take(3)->get();
 
-        $result = $clients1->diff($clients2);
-        $this->show_data($result->toArray());
+
+
+
+        // DIFF pega a diferença entre coleções
+        // $clients1 = Client::take(5)->get();
+        // $clients2 = Client::take(3)->get();
+
+        // $result = $clients1->diff($clients2);
+        // $this->show_data($result->toArray());
+
+
+
+        // INTERSECT pega os valores que tem nas duas coleções
+        // $client1 = Client::take(5)->get();
+        // $client2 = Client::where('id', '>', 3)->take(5)->get();
+
+        // $result = $client1->intersect($client2);
+        // $this->show_data($result->toArray());
+
+
+
+
+        // MAKEHIDDEN esconde as colunas especificadas
+        $client1 = Client::take(5)->get();
+        $client1->makeHidden('created_at'); // pode ser um array de colunas ['created_at', 'updated_at', 'deleted_at']
+        $this->show_data($client1->toArray());
     }
 
 

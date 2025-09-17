@@ -72,6 +72,37 @@ $this->show_data($result->toArray());
 -   **Resultado:** Coleção com as diferenças encontradas
 -   **Uso:** Comparação e análise de datasets
 
+### **5. `intersect()` - Interseção Entre Coleções**
+
+```php
+$client1 = Client::take(5)->get();
+$client2 = Client::where('id', '>', 3)->take(5)->get();
+
+$result = $client1->intersect($client2);
+$this->show_data($result->toArray());
+```
+
+-   **Funcionalidade:** Retorna elementos que existem em AMBAS as coleções
+-   **Implementação:**
+    -   `$client1`: Primeiros 5 clientes
+    -   `$client2`: 5 clientes com ID > 3
+-   **Resultado:** Coleção com elementos comuns entre as duas
+-   **Uso:** Encontrar dados compartilhados entre datasets
+
+### **6. `makeHidden()` - Ocultar Colunas na Saída**
+
+```php
+$client1 = Client::take(5)->get();
+$client1->makeHidden('created_at');
+// ou array: ['created_at', 'updated_at', 'deleted_at']
+$this->show_data($client1->toArray());
+```
+
+-   **Funcionalidade:** Oculta colunas específicas na serialização
+-   **Parâmetros:** String única ou array de colunas
+-   **Uso:** Controle de dados expostos em APIs/responses
+-   **Vantagem:** Não remove dados do objeto, apenas da saída
+
 ---
 
 ## 🛠 **Métodos Auxiliares Utilizados:**
@@ -95,12 +126,29 @@ public function show_data($data): void
 
 ## 📊 **Conceitos Demonstrados:**
 
-| Método       | Funcionalidade           | Retorno    | Uso Principal         |
-| ------------ | ------------------------ | ---------- | --------------------- |
-| `take()`     | Limita resultados        | Collection | Performance/Paginação |
-| `append()`   | Campos virtuais          | Collection | Manipulação de dados  |
-| `contains()` | Verifica existência      | Boolean    | Validação             |
-| `diff()`     | Diferença entre coleções | Collection | Comparação            |
+| Método         | Funcionalidade            | Retorno    | Uso Principal         |
+| -------------- | ------------------------- | ---------- | --------------------- |
+| `take()`       | Limita resultados         | Collection | Performance/Paginação |
+| `append()`     | Campos virtuais           | Collection | Manipulação de dados  |
+| `contains()`   | Verifica existência       | Boolean    | Validação             |
+| `diff()`       | Diferença entre coleções  | Collection | Comparação            |
+| `intersect()`  | Interseção entre coleções | Collection | Dados compartilhados  |
+| `makeHidden()` | Oculta colunas            | Collection | Controle de saída     |
+
+---
+
+## ⭐ **Novos Métodos Adicionados:**
+
+### **`intersect()` vs `diff()`**
+
+-   **`intersect()`:** Encontra elementos **comuns** entre coleções
+-   **`diff()`:** Encontra elementos **únicos** da primeira coleção
+
+### **`makeHidden()` - Controle de Dados Sensíveis**
+
+-   **Uso comum:** Ocultar timestamps (`created_at`, `updated_at`)
+-   **Segurança:** Esconder campos sensíveis em APIs
+-   **Flexibilidade:** Aceita string única ou array de campos
 
 ---
 
