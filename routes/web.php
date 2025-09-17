@@ -19,3 +19,5 @@ Route::get('/more-query-builder', [MainController::class, 'moreQueryBuilder']);
 Route::get('/same-result', [MainController::class, 'sameResult']);
 
 Route::get('/collection', [MainController::class, 'collection']);
+
+Route::get('/serialization', [MainController::class, 'Serialization']);

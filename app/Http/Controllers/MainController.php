@@ -240,6 +240,34 @@ class MainController extends Controller
     }
 
 
+    public function Serialization()
+    {
+        // passando os dados para array
+        // $clients = Client::take(10)->get()->toArray();
+        // $this->show_data($clients);
+
+
+        // passando os dados para json
+        // $clients = Client::take(10)->get()->toJson(JSON_PRETTY_PRINT);
+        // $this->show_data($clients);
+
+
+        // passando para json e escondendo campos setHidden (API)
+        // $clients = Client::take(10)
+        //     ->get()
+        //     ->setHidden(['active', 'created_at', 'deleted_at', 'updated_at'])
+        //     ->toJson(JSON_PRETTY_PRINT);
+        // $this->show_data($clients);
+
+
+        // passando para json e mostrando alguns campos setVisible (API)
+        // $clients = Client::take(10)
+        //     ->get()
+        //     ->setVisible(['client_name', 'email'])
+        //     ->toJson(JSON_PRETTY_PRINT);
+        // $this->show_data($clients);
+    }
+
     private function showArrayLoop($datas)
     {
         echo '<table border="2">';
