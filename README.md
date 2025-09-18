@@ -2,112 +2,149 @@
 
 ## 📋 Documentação de Testes Funcionais e Unitários
 
-### **HookOneTest.php - Hooks no PestPHP**
+---
 
-Este arquivo demonstra o uso de **hooks** no PestPHP para configuração e limpeza de dados nos testes.
+## 🗂️ **DataSetTest.php - Testes com DataSets**
+
+Este arquivo demonstra o uso de **DataSets** no PestPHP para executar os mesmos testes com diferentes conjuntos de dados.
 
 ---
 
-## 🪝 **Hooks Implementados:**
+## 📊 **DataSet Implementado:**
 
-### **1. `beforeEach()` - Configuração Pré-Teste**
-
-```php
-beforeEach(function () {
-    $this->value = 10;
-    $this->value_two = 20;
-});
-```
-
--   **Funcionalidade:** Executado ANTES de cada teste
--   **Uso:** Inicialização de variáveis e configuração de estado
--   **Implementação:**
-    -   `$this->value = 10`: Variável de teste
-    -   `$this->value_two = 20`: Segunda variável de teste
--   **Vantagem:** Garante estado consistente para todos os testes
-
-### **2. `describe()` - Agrupamento de Testes**
+### **Conjunto de Dados de Teste:**
 
 ```php
-describe('Testes com hooks', function () {
-    it('test one', function () {
-        expect($this->value)->toBe(10);
-    });
-});
+$data = [
+    ["Ronaldo", 20],
+    ["João", 18],
+    ["Feijão", 19]
+];
 ```
 
--   **Funcionalidade:** Agrupa testes relacionados em um contexto
--   **Estrutura:** Organização hierárquica de testes
--   **Teste implementado:** Verifica se `$this->value` é igual a 10
--   **Assertion:** `expect($this->value)->toBe(10)`
-
-### **3. `afterEach()` - Limpeza Pós-Teste**
-
-```php
-afterEach(function () {
-    unset($this->value);
-    unset($this->value_two);
-});
-```
-
--   **Funcionalidade:** Executado APÓS cada teste
--   **Uso:** Limpeza de dados e reset de estado
--   **Implementação:** Remove variáveis definidas no `beforeEach()`
--   **Vantagem:** Evita vazamento de dados entre testes
+-   **Estrutura:** Array de arrays com `[nome, idade]`
+-   **Dados de teste:** 3 registros de pessoas com nomes e idades
+-   **Uso:** Alimenta múltiplos testes com dados variados
 
 ---
 
-## 🔄 **Fluxo de Execução:**
+## 🧪 **Testes Implementados:**
+
+### **1. Teste de Tipo String**
+
+```php
+it('test if is String', function ($name) {
+    expect($name)->toBeString();
+})->with($data);
+```
+
+-   **Funcionalidade:** Verifica se o primeiro parâmetro (`$name`) é uma string
+-   **Execução:** Roda 3 vezes (uma para cada registro no dataset)
+-   **Assertion:** `toBeString()` - valida tipo string
+-   **Dados testados:**
+    -   "Ronaldo" ✅ String
+    -   "João" ✅ String
+    -   "Feijão" ✅ String
+
+### **2. Teste de Validação de Idade**
+
+```php
+it('test if greaterThan or equals', function ($name, $age) {
+    expect($age)->toBeGreaterThanOrEqual(18);
+})->with($data);
+```
+
+-   **Funcionalidade:** Verifica se a idade é maior ou igual a 18
+-   **Parâmetros:** Recebe tanto `$name` quanto `$age`
+-   **Assertion:** `toBeGreaterThanOrEqual(18)` - valida maioridade
+-   **Dados testados:**
+    -   Ronaldo, 20 ✅ >= 18
+    -   João, 18 ✅ >= 18
+    -   Feijão, 19 ✅ >= 18
+
+---
+
+## 🔄 **Fluxo de Execução com DataSets:**
 
 ```
-1. beforeEach() → Inicializa $this->value = 10, $this->value_two = 20
-2. it('test one') → Executa teste: expect($this->value)->toBe(10)
-3. afterEach() → Limpa: unset($this->value), unset($this->value_two)
+Execução 1: $name = "Ronaldo", $age = 20
+├── test if is String("Ronaldo") ✅
+└── test if greaterThan or equals(20) ✅
+
+Execução 2: $name = "João", $age = 18
+├── test if is String("João") ✅
+└── test if greaterThan or equals(18) ✅
+
+Execução 3: $name = "Feijão", $age = 19
+├── test if is String("Feijão") ✅
+└── test if greaterThan or equals(19) ✅
 ```
 
 ---
 
-## 📊 **Estrutura dos Hooks:**
+## 📊 **Análise dos DataSets:**
 
-| Hook           | Momento             | Finalidade   | Uso Comum          |
-| -------------- | ------------------- | ------------ | ------------------ |
-| `beforeEach()` | Antes de cada teste | Configuração | Inicializar dados  |
-| `afterEach()`  | Após cada teste     | Limpeza      | Reset de estado    |
-| `describe()`   | Agrupamento         | Organização  | Contexto de testes |
-
----
-
-## 🎯 **Vantagens dos Hooks:**
-
--   ✅ **Reutilização:** Configuração única para múltiplos testes
--   ✅ **Consistência:** Estado inicial garantido
--   ✅ **Organização:** Código limpo e estruturado
--   ✅ **Isolamento:** Cada teste começa com estado limpo
--   ✅ **Manutenibilidade:** Fácil modificação de configurações
+| Teste                           | Dados            | Execuções       | Validações       |
+| ------------------------------- | ---------------- | --------------- | ---------------- |
+| `test if is String`             | 3 nomes          | 3x              | Tipo String      |
+| `test if greaterThan or equals` | 3 idades         | 3x              | Idade >= 18      |
+| **Total**                       | **6 parâmetros** | **6 execuções** | **6 assertions** |
 
 ---
 
-## 🧪 **Boas Práticas Demonstradas:**
+## 🎯 **Vantagens dos DataSets:**
 
-### **Inicialização Controlada:**
+-   ✅ **Reutilização:** Mesmo teste com dados diferentes
+-   ✅ **Cobertura:** Testa múltiplos cenários automaticamente
+-   ✅ **Eficiência:** Reduz duplicação de código
+-   ✅ **Escalabilidade:** Fácil adicionar novos dados
+-   ✅ **Manutenibilidade:** Centraliza dados de teste
+
+---
+
+## 🔧 **Estrutura do Teste:**
+
+### **Padrão DataSet:**
 
 ```php
-// ✅ Definir valores no beforeEach
-$this->value = 10;
+// 1. Definir dados
+$data = [/* array de dados */];
+
+// 2. Criar teste
+it('descrição do teste', function ($param1, $param2) {
+    // assertions
+})->with($data);
 ```
 
-### **Limpeza Adequada:**
+### **Sintaxe `->with()`:**
+
+-   **Função:** Conecta o teste com o dataset
+-   **Execução:** Roda o teste para cada item do array
+-   **Parâmetros:** Descompacta arrays em parâmetros da função
+
+---
+
+## 🧩 **Casos de Uso Práticos:**
+
+### **Validação de Entrada:**
 
 ```php
-// ✅ Limpar no afterEach
-unset($this->value);
+// Testar diferentes inputs
+$userInputs = [["email@test.com"], ["user@domain.org"]];
 ```
 
-### **Testes Simples e Diretos:**
+### **Cenários de Negócio:**
 
 ```php
-// ✅ Assertions claras
-expect($this->value)->toBe(10);
+// Testar diferentes idades/status
+$ageScenarios = [[17, false], [18, true], [25, true]];
+```
+
+### **Validação de Dados:**
+
+```php
+// Testar tipos diferentes
+$typeTests = [["string"], [123], [true]];
 ```
 
 ---
@@ -115,7 +152,9 @@ expect($this->value)->toBe(10);
 ## 🚀 **Executando os Testes:**
 
 ```bash
-./vendor/bin/pest tests/Unit/HookOneTest.php
+./vendor/bin/pest tests/Unit/DataSetTest.php
 ```
 
-**Tecnologias:** Laravel 11/12, PestPHP, Testes Unitários, Hooks
+**Resultado esperado:** 6 testes passando (3 para cada assertion)
+
+**Tecnologias:** Laravel 11/12, PestPHP, DataSets, Testes Unitários
