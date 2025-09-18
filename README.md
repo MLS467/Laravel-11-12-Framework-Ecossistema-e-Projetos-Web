@@ -1,95 +1,121 @@
-# Laravel Testing Project - Seção 27
+# Laravel Testing com PestPHP - Seção 27
 
-## Testes Unitários Implementados
+## 📋 Documentação de Testes Funcionais e Unitários
 
-Este projeto demonstra a implementação de testes unitários usando **PestPHP** no Laravel 12. Os testes foram criados para validar as funcionalidades desenvolvidas na **Seção 27 - Testes Funcionais e Unitários com PestPHP**.
+### **HookOneTest.php - Hooks no PestPHP**
 
-### 📁 Estrutura dos Testes Unitários (`tests/Unit/`)
+Este arquivo demonstra o uso de **hooks** no PestPHP para configuração e limpeza de dados nos testes.
 
-#### 1. **ExpectationAPITest.php**
+---
 
-Demonstra o uso da API de expectativas do PestPHP com diversos métodos de validação:
+## 🪝 **Hooks Implementados:**
 
--   `toBe()` - Validação de valores exatos e tipos
--   `toBeTrue()` / `toBeFalse()` - Validação de valores booleanos
--   `toBeNull()` - Validação de valores nulos
--   `toBeEmpty()` - Validação de valores vazios
--   `toBeArray()` - Validação de arrays
--   `toBeIn()` - Validação se valor está contido em array
--   `toBeJson()` - Validação de formato JSON
--   `toMatch()` - Validação com expressões regulares
--   `toBeUppercase()` - Validação de strings em maiúsculo
+### **1. `beforeEach()` - Configuração Pré-Teste**
 
-#### 2. **MainControllerTest.php**
-
-Testa o controller principal da aplicação:
-
--   Validação do método `index()` do `MainController`
--   Verifica se retorna uma string
--   Valida o conteúdo exato da resposta ("Hello World Test")
-
-#### 3. **MainOperatorHashGeneratorTest.php**
-
-Testa a funcionalidade de geração de hash:
-
--   Valida se o hash gerado tem 32 caracteres por padrão
--   Testa geração de hash com 64 caracteres
--   Testa geração de hash com 80 caracteres
--   Utiliza o serviço `MainOperations::hash_generation()`
-
-#### 4. **MathOperationTest.php**
-
-Suite completa de testes para operações matemáticas usando `describe()`:
-
--   **Soma (`add`)**: Testa adição de dois números
--   **Subtração (`subtract`)**: Testa subtração de dois números
--   **Multiplicação (`multiply`)**: Testa multiplicação de dois números
--   **Divisão (`divide`)**: Testa divisão normal
--   **Divisão por zero**: Valida tratamento especial (divisor 0 vira 1)
--   **Operação inválida**: Testa retorno de mensagem de erro para operações inexistentes
-
-### 🛠️ Tecnologias Utilizadas
-
--   **Laravel 12**: Framework PHP
--   **PestPHP 4.1**: Framework de testes moderno
--   **PHP 8.2+**: Linguagem base
-
-### 📋 Serviços Testados
-
-#### `MainOperations` Service
-
-Localizado em `app/Services/MainOperations.php`, contém:
-
-1. **`hash_generation($num = 32)`**: Gera hash hexadecimal
-2. **`MathOperation($valueOne, $valueTwo, $operation)`**: Executa operações matemáticas básicas
-
-### 🚀 Como Executar os Testes
-
-```bash
-# Executar todos os testes
-php artisan test
-
-# Executar apenas testes unitários
-./vendor/bin/pest tests/Unit
-
-# Executar teste específico
-./vendor/bin/pest tests/Unit/MathOperationTest.php
+```php
+beforeEach(function () {
+    $this->value = 10;
+    $this->value_two = 20;
+});
 ```
 
-### 📊 Cobertura de Testes
+-   **Funcionalidade:** Executado ANTES de cada teste
+-   **Uso:** Inicialização de variáveis e configuração de estado
+-   **Implementação:**
+    -   `$this->value = 10`: Variável de teste
+    -   `$this->value_two = 20`: Segunda variável de teste
+-   **Vantagem:** Garante estado consistente para todos os testes
 
-Os testes cobrem:
+### **2. `describe()` - Agrupamento de Testes**
 
--   ✅ Geração de hash com diferentes tamanhos
--   ✅ Operações matemáticas básicas (+ - \* /)
--   ✅ Tratamento de divisão por zero
--   ✅ Validação de operações inválidas
--   ✅ Testes de controller
--   ✅ API de expectativas do PestPHP
+```php
+describe('Testes com hooks', function () {
+    it('test one', function () {
+        expect($this->value)->toBe(10);
+    });
+});
+```
 
-### 📝 Padrões de Teste Utilizados
+-   **Funcionalidade:** Agrupa testes relacionados em um contexto
+-   **Estrutura:** Organização hierárquica de testes
+-   **Teste implementado:** Verifica se `$this->value` é igual a 10
+-   **Assertion:** `expect($this->value)->toBe(10)`
 
--   **Arrange-Act-Assert**: Estrutura clara dos testes
--   **Describe/It**: Agrupamento lógico de testes relacionados
--   **Expectation API**: Uso das expectativas modernas do PestPHP
--   **Edge Cases**: Testes de casos extremos como divisão por zero
+### **3. `afterEach()` - Limpeza Pós-Teste**
+
+```php
+afterEach(function () {
+    unset($this->value);
+    unset($this->value_two);
+});
+```
+
+-   **Funcionalidade:** Executado APÓS cada teste
+-   **Uso:** Limpeza de dados e reset de estado
+-   **Implementação:** Remove variáveis definidas no `beforeEach()`
+-   **Vantagem:** Evita vazamento de dados entre testes
+
+---
+
+## 🔄 **Fluxo de Execução:**
+
+```
+1. beforeEach() → Inicializa $this->value = 10, $this->value_two = 20
+2. it('test one') → Executa teste: expect($this->value)->toBe(10)
+3. afterEach() → Limpa: unset($this->value), unset($this->value_two)
+```
+
+---
+
+## 📊 **Estrutura dos Hooks:**
+
+| Hook           | Momento             | Finalidade   | Uso Comum          |
+| -------------- | ------------------- | ------------ | ------------------ |
+| `beforeEach()` | Antes de cada teste | Configuração | Inicializar dados  |
+| `afterEach()`  | Após cada teste     | Limpeza      | Reset de estado    |
+| `describe()`   | Agrupamento         | Organização  | Contexto de testes |
+
+---
+
+## 🎯 **Vantagens dos Hooks:**
+
+-   ✅ **Reutilização:** Configuração única para múltiplos testes
+-   ✅ **Consistência:** Estado inicial garantido
+-   ✅ **Organização:** Código limpo e estruturado
+-   ✅ **Isolamento:** Cada teste começa com estado limpo
+-   ✅ **Manutenibilidade:** Fácil modificação de configurações
+
+---
+
+## 🧪 **Boas Práticas Demonstradas:**
+
+### **Inicialização Controlada:**
+
+```php
+// ✅ Definir valores no beforeEach
+$this->value = 10;
+```
+
+### **Limpeza Adequada:**
+
+```php
+// ✅ Limpar no afterEach
+unset($this->value);
+```
+
+### **Testes Simples e Diretos:**
+
+```php
+// ✅ Assertions claras
+expect($this->value)->toBe(10);
+```
+
+---
+
+## 🚀 **Executando os Testes:**
+
+```bash
+./vendor/bin/pest tests/Unit/HookOneTest.php
+```
+
+**Tecnologias:** Laravel 11/12, PestPHP, Testes Unitários, Hooks
