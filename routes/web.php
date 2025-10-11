@@ -1,11 +1,22 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test-connection', function () {
+    try {
+        DB::connection()->getPdo();
+        return 'Conexão com PostgreSQL funcionando!';
+    } catch (\Exception $e) {
+        return 'Erro na conexão: ' . $e->getMessage();
+    }
+});
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
