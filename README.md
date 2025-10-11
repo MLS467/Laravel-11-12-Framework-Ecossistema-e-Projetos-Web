@@ -8,9 +8,11 @@ Esta é uma API REST simples desenvolvida com Laravel 11 para gerenciamento de c
 -   [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
 -   [Modelos e Factories](#modelos-e-factories)
 -   [Seeders](#seeders)
--   [Controllers](#controllers)
+-   [Controllers & Rotas da API](#controllers--rotas-da-api)
+-   [Endpoints da API](#endpoints-da-api)
+-   [Funcionalidades Implementadas](#funcionalidades-implementadas)
+-   [Tratamento de Erros](#tratamento-de-erros)
 -   [Instalação e Configuração](#instalação-e-configuração)
--   [Uso da API](#uso-da-api)
 
 ## 🚀 Sobre o Projeto
 
@@ -134,7 +136,7 @@ class DataBaseSeeder extends Seeder
 -   Cria 100 registros de clientes falsos para teste
 -   Utiliza a ClientFactory para gerar dados realistas
 
-## 🎮 Controllers
+## 🎮 Controllers & Rotas da API
 
 ### ClientController
 
@@ -145,15 +147,140 @@ class DataBaseSeeder extends Seeder
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    // Métodos da API serão implementados aqui
+    public function status(): string
+    {
+        return "status ok";
+    }
+
+    public function index(): JsonResponse
+    {
+        $clients = Client::all()->take(5);
+
+        if (!$clients)
+            return response()->json([], 404);
+
+        return response()->json(compact('clients'), 200);
+    }
+
+    public function pagination(): JsonResponse
+    {
+        $clients = Client::paginate(10);
+
+        if (!$clients)
+            return response()->json([], 404);
+
+        return response()->json(compact('clients'), 200);
+    }
+
+    public function show($client): JsonResponse
+    {
+        try {
+            $client_found = Client::where('id', $client)->first();
+
+            if (!$client_found) throw new ModelNotFoundException('Client Not Found');
+
+            return response()->json(compact('client_found'), 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+    }
 }
 ```
 
-_Nota: O controller está preparado para receber os métodos CRUD da API._
+### Rotas da API
+
+**Arquivo:** `routes/api.php`
+
+```php
+<?php
+
+use App\Http\Controllers\ClientController;
+use Illuminate\Support\Facades\Route;
+
+Route::controller(ClientController::class)->group(function () {
+    Route::get('/status', 'status');
+    Route::get('/clients', 'index');
+    Route::get('/client/{client}', 'show');
+    Route::get('/client-pagination', 'pagination');
+});
+```
+
+## 🌐 Endpoints da API
+
+### Status da API
+
+-   **GET** `/api/status`
+-   **Descrição**: Verifica se a API está funcionando
+-   **Resposta**: String "status ok"
+
+### Listar Clientes (Limitado)
+
+-   **GET** `/api/clients`
+-   **Descrição**: Retorna os primeiros 5 clientes
+-   **Resposta**: JSON com array de clientes
+-   **Status HTTP**: 200 (sucesso) ou 404 (não encontrado)
+
+### Buscar Cliente Específico
+
+-   **GET** `/api/client/{id}`
+-   **Descrição**: Busca um cliente pelo ID
+-   **Parâmetros**: `id` - ID do cliente
+-   **Resposta**: JSON com dados do cliente ou mensagem de erro
+-   **Status HTTP**: 200 (sucesso) ou 404 (não encontrado)
+
+### Listar Clientes com Paginação
+
+-   **GET** `/api/client-pagination`
+-   **Descrição**: Retorna clientes com paginação (10 por página)
+-   **Resposta**: JSON com dados paginados
+-   **Status HTTP**: 200 (sucesso) ou 404 (não encontrado)
+
+## ✨ Funcionalidades Implementadas
+
+### ✅ Configuração de Rotas para API
+
+-   Criação do arquivo `routes/api.php`
+-   Agrupamento de rotas usando `Route::controller()`
+-   Definição de endpoints RESTful
+
+### ✅ Controller para API
+
+-   Implementação completa do `ClientController`
+-   Métodos para diferentes operações (index, show, pagination, status)
+-   Retorno de respostas JSON estruturadas
+
+### ✅ Retorno JSON e Status HTTP
+
+-   Uso correto de `JsonResponse`
+-   Códigos de status HTTP apropriados (200, 404)
+-   Estrutura de dados consistente com `compact()`
+-   Tratamento de erros com try/catch
+
+### ✅ Implementação de Paginação
+
+-   Método `pagination()` usando `paginate(10)`
+-   Retorno de metadados de paginação
+-   Controle de quantidade de registros por página
+
+## 🛡️ Tratamento de Erros
+
+### ModelNotFoundException
+
+-   Captura de exceções quando cliente não é encontrado
+-   Retorno de mensagens de erro personalizadas
+-   Status HTTP 404 para recursos não encontrados
+
+### Validação de Dados
+
+-   Verificação de existência de clientes antes do retorno
+-   Retorno de arrays vazios quando não há dados
 
 ## ⚙️ Instalação e Configuração
 
@@ -206,12 +333,10 @@ _Nota: O controller está preparado para receber os métodos CRUD da API._
     php artisan serve
     ```
 
-## 🔧 Próximos Passos para Completar a API
+## � Próximos Passos para Expandir a API
 
-Para tornar esta uma API REST completa, os seguintes endpoints precisam ser implementados no `ClientController`:
+Para tornar esta uma API REST completa, os seguintes endpoints ainda podem ser implementados:
 
--   `GET /api/clients` - Listar todos os clientes
--   `GET /api/clients/{id}` - Buscar cliente específico
 -   `POST /api/clients` - Criar novo cliente
 -   `PUT /api/clients/{id}` - Atualizar cliente
 -   `DELETE /api/clients/{id}` - Deletar cliente
