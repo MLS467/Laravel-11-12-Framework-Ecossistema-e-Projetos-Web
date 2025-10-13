@@ -63,4 +63,37 @@ class ClientController extends Controller
             404
         );
     }
+
+
+    public function add_client(Request $request)
+    {
+        $client_instance = new Client();
+
+        $client_instance->name = $request->name;
+        $client_instance->email = $request->email;
+        $client_instance->save();
+
+        return response()->json(['message' => 'created with success', 'data' => $client_instance], 201);
+    }
+
+
+    public function update_client(Request $request, $id)
+    {
+
+        $client_instance = Client::find($id);
+        $client_instance->name = $request->name;
+        $client_instance->email = $request->email;
+        $client_instance->save();
+
+        return response()->json(['message' => 'updated with success', 'data' => $client_instance], 200);
+    }
+
+
+    public function delete_client($id): JsonResponse
+    {
+        $client = Client::find($id);
+        $client->delete();
+
+        return response()->json(['message' => 'deleted with success'], 200);
+    }
 }
