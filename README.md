@@ -182,7 +182,7 @@ class ClientController extends Controller
     public function show($client): JsonResponse
     {
         try {
-            $client_found = Client::where('id', $client)->first();
+            $client_found = Client::find($client);
 
             if (!$client_found) throw new ModelNotFoundException('Client Not Found');
 
@@ -190,6 +190,23 @@ class ClientController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
+    }
+
+    public function client_by_id(Request $request)
+    {
+        $client = Client::find($request->id);
+
+        if (!$request->id || !$client) {
+            return response()->json(['message' => 'id not found'], 404);
+        }
+
+        return response()->json(
+            [
+                'message' => 'success client found',
+                'data' => $client
+            ],
+            200
+        );
     }
 }
 ```
@@ -209,6 +226,7 @@ Route::controller(ClientController::class)->group(function () {
     Route::get('/clients', 'index');
     Route::get('/client/{client}', 'show');
     Route::get('/client-pagination', 'pagination');
+    Route::post('/client-by-id', 'client_by_id');
 });
 ```
 
@@ -242,6 +260,39 @@ Route::controller(ClientController::class)->group(function () {
 -   **Resposta**: JSON com dados paginados
 -   **Status HTTP**: 200 (sucesso) ou 404 (não encontrado)
 
+### Buscar Cliente por ID via POST
+
+-   **POST** `/api/client-by-id`
+-   **Descrição**: Busca um cliente pelo ID enviado no corpo da requisição
+-   **Parâmetros**:
+    -   `id` - ID do cliente (enviado no body da requisição)
+-   **Exemplo de requisição**:
+    ```json
+    {
+        "id": 1
+    }
+    ```
+-   **Resposta de sucesso**:
+    ```json
+    {
+        "message": "success client found",
+        "data": {
+            "id": 1,
+            "name": "Cliente Exemplo",
+            "email": "cliente@exemplo.com",
+            "created_at": "2025-10-13T10:00:00.000000Z",
+            "updated_at": "2025-10-13T10:00:00.000000Z"
+        }
+    }
+    ```
+-   **Resposta de erro**:
+    ```json
+    {
+        "message": "id not found"
+    }
+    ```
+-   **Status HTTP**: 200 (sucesso) ou 404 (não encontrado)
+
 ## ✨ Funcionalidades Implementadas
 
 ### ✅ Configuração de Rotas para API
@@ -253,8 +304,9 @@ Route::controller(ClientController::class)->group(function () {
 ### ✅ Controller para API
 
 -   Implementação completa do `ClientController`
--   Métodos para diferentes operações (index, show, pagination, status)
+-   Métodos para diferentes operações (index, show, pagination, status, client_by_id)
 -   Retorno de respostas JSON estruturadas
+-   Implementação de método POST para busca por ID
 
 ### ✅ Retorno JSON e Status HTTP
 
@@ -281,6 +333,27 @@ Route::controller(ClientController::class)->group(function () {
 
 -   Verificação de existência de clientes antes do retorno
 -   Retorno de arrays vazios quando não há dados
+-   Validação de parâmetros de requisição no método POST
+
+## 🔄 Melhorias Recentes Implementadas
+
+### ✅ Otimização do Método `show()`
+
+-   **Mudança**: Substituição de `Client::where('id', $client)->first()` por `Client::find($client)`
+-   **Benefício**: Código mais limpo e performático usando método nativo do Eloquent
+
+### ✅ Novo Endpoint POST para Busca
+
+-   **Implementação**: Método `client_by_id()` com requisição POST
+-   **Funcionalidade**: Busca cliente enviando ID no corpo da requisição
+-   **Validação**: Verifica se o ID foi enviado e se o cliente existe
+-   **Resposta**: Estrutura JSON com mensagem de sucesso e dados do cliente
+
+### ✅ Melhoria nas Respostas JSON
+
+-   **Estrutura padronizada**: Mensagens de sucesso e dados organizados
+-   **Correção de status HTTP**: Status 200 para sucesso (estava incorreto como 404)
+-   **Mensagens personalizadas**: Diferentes mensagens para diferentes cenários
 
 ## ⚙️ Instalação e Configuração
 

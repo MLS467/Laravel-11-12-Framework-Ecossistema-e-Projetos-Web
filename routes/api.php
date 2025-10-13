@@ -9,4 +9,5 @@ Route::controller(ClientController::class)->group(function () {
     Route::get('/clients', 'index');
     Route::get('/client/{client}', 'show');
     Route::get('/client-pagination', 'pagination');
+    Route::post('/client-by-id', 'client_by_id');
 });

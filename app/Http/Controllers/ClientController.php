@@ -34,11 +34,10 @@ class ClientController extends Controller
         return response()->json(compact('clients'), 200);
     }
 
-
     public function show($client): JsonResponse
     {
         try {
-            $client_found = Client::where('id', $client)->first();
+            $client_found = Client::find($client);
 
             if (!$client_found) throw new ModelNotFoundException('Client Not Fount');
 
@@ -46,5 +45,22 @@ class ClientController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
+    }
+
+    public function client_by_id(Request $request)
+    {
+        $client = Client::find($request->id);
+
+        if (!$request->id || !$client) {
+            return response()->json(['message' => 'id not found'], 404);
+        }
+
+        return response()->json(
+            [
+                'message' => 'success client found',
+                'data' => $client
+            ],
+            404
+        );
     }
 }
