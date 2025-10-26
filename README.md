@@ -1,61 +1,258 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# API Laravel com Autenticação Sanctum
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Sobre o Projeto
 
-## About Laravel
+Este projeto implementa uma API RESTful para gerenciamento de clientes com sistema de autenticação usando Laravel Sanctum. A API foi desenvolvida seguindo boas práticas de estruturação e segurança.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📚 Lista de Aulas do Curso
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Seção 1: Fundamentos do Laravel
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   **Aula 01**: Introdução ao Laravel 11 e preparação do ambiente
+-   **Aula 02**: Estrutura de pastas e arquivos do Laravel
+-   **Aula 03**: Configuração inicial e variáveis de ambiente
+-   **Aula 04**: Conceitos básicos de rotas e controllers
 
-## Learning Laravel
+### Seção 2: Banco de Dados e Models
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   **Aula 05**: Configuração do banco de dados MySQL
+-   **Aula 06**: Criação e configuração do Model User
+-   **Aula 07**: Implementação do Model Client
+-   **Aula 08**: Migrations - estruturação das tabelas
+-   **Aula 09**: Seeders e Factories para popular dados
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Seção 3: Laravel Sanctum - Autenticação
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+-   **Aula 10**: Instalação e configuração do Laravel Sanctum
+-   **Aula 11**: Conceitos de autenticação com tokens
+-   **Aula 12**: Implementação do sistema de login
+-   **Aula 13**: Middleware de autenticação e proteção de rotas
+-   **Aula 14**: Sistema de logout e invalidação de tokens
 
-## Laravel Sponsors
+### Seção 4: API RESTful - Controllers
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+-   **Aula 15**: Criação do AuthController
+-   **Aula 16**: Implementação dos métodos de autenticação
+-   **Aula 17**: Criação do ClientController
+-   **Aula 18**: Implementação do CRUD de clientes
+-   **Aula 19**: Estruturação das rotas da API
 
-### Premium Partners
+### Seção 5: Validações e Tratamento de Erros
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   **Aula 20**: Validação de dados no login
+-   **Aula 21**: Validação de dados dos clientes
+-   **Aula 22**: Mensagens de erro personalizadas
+-   **Aula 23**: Tratamento de exceções e erros da API
 
-## Contributing
+### Seção 6: Sistema de Permissões (Abilities)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+-   **Aula 24**: Introdução às abilities do Sanctum
+-   **Aula 25**: Implementação de permissões granulares
+-   **Aula 26**: Controle de acesso por funcionalidade
+-   **Aula 27**: Limitações das abilities no Laravel 11
 
-## Code of Conduct
+### Seção 7: Padronização e Boas Práticas
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+-   **Aula 28**: Criação do Service ApiResponse
+-   **Aula 29**: Padronização de retornos JSON
+-   **Aula 30**: Organização de código em Services
+-   **Aula 31**: Testes da API com Postman/Insomnia
 
-## Security Vulnerabilities
+### Seção 8: Finalização e Deploy
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+-   **Aula 32**: Documentação da API
+-   **Aula 33**: Boas práticas de segurança
+-   **Aula 34**: Preparação para deploy
+-   **Aula 35**: Considerações finais e próximos passos
 
-## License
+## O que foi Implementado
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 🔐 Sistema de Autenticação (AuthController)
+
+**Arquivo**: `app/Http/Controllers/Api/auth/AuthController.php`
+
+#### Login (`POST /api/login`)
+
+-   Validação de email e senha
+-   Geração de token com abilities específicas
+-   Token com expiração de 1 hora
+-   Retorno padronizado com token e dados do usuário
+
+```php
+// Abilities configuradas no token
+$abilits = ['client:list', 'client:details', 'client:store', 'client:destroy'];
+$token = $user->createToken($user->name, $abilits, now()->addHour())->plainTextToken;
+```
+
+#### Logout (`POST /api/logout`)
+
+-   Invalidação de todos os tokens do usuário
+-   Retorno de confirmação de logout
+
+### 👥 CRUD de Clientes (ClientController)
+
+**Arquivo**: `app/Http/Controllers/Api/client/ClientController.php`
+
+#### Funcionalidades Implementadas:
+
+1. **Listar Clientes** (`GET /api/client`)
+
+    - Verificação de permissão `client:list`
+    - Retorna todos os clientes
+
+2. **Criar Cliente** (`POST /api/client`)
+
+    - Verificação de permissão `client:store`
+    - Validação de dados (nome, email, telefone)
+    - Criação do cliente no banco
+
+3. **Visualizar Cliente** (`GET /api/client/{id}`)
+
+    - Verificação de permissão `client:details`
+    - Busca cliente por ID
+    - Tratamento de cliente não encontrado
+
+4. **Atualizar Cliente** (`PUT /api/client/{id}`)
+
+    - Verificação de permissão `client:update`
+    - Validação diferenciada para update
+    - Atualização e retorno dos dados atualizados
+
+5. **Excluir Cliente** (`DELETE /api/client/{id}`)
+    - Verificação de permissão `client:destroy`
+    - Exclusão do cliente
+    - Tratamento de erros na exclusão
+
+### 🛡️ Sistema de Permissões
+
+**Controle de Acesso Implementado:**
+
+-   Verificação manual de abilities usando `tokenCan()`
+-   Permissões granulares por operação
+-   Retorno de erro 401 para acesso não autorizado
+
+```php
+if (!Auth()->user()->tokenCan("client:list"))
+    return ApiResponse::error(401, 'Não autorizado para essa função');
+```
+
+> **⚠️ Nota Importante**: O sistema de abilities a nível de rota não funciona perfeitamente no Laravel 11, por isso foi implementado o controle manual nos controllers.
+
+### 📊 Service de Resposta Padronizada
+
+**Arquivo**: `app/Http/Services/ApiResponse.php`
+
+Implementação de métodos estáticos para padronizar retornos:
+
+-   `ApiResponse::success()` - Para respostas de sucesso
+-   `ApiResponse::error()` - Para respostas de erro
+
+Todas as respostas seguem o padrão:
+
+```json
+{
+    "status_code": 200,
+    "message": "Mensagem descritiva",
+    "data": {} // apenas em caso de sucesso
+}
+```
+
+### 🗄️ Models Configurados
+
+#### User Model (`app/Models/User.php`)
+
+-   Trait `HasApiTokens` para Sanctum
+-   Campos fillable: name, email, password
+-   Campo password oculto nas respostas
+
+#### Client Model (`app/Models/Client.php`)
+
+-   Trait `HasApiTokens` para Sanctum
+-   Campos fillable: name, email, phone
+-   Configuração para uso com factory
+
+### 🛣️ Rotas da API
+
+**Arquivo**: `routes/api.php`
+
+#### Rotas Públicas (guest middleware):
+
+-   `POST /api/login` - Autenticação
+
+#### Rotas Protegidas (auth:sanctum middleware):
+
+-   `GET /api/status` - Status da API
+-   `POST /api/logout` - Logout
+-   `Resource /api/client` - CRUD completo de clientes
+
+### ✅ Validações Implementadas
+
+#### Validação de Login:
+
+-   Email: obrigatório e formato válido
+-   Senha: obrigatória, mínimo 6 caracteres
+-   Mensagens personalizadas em português
+
+#### Validação de Cliente:
+
+-   **Store**: Campos obrigatórios com validação completa
+-   **Update**: Validação mais flexível, campos opcionais
+-   Nome: 3-50 caracteres
+-   Email: formato válido e único
+-   Telefone: exatamente 10 caracteres (opcional)
+
+### 🗃️ Estrutura do Banco
+
+#### Migration de Clientes (`2025_10_25_001014_create_clients_table.php`)
+
+-   Tabela `clients` com campos: id, name, email, phone, timestamps
+-   Estrutura simples e eficiente
+
+### 🏗️ Arquitetura Implementada
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── Api/
+│   │       ├── auth/AuthController.php
+│   │       └── client/ClientController.php
+│   └── Services/
+│       └── ApiResponse.php
+├── Models/
+│   ├── User.php
+│   └── Client.php
+```
+
+## Como Testar a API
+
+1. **Login**:
+
+    ```
+    POST /api/login
+    {
+      "email": "email@exemplo.com",
+      "password": "senha123"
+    }
+    ```
+
+2. **Usar o token nos headers**:
+
+    ```
+    Authorization: Bearer {token_recebido}
+    ```
+
+3. **Testar endpoints de cliente conforme as permissões**
+
+## Características Técnicas
+
+-   **Laravel 11**: Framework atualizado
+-   **Sanctum**: Autenticação simples e eficaz
+-   **Validação**: Robusta com mensagens personalizadas
+-   **Padronização**: Service centralizado para respostas
+-   **Segurança**: Controle granular de permissões
+-   **Estrutura**: Organização clara de controllers por domínio
+
+---
+
+_Esta API foi desenvolvida com foco em segurança, padronização e boas práticas do Laravel._
